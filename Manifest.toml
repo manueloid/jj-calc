@@ -1,6 +1,6 @@
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.8.3"
+julia_version = "1.8.4"
 manifest_format = "2.0"
 project_hash = "9de10b28795958f1b49654d681ffe2c54751e2eb"
 
@@ -188,7 +188,7 @@ version = "4.5.0"
 [[deps.CompilerSupportLibraries_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "e66e0078-7015-5450-92f7-15fbd957f2ae"
-version = "0.5.2+0"
+version = "1.0.1+0"
 
 [[deps.ConstructionBase]]
 deps = ["LinearAlgebra"]
@@ -600,8 +600,8 @@ uuid = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
 version = "0.21.3"
 
 [[deps.JosephsonSTA]]
-deps = ["HCubature", "QuadGK", "SpecialPolynomials"]
-git-tree-sha1 = "5526a389a9dd866dc5b27559a87f546d060ef64e"
+deps = ["HCubature", "LinearAlgebra", "QuadGK", "SpecialPolynomials"]
+git-tree-sha1 = "5acd7c0d81e56a28ca5fe77a4b569c71da86a135"
 repo-rev = "main"
 repo-url = "../JosephsonSTA"
 uuid = "0f57ff0d-e87d-46e3-b1bb-275a51971cfa"

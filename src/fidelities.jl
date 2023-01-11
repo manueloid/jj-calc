@@ -25,13 +25,27 @@ function fidelity(cp::ControlParameter; nlambda::Int64=5, maxbra::Int64=4)
     timeevolution.schroedinger_dynamic([0.0, cp.final_time], qts.ψ0, H_eSTA; fout=fidelity)[2][end]  # Time evolution where the output is not the resulting state but the fidelity. It helps improving the speed of the calculation
 end
 
-function fidelity_time(cp::ControlParameter, tarr::Vector{Float64}; nlambda::Int64=5, maxbra::Int64=4)
+function fidelity(cp::ControlParameter, corrs::Vector{Float64}; nlambda::Int64=5, maxbra::Int64=4)
+    qts = ConstantQuantities(cp)
+    ω(t) = ω_esta(t, cp, corrs)
+    function H_eSTA(t, psi) # Function to return the time dependent Hamiltonian
+        return (2.0 / cp.NParticles * (ω(t) / 4.0 - 1.0) * qts.Jz^2 - 2.0 * qts.Jx)
+    end
+    fidelity(t, psi) = abs2.(dagger(qts.ψf) * psi)
+    timeevolution.schroedinger_dynamic([0.0, cp.final_time], qts.ψ0, H_eSTA; fout=fidelity)[2][end]  # Time evolution where the output is not the resulting state but the fidelity. It helps improving the speed of the calculation
+end
+
+function fidelity_time(cp::ControlParameter, tarr::Vector{Float64}; hessian::Bool=true, nlambda::Int64=5, maxbra::Int64=4)
     qts = ConstantQuantities(cp)
     fidelity_array = zeros(length(tarr))
     Threads.@threads for (index, tf) in enumerate(tarr) |> collect
-    # for (index, tf) in enumerate(tarr) |> collect
+        # for (index, tf) in enumerate(tarr) |> collect
         cparam = cp_time(cp, tf)
-        corrs = corrections(cparam, nlambda=nlambda, maxbra=maxbra)
+        if hessian == true
+            corrs = corrections_hess(cparam, nlambda=nlambda)
+        else
+            corrs = corrections(cparam, nlambda=nlambda, maxbra=maxbra)
+        end
         ω(t) = ω_esta(t, cparam, corrs)
         function H_eSTA(t, psi) # Function to return the time dependent Hamiltonian
             return (2.0 / cparam.NParticles * (ω(t) / 4.0 - 1.0) * qts.Jz^2 - 2.0 * qts.Jx)
@@ -48,7 +62,7 @@ function fidelity_search(cp::ControlParameter, epsilons::Vector{Float64}; nlambd
     qts = ConstantQuantities(cp)
     fidelity_array = zeros(length(epsilons))
     Threads.@threads for (index, ϵ) in enumerate(epsilons) |> collect
-    # for (index, ϵ) in enumerate(epsilons) |> collect
+        # for (index, ϵ) in enumerate(epsilons) |> collect
         ω(t) = ω_esta(t, cp, ϵ * corrs)
         function H_eSTA(t, psi) # Function to return the time dependent Hamiltonian
             return (2.0 / cp.NParticles * (ω(t) / 4.0 - 1.0) * qts.Jz^2 - 2.0 * qts.Jx)
