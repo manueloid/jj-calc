@@ -2,7 +2,7 @@
 
 julia_version = "1.8.3"
 manifest_format = "2.0"
-project_hash = "a7d3da36183c8dc38d22769e79babf524a4236fb"
+project_hash = "cc911269d4713e609f145463877bfa72a04a57c7"
 
 [[deps.ATK_jll]]
 deps = ["Artifacts", "Glib_jll", "JLLWrappers", "Libdl", "Pkg"]
@@ -402,6 +402,12 @@ git-tree-sha1 = "04ed1f0029b6b3af88343e439b995141cb0d0b8d"
 uuid = "6a86dc24-6348-571c-b903-95158fe2bd41"
 version = "2.17.0"
 
+[[deps.FiniteDifferences]]
+deps = ["ChainRulesCore", "LinearAlgebra", "Printf", "Random", "Richardson", "SparseArrays", "StaticArrays"]
+git-tree-sha1 = "3f605dd6db5640c5278f2551afc9427656439f42"
+uuid = "26cc04aa-876d-5657-8c51-4c34ba976000"
+version = "0.12.26"
+
 [[deps.FixedPointNumbers]]
 deps = ["Statistics"]
 git-tree-sha1 = "335bfdceacc84c5cdf16aadc768aa5ddfc5383cc"
@@ -643,7 +649,7 @@ version = "0.21.3"
 
 [[deps.JosephsonSTA]]
 deps = ["HCubature", "LinearAlgebra", "QuadGK", "SpecialPolynomials"]
-git-tree-sha1 = "5acd7c0d81e56a28ca5fe77a4b569c71da86a135"
+git-tree-sha1 = "e0b71280a69b914b93ff1d8af44794a654e194b1"
 repo-rev = "main"
 repo-url = "../JosephsonSTA"
 uuid = "0f57ff0d-e87d-46e3-b1bb-275a51971cfa"
@@ -1227,6 +1233,12 @@ deps = ["StaticArrays"]
 git-tree-sha1 = "256eeeec186fa7f26f2801732774ccf277f05db9"
 uuid = "ae5879a3-cd67-5da8-be7f-38c6eb64a37b"
 version = "1.1.1"
+
+[[deps.Richardson]]
+deps = ["LinearAlgebra"]
+git-tree-sha1 = "e03ca566bec93f8a3aeb059c8ef102f268a38949"
+uuid = "708f8203-808e-40c0-ba2d-98a6953ed40d"
+version = "1.4.0"
 
 [[deps.Rmath]]
 deps = ["Random", "Rmath_jll"]

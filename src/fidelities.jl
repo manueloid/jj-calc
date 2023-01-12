@@ -1,40 +1,4 @@
-"""
-constant_quantities(cp::ControlParameter) define the operators and the initial and final ground states of the protocol.
-The result is a new ConstantQuantities variable that can be used later.
-The idea is to evaluate the fidelity for different final times, so these values will remain the same and there is no need to define them every time.
-"""
-function ConstantQuantities(cp::ControlParameter)
-    Jz = sigmaz(SpinBasis(cp.NParticles / 2)) / 2 |> dense
-    Jx = sigmax(SpinBasis(cp.NParticles / 2)) / 2
-    ψ0 = eigenstates(2.0 / cp.NParticles * (cp.ω0^2 / 4.0 - 1.0) * Jz^2 - 2.0 * Jx, 1)[2][1]
-    ψf = eigenstates(2.0 / cp.NParticles * (cp.ωf^2 / 4.0 - 1.0) * Jz^2 - 2.0 * Jx, 1)[2][1]
-    return ConstantQuantities(Jz, Jx, ψ0, ψf)
-end
-
-
 ω_esta(t::Float64, cp::ControlParameter, corrections::Vector{Float64}) = control_ω(t, cp) - correction_poly(t, cp, corrections::Vector{Float64})
-
-function fidelity(cp::ControlParameter; nlambda::Int64=5, maxbra::Int64=4)
-    corrs = corrections(cp; nlambda=nlambda, maxbra=maxbra)
-    qts = ConstantQuantities(cp)
-    fidelity_col = zeros
-    ω(t) = ω_esta(t, cp, corrs)
-    function H_eSTA(t, psi) # Function to return the time dependent Hamiltonian
-        return (2.0 / cp.NParticles * (ω(t) / 4.0 - 1.0) * qts.Jz^2 - 2.0 * qts.Jx)
-    end
-    fidelity(t, psi) = abs2.(dagger(qts.ψf) * psi)
-    timeevolution.schroedinger_dynamic([0.0, cp.final_time], qts.ψ0, H_eSTA; fout=fidelity)[2][end]  # Time evolution where the output is not the resulting state but the fidelity. It helps improving the speed of the calculation
-end
-
-function fidelity(cp::ControlParameter, corrs::Vector{Float64}; nlambda::Int64=5, maxbra::Int64=4)
-    qts = ConstantQuantities(cp)
-    ω(t) = ω_esta(t, cp, corrs)
-    function H_eSTA(t, psi) # Function to return the time dependent Hamiltonian
-        return (2.0 / cp.NParticles * (ω(t) / 4.0 - 1.0) * qts.Jz^2 - 2.0 * qts.Jx)
-    end
-    fidelity(t, psi) = abs2.(dagger(qts.ψf) * psi)
-    timeevolution.schroedinger_dynamic([0.0, cp.final_time], qts.ψ0, H_eSTA; fout=fidelity)[2][end]  # Time evolution where the output is not the resulting state but the fidelity. It helps improving the speed of the calculation
-end
 
 function fidelity_time(cp::ControlParameter, tarr::Vector{Float64}; hessian::Bool=true, nlambda::Int64=5, maxbra::Int64=4)
     qts = ConstantQuantities(cp)
@@ -42,11 +6,7 @@ function fidelity_time(cp::ControlParameter, tarr::Vector{Float64}; hessian::Boo
     Threads.@threads for (index, tf) in enumerate(tarr) |> collect
         # for (index, tf) in enumerate(tarr) |> collect
         cparam = cp_time(cp, tf)
-        if hessian == true
-            corrs = corrections_hess(cparam, nlambda=nlambda)
-        else
-            corrs = corrections(cparam, nlambda=nlambda, maxbra=maxbra)
-        end
+        corrs = corrections(cparam; hessian=hessian, nlambda=nlambda, maxbra=maxbra)
         ω(t) = ω_esta(t, cparam, corrs)
         function H_eSTA(t, psi) # Function to return the time dependent Hamiltonian
             return (2.0 / cparam.NParticles * (ω(t) / 4.0 - 1.0) * qts.Jz^2 - 2.0 * qts.Jx)
@@ -58,8 +18,25 @@ function fidelity_time(cp::ControlParameter, tarr::Vector{Float64}; hessian::Boo
     return fidelity_array
 end
 
-function fidelity_search(cp::ControlParameter, epsilons::Vector{Float64}; nlambda::Int64=5, maxbra::Int64=4)
-    corrs = corrections(cp, nlambda=nlambda, maxbra=maxbra)
+function fidelity_time_sta(cp::ControlParameter, tarr::Vector{Float64}; hessian::Bool=true, nlambda::Int64=5, maxbra::Int64=4)
+    qts = ConstantQuantities(cp)
+    fidelity_array = zeros(length(tarr))
+    Threads.@threads for (index, tf) in enumerate(tarr) |> collect
+        # for (index, tf) in enumerate(tarr) |> collect
+        cparam = cp_time(cp, tf)
+        ω(t) = control_ω(t, cparam)
+        function H_eSTA(t, psi) # Function to return the time dependent Hamiltonian
+            return (2.0 / cparam.NParticles * (ω(t) / 4.0 - 1.0) * qts.Jz^2 - 2.0 * qts.Jx)
+        end
+        fidelity(t, psi) = abs2.(dagger(qts.ψf) * psi)
+        fidelity_array[index] = timeevolution.schroedinger_dynamic([0.0, tf], qts.ψ0, H_eSTA; fout=fidelity)[2][end]  # Time evolution where the output is not the resulting state but the fidelity. It helps improving the speed of the calculation
+        println("Calculating fidelity for final time $tf ")
+    end
+    return fidelity_array
+end
+
+function fidelity_search(cp::ControlParameter, epsilons::Vector{Float64}; hessian::Bool=true, nlambda::Int64=5, maxbra::Int64=4)
+    corrs = corrections(cp; hessian=hessian, nlambda=nlambda, maxbra=maxbra)
     qts = ConstantQuantities(cp)
     fidelity_array = zeros(length(epsilons))
     Threads.@threads for (index, ϵ) in enumerate(epsilons) |> collect
@@ -75,3 +52,17 @@ function fidelity_search(cp::ControlParameter, epsilons::Vector{Float64}; nlambd
     return fidelity_array
 end
 
+"""
+fidelity(cp::ControlParameter, qts::ConstantQuantities, ω::Function) return the fidelity of a process with desired boundary conditions, constant quantities and the control function ω.
+Useful to include it in other functions to iteratively calculate the fidelity
+"""
+function fidelity(cp::ControlParameter, qts::ConstantQuantities, ω::Function; hessian::Bool=true, nlambda::Int64=5, maxbra::Int64=4)
+    Jz, Jx, ψ0, ψf = rollout(qts)
+    h = 2.0 / cp.NParticles
+    tf = cp.final_time
+    function H_eSTA(t, psi) # Function to return the time dependent Hamiltonian
+        return (h * (ω(t) / 4.0 - 1.0) * Jz^2 - 2.0 * Jx)
+    end
+    fidelity(t, psi) = abs2.(dagger(ψf) * psi)
+    return timeevolution.schroedinger_dynamic([0.0, tf], ψ0, H_eSTA; fout=fidelity)[2][end]  # Time evolution where the output is not the resulting state but the fidelity. It helps improving the speed of the calculation
+end

@@ -15,3 +15,9 @@ fid_hess = fidelity_time(f, tspan)
 fid = fidelity_time(f, tspan; hessian=false)
 plot!(tspan, fid_hess, label = "int hess")
 plot!(tspan, fid, label = "int no hess")
+
+## STA version 
+f = ControlParameterInt(0.3, 20)
+fid_hess = fidelity_time(f, tspan)
+fid_sta = fidelity_time_sta(f, tspan)
+plot!(tspan, fid_sta, label = "sta", ylim = (.9,1.0))
