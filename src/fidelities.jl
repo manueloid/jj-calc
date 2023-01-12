@@ -17,6 +17,7 @@ end
 function fidelity(cp::ControlParameter; nlambda::Int64=5, maxbra::Int64=4)
     corrs = corrections(cp; nlambda=nlambda, maxbra=maxbra)
     qts = ConstantQuantities(cp)
+    fidelity_col = zeros
     ω(t) = ω_esta(t, cp, corrs)
     function H_eSTA(t, psi) # Function to return the time dependent Hamiltonian
         return (2.0 / cp.NParticles * (ω(t) / 4.0 - 1.0) * qts.Jz^2 - 2.0 * qts.Jx)
