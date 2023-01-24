@@ -7,32 +7,29 @@
 \usepackage[parfill]{parskip}
 \usepackage{graphicx}
 \usepackage{cleveref}
-%\usepackage{mathpazo}
-%\usepackage[cmintegrals,cmbraces]{newtxmath}
+\usepackage{mathpazo}
+\usepackage[cmintegrals,cmbraces]{newtxmath}
+\usepackage{import}
 \title{eSTA approach to Josephson Junction}
 \date{}
 \author{}
 \usepackage{braket}
-\DeclareMathOperator{\cas}{cas}
 \newcommand{\trans}[1]{\ensuremath{{#1}^\intercal}}
-
 
 \usepackage{color}
 
 \setlength\parskip{2mm}
 \begin{document}
-\bibliographystyle{alpha}  
+\bibliographystyle{alpha}
 \maketitle
-\section{The Bose Hubbard Hamiltonians}
-In this section I will explain how to  move from the different definitions of Hamiltonians I encountered during this calculations. In particular I will try to connect the textbook example with the Hamiltonians used in \cite{FastGenerationJulia2012} and \cite{BoseEinsteinCJulia2010}.
-Will do that later 
- 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %Section where I summarize the STA to Josephson Junction
 %%%%%%%%%%%%%%%%%%%%%%%%%
-\input{Chapters/bosehubbardintro.tex}
-\input{Chapters/sta.tex}
-\input{Chapters/esta.tex}
-\input{Chapters/results.tex}
+\import{Chapters/Introduction/}{main.tex}
+\import{Chapters/STA/}{main.tex}
+%\input{Chapters/STA/main.tex}
+%\input{Chapters/eSTA/main.tex}
+%\input{Chapters/Results/main.tex}
 \bibliography{bibliography}
 \end{document}

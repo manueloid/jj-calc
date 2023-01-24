@@ -2,41 +2,41 @@
 Here I will summarize the paper \cite{ABosonicJosepGati2007} where the Josephson Junction is derived.
 We are considering  $ N $  particles in a double well potential, the form of which is
 \begin{equation}
-\label{eq:HamiltonianDoubleWell}
-V_{dw} = \frac{1}{2} m \left(\omega^2_{x} x^2 + \omega^2_{y} y^2 + \omega^2_{z} z^2\right) + \frac{V_{0}}{2} \left(1 + \cos\frac{2\pi}{d_{sw}} x\right).
+	\label{eq:HamiltonianDoubleWell}
+	V_{dw} = \frac{1}{2} m \left(\omega^2_{x} x^2 + \omega^2_{y} y^2 + \omega^2_{z} z^2\right) + \frac{V_{0}}{2} \left(1 + \cos\frac{2\pi}{d_{sw}} x\right).
 \end{equation}
 Usually this problem is really hard to solve at involves many body particles etc. However the single particle spectrum of the double well is almost degenerate for the first two levels, while there is a wide gap between the second and third eigentates of the double well Hamiltonian.
 This allows us to introduce the \textit{two mode approximation} in which only the first two eigentates are considered.
-It has been shown how with this assumption the Hamiltonian of the system can be written as 
+It has been shown how with this assumption the Hamiltonian of the system can be written as
 \begin{align}
-\label{eq:HamiltonianDoubleWellIntegral}
-& H = \hat{ H }_{0} + \hat{ H }_{int}\\
-& \hat{H}_{0} = \int_{}^{}  \mathrm{d\mathbf{r}}\left(-\frac{\hbar^2}{2m} \hat{\Psi}^{\dag}\nabla^2\hat{ \Psi } + \hat{\Psi}^{\dag}V_{dw}\hat{ \Psi }\right)	,\\
-& \hat{H}_{int} = \frac{g}{2}\int \mathrm{d\mathbf{r}} \hat{\Psi}^{\dag}\hat{\Psi}^{\dag}\hat{ \Psi }\hat{ \Psi }
+	\label{eq:HamiltonianDoubleWellIntegral}
+	 & H = \hat{ H }_{0} + \hat{ H }_{int}                                                                                                                          \\
+	 & \hat{H}_{0} = \int_{}^{}  \mathrm{d\mathbf{r}}\left(-\frac{\hbar^2}{2m} \hat{\Psi}^{\dag}\nabla^2\hat{ \Psi } + \hat{\Psi}^{\dag}V_{dw}\hat{ \Psi }\right)	, \\
+	 & \hat{H}_{int} = \frac{g}{2}\int \mathrm{d\mathbf{r}} \hat{\Psi}^{\dag}\hat{\Psi}^{\dag}\hat{ \Psi }\hat{ \Psi }
 \end{align}
 with $ \hat{\Psi} $ field operator that (loosely speaking) creates / annihilates a particle in the position $ \mathbf{r} $ and $ g $ is the coupling constant.
 Now we take into account only the mean-field ground and excited states (which I assume they are $\Phi_g = \ket{N,0}$ and  $\Phi_e = \ket{0,N})$ so we can rewrite the general wavefunction $\hat{ \Psi }$ as
 \begin{equation}
-\label{eq:GeneralState}
-\hat{\Psi} = \hat{c}_{g}\Phi_g + \hat{c}_{e}\Phi_e
+	\label{eq:GeneralState}
+	\hat{\Psi} = \hat{c}_{g}\Phi_g + \hat{c}_{e}\Phi_e
 \end{equation}
 with $\hat{c}_g^{\dagger} $ and $\hat{c}_e^{\dagger} $ the creation operator for the ground and excited states respectively.
 A more convenient choice in this case is usually to choose the left and right operators
 \begin{equation}
-\label{eq:LeftRightOperators}
-\hat{c}_l^{\dagger} = \frac{1}{\sqrt{2}  }\left( \hat{c}_g^{\dagger} + \hat{c}_e^{\dagger} \right)   \hspace{3em}\hat{c}_r^{\dagger} = \frac{1}{\sqrt{2}  }\left( \hat{c}_g^{\dagger} - \hat{c}_e^{\dagger} \right)  .
+	\label{eq:LeftRightOperators}
+	\hat{c}_l^{\dagger} = \frac{1}{\sqrt{2}  }\left( \hat{c}_g^{\dagger} + \hat{c}_e^{\dagger} \right)   \hspace{3em}\hat{c}_r^{\dagger} = \frac{1}{\sqrt{2}  }\left( \hat{c}_g^{\dagger} - \hat{c}_e^{\dagger} \right)  .
 \end{equation}
-With this choice, we can now rewrite $ \hat{\Psi} $ 
+With this choice, we can now rewrite $ \hat{\Psi} $
 \begin{equation}
-\label{eq:LeftRightPsi}
-\hat{\Psi} = \frac{1}{\sqrt{2}}\left( \hat{c}_l(\Phi_g + \Phi_e) + \hat{c}_r(\Phi_g - \Phi_e) \right).
+	\label{eq:LeftRightPsi}
+	\hat{\Psi} = \frac{1}{\sqrt{2}}\left( \hat{c}_l(\Phi_g + \Phi_e) + \hat{c}_r(\Phi_g - \Phi_e) \right).
 \end{equation}
-We are now in the position to insert \cref{eq:LeftRightPsi} into \cref{eq:HamiltonianDoubleWellIntegral} and by doing some calculations, we obtain the two-mode Hamiltonian 
+We are now in the position to insert \cref{eq:LeftRightPsi} into \cref{eq:HamiltonianDoubleWellIntegral} and by doing some calculations, we obtain the two-mode Hamiltonian
 \begin{equation}
 	\label{eq:HamiltonianTwoMode}
 	\hat{H}_{2M} = \frac{E_{c}}{8}\left(\hat{c}_{r}^\dagger\hat{c}_{r} - \hat{c}_{l}^\dagger\hat{c}_{l}\right)^2 - \frac{ E_{j} }{N} \left(\hat{c}_{l}^\dagger\hat{c}_{r} - \hat{c}_{r}^\dagger\hat{c}_{l}\right) + \frac{\delta E}{4} \left(\hat{c}_{l}^\dagger\hat{c}_{r} - \hat{c}_{r}^\dagger\hat{c}_{l}\right)^{2}
 \end{equation}
-where 
+where
 \begin{itemize}
 	\item $ E_{j} $ describes the tunneling rate from one well to the other.
 	\item $ E_{c} $ corresponds to the local interaction within the two wells.
@@ -44,14 +44,14 @@ where
 \end{itemize}
 In many discussions, the last term $ \delta E $ is often neglected and thus the Hamiltonian \cref{eq:HamiltonianTwoMode} can be further simplified and becomes
 \begin{equation}
-\label{eq:HamiltonianTwoModeFinal}
-\hat{H}_{2M} = \frac{E_{c}}{2} \hat{n}^2 - \frac{2E_{j}}{N}\hat{\alpha}
+	\label{eq:HamiltonianTwoModeFinal}
+	\hat{H}_{2M} = \frac{E_{c}}{2} \hat{n}^2 - \frac{2E_{j}}{N}\hat{\alpha}
 \end{equation}
 with $ \hat{n}^2 $ the population imbalance and $\hat{\alpha}$ the tunneling operator.
 Their form is
 \begin{equation}
-\label{eq:JosephsonJuncitionOperators}
-\hat{n} = \frac{\hat{c}_{r}^\dagger\hat{c}_{r} - \hat{c}_{l}^\dagger\hat{c}_{l}}{2}, \hspace{3em} \hat{ \alpha } = \frac{ \hat{c}_{l}^\dagger\hat{c}_{r} + \hat{c}_{r}^\dagger\hat{c}_{l}}{2}
+	\label{eq:JosephsonJuncitionOperators}
+	\hat{n} = \frac{\hat{c}_{r}^\dagger\hat{c}_{r} - \hat{c}_{l}^\dagger\hat{c}_{l}}{2}, \hspace{3em} \hat{ \alpha } = \frac{ \hat{c}_{l}^\dagger\hat{c}_{r} + \hat{c}_{r}^\dagger\hat{c}_{l}}{2}
 \end{equation}
 and we will see that these two operators are basically the same thing as the ones in  \cite{FastGenerationJulia2012}
 %%%%%%%%%%%%%%%%%%%%%%%%%
@@ -60,13 +60,13 @@ and we will see that these two operators are basically the same thing as the one
 \newpage
 \begin{itemize}
 	\item Write down the calculations that allow us to get from the textbook example to the two JJ Hamiltonians (the one with the angular momentum and the one with number operators)
-	\item Explain where they got STA from 
+	\item Explain where they got STA from
 	\item Explain what we did with eSTA up to now
-	\item Explain how we can improve on that with the full calculation 
+	\item Explain how we can improve on that with the full calculation
 \end{itemize}
 \newpage
- 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %New section about the different Hamiltonians
 %%%%%%%%%%%%%%%%%%%%%%%%%
- 
+

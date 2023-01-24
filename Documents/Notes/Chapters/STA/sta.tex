@@ -1,30 +1,29 @@
-\section{STA and Josephson Junction}
 In this section we will outline the calculations that allow STA to be applied in these Josephson Junction settings.
 %Full Hamiltonian of the system
-Starting from \cref{eq:HamiltonianTwoModeFinal} it can be shown that the operators $ \hat{n} $ and $ \hat{ \alpha } $ behave as pseudoangular momentum operators if we set  
+Starting from \cref{eq:HamiltonianTwoModeFinal} it can be shown that the operators $ \hat{n} $ and $ \hat{ \alpha } $ behave as pseudoangular momentum operators if we set
 \begin{equation}
-\label{eq:PseudoAngularMomentumDefinition}
-\hat{J}_z = \frac{\hat{c}_{r}^{\dagger}\hat{c}_{r} - \hat{c}_{l}^{\dagger}\hat{c}_{l}}{2} = \hat{n},\hspace{3em} \hat{J}_x =\frac{\hat{c}_{r}^{\dagger}\hat{c}_{l} - \hat{c}_{l}^{\dagger}\hat{c}_{r}}{2} =  \hat{ \alpha }  ,\hspace{3em}  \hat{J}_y = \frac{\hat{c}_{r}^{\dagger}\hat{c}_{l} - \hat{c}_{l}^{\dagger}\hat{c}_{r}}{2i} 
+	\label{eq:PseudoAngularMomentumDefinition}
+	\hat{J}_z = \frac{\hat{c}_{r}^{\dagger}\hat{c}_{r} - \hat{c}_{l}^{\dagger}\hat{c}_{l}}{2} = \hat{n},\hspace{3em} \hat{J}_x =\frac{\hat{c}_{r}^{\dagger}\hat{c}_{l} - \hat{c}_{l}^{\dagger}\hat{c}_{r}}{2} =  \hat{ \alpha }  ,\hspace{3em}  \hat{J}_y = \frac{\hat{c}_{r}^{\dagger}\hat{c}_{l} - \hat{c}_{l}^{\dagger}\hat{c}_{r}}{2i}
 \end{equation}
-and we obtain the Bose Hubbard Hamiltonian 
+and we obtain the Bose Hubbard Hamiltonian
 \begin{equation}
-\label{eq:HamiltonianJosephsonJunctionSTA}
-H_{BH} =  U \hat{J}_z^2 - 2J\hat{J}_x 
+	\label{eq:HamiltonianJosephsonJunctionSTA}
+	H_{BH} =  U \hat{J}_z^2 - 2J\hat{J}_x
 \end{equation}
 if the value $ U $ and $ J $ are chosen accordingly.
 It can also be shown that the operators defined in \cref{eq:PseudoAngularMomentumDefinition} follow in fact the angular momentum relations.\\
 %Description of the basis states 
 By using the pseudoangular momentum approach, a system of N particles can be described as a single particle with spin $ N/2 $ and the basis set is of the form $ \{\ket{m}\} $ with $ m = -N/2, ..., N/2 $ eigenstates of the $ \hat{J}_{z} $ operator.\\
-The Hamiltonian of the system is then defined via \cref{eq:HamiltonianJosephsonJunctionSTA} and the general state $ \ket{\Psi} $ can be written as 
+The Hamiltonian of the system is then defined via \cref{eq:HamiltonianJosephsonJunctionSTA} and the general state $ \ket{\Psi} $ can be written as
 \begin{equation}
-\label{eq:GeneralStateAngularMomentum}
-\ket{\Psi} = \sum_{m = -N/2}^{N/2} c_{m}\ket{m}.
+	\label{eq:GeneralStateAngularMomentum}
+	\ket{\Psi} = \sum_{m = -N/2}^{N/2} c_{m}\ket{m}.
 \end{equation}
 % Schr{\"o}dinger equation 
-The Schr{\"o}dinger equation is then written as 
+The Schr{\"o}dinger equation is then written as
 \begin{equation}
-\label{eq:SchrodingerEquationBoseHubbardAngular}
-	i\partial_t \ket{\Psi} = H_{BH}\ket{\Psi} 
+	\label{eq:SchrodingerEquationBoseHubbardAngular}
+	i\partial_t \ket{\Psi} = H_{BH}\ket{\Psi}
 \end{equation}
 If we want to apply STA to \cref{eq:SchrodingerEquationBoseHubbardAngular}, we need to perform some approximations.
 In the following I will try to perform the same approximation they used in \cite{BoseEinsteinCJulia2010} in order to move from the discrete to the continuous variable.
@@ -34,16 +33,16 @@ My plan is to obtain the idealised version of the Hamiltonian they used in \cite
 %First approximation 
 The first thing to do is to define a new dimensionless Hamiltonian $ H_{S} = \frac{H_{BH}}{NJ} $ that reads
 \begin{equation}
-\label{eq:DimensionlessBoseHubbardHamiltonian}
-	H_{S} = -\frac{2}{N}\hat{J}_x +\frac{U}{NJ}\hat{J}_z ^{2} = -\frac{2}{N} \hat{J}+ \frac{2\Lambda}{N^2}\hat{J}_z^2 
+	\label{eq:DimensionlessBoseHubbardHamiltonian}
+	H_{S} = -\frac{2}{N}\hat{J}_x +\frac{U}{NJ}\hat{J}_z ^{2} = -\frac{2}{N} \hat{J}+ \frac{2\Lambda}{N^2}\hat{J}_z^2
 \end{equation}
-where we defined $ \Lambda = NU/(2J) $. 
+where we defined $ \Lambda = NU/(2J) $.
 The corresponding Schr{\"o}dinger equation then becomes $ \frac{i}{NJ}\partial_t\ket{\Psi} = H_{S}\ket{\Psi} $ and if we introduce the dimensionless time $ \tau = t/J $, it simplifies even more, becoming
 \begin{equation}
-\label{eq:SchrodingerEquationDimensionless}
+	\label{eq:SchrodingerEquationDimensionless}
 	\frac{i}{N}\partial_{\tau} \ket{\Psi} =
-	\left( 
-		-\frac{2}{N} \hat{J}_{x}+ \frac{2\Lambda}{N^2}\hat{J}_z^2 
+	\left(
+	-\frac{2}{N} \hat{J}_{x}+ \frac{2\Lambda}{N^2}\hat{J}_z^2
 	\right)\ket{\Psi}
 \end{equation}
 
@@ -56,80 +55,80 @@ In particular, we can see we are only interested in those states $ \ket{k} $ suc
 We are interested in such states as they are the ones which the projection on $ \bra{m} $ is non zero and we can see that for a fixed $ m $   only the states $ \ket{m \pm 1} $ meet the requirements.
 Take for example $ \ket{m +1} $ then
 \begin{equation}
-\label{eq:LadderOperatorsProjected}
-\braket{m|\hat{J}_{-} |m + 1 } = \sqrt{
-	\left(\frac{N}{2} + m +1\right)
-	\left(\frac{N}{2} -m\right)
-} 
+	\label{eq:LadderOperatorsProjected}
+	\braket{m|\hat{J}_{-} |m + 1 } = \sqrt{
+		\left(\frac{N}{2} + m +1\right)
+		\left(\frac{N}{2} -m\right)
+	}
 	\braket{m|m}
-	= 
+	=
 	\beta_{m}
 \end{equation}
 where we set $ \beta_{m} =\sqrt {    \left(\frac{N}{2} + m +1\right)  \left(\frac{N}{2} -m\right) }$.\\
 % Discrete formulation for the Schr{\"o}dinger equation
 By putting everything back together, we obtain
 \begin{align}
-	&	\braket{m|\frac{i}{N}\partial_t|\Psi} = \braket{m|\tilde{H}_{S}|\Psi}\label{eq:SchrodingerEquationCoefficientsDiscrete1}\\
-	& 	\frac{i}{N}\frac{d}{dt}c_{m}(t) =  -\frac{2}{N}\left( b_{m}c_{m+1}(t) + b_{m-1}c_{m-1}(t) \right) + \frac{2\Lambda}{N^2}m^2c_{m}(t)\label{eq:SchrodingerEquationCoefficientsDiscrete2}
+	 & \braket{m|\frac{i}{N}\partial_t|\Psi} = \braket{m|\tilde{H}_{S}|\Psi}\label{eq:SchrodingerEquationCoefficientsDiscrete1}                                                               \\
+	 & \frac{i}{N}\frac{d}{dt}c_{m}(t) =  -\frac{2}{N}\left( b_{m}c_{m+1}(t) + b_{m-1}c_{m-1}(t) \right) + \frac{2\Lambda}{N^2}m^2c_{m}(t)\label{eq:SchrodingerEquationCoefficientsDiscrete2}
 \end{align}
-where in this case we set $ b_{m} = \beta_m/N $. 
+where in this case we set $ b_{m} = \beta_m/N $.
 The result in \cref{eq:SchrodingerEquationCoefficientsDiscrete2} gives us a Schr{\"o}dinger equation for the coefficients $ c_{m} $ which is discrete. We now need to move from a discrete formualtion to a continuous one and we are going to do that by performing a change of variable.
 If we look at the definition of $ b_{m} $, we see that we can collect the $ N/2 $ term as shown in the following
 \begin{equation}
-\label{eq:CoefficientCollectingN}
- b_m =\frac{1}{N}\sqrt{
- 		\left(\frac{N}{2} + m +1\right)  \left(\frac{N}{2} -m\right) 
+	\label{eq:CoefficientCollectingN}
+	b_m =\frac{1}{N}\sqrt{
+		\left(\frac{N}{2} + m +1\right)  \left(\frac{N}{2} -m\right)
 	}  =
- 	\frac{1}{N}\sqrt{
-		\frac{N^2}{4}    
+	\frac{1}{N}\sqrt{
+		\frac{N^2}{4}
 		\left(1 + \frac{m}{N/2} +\frac{1}{N/2}\right)
-		\left(1 -\frac{m}{N/2}\right) 
+		\left(1 -\frac{m}{N/2}\right)
 	}
 \end{equation}
 and if we define the continuous variable $ z = \frac{m}{N/2} $  and $ h = \frac{1}{N/2} $, we obtain
 \begin{equation}
-\label{eq:CoefficientContinuous}
-\frac{1}{2}
-	\sqrt{ 
+	\label{eq:CoefficientContinuous}
+	\frac{1}{2}
+	\sqrt{
 		\left(1 + z +h\right)
-		\left(1 -z\right) 
+		\left(1 -z\right)
 	}
 	:=  b_{h}(z)
 \end{equation}
 where we can see that $ b_{h}(z-h) = \sqrt{ \left(1 + z \right)\left(1 -z -h\right) } $ which can be mapped back to $ b_{m-1} $.
 Additionaly, if we define $ \sqrt{N/2}  c_{m}= \psi(z) $ we see that $ \psi(z \pm h) $ can be mapped to $ c_{m\pm 1} $.
-Finally, by recalling that for a function $f(x)$ we have $ f(x \pm \epsilon) = e^{\pm \epsilon\partial_{x}}f(x) $ we can rewrite \cref{eq:SchrodingerEquationCoefficientsDiscrete2} as 
+Finally, by recalling that for a function $f(x)$ we have $ f(x \pm \epsilon) = e^{\pm \epsilon\partial_{x}}f(x) $ we can rewrite \cref{eq:SchrodingerEquationCoefficientsDiscrete2} as
 \begin{equation}
-\label{eq:SchrodingerEquationCoefficientsContinuous}
-	\cancel{\frac{1}{2}}ih\partial_t\psi(z) = 
+	\label{eq:SchrodingerEquationCoefficientsContinuous}
+	\cancel{\frac{1}{2}}ih\partial_t\psi(z) =
 	-\cancel{\frac{1}{2}}[ e^{-i\hat{p}} b_{h}(z) + b_{h}(z)e^{i\hat{p}} ]\psi(z) +
 	\cancel{\frac{1}{2}}\Lambda z^2 \psi(z)
 \end{equation}
 where $ \hat{p} = -ih\partial_z $.
 If we want to mimic the calculations made in \cite{FastGenerationJulia2012} we need to perform a Taylor expansion of both the $ e^{\pm i\hat{p}} $ part and the $ b_{h}(z) $ function up to the second order in $ h $ such as
 \begin{align}
-&	e^{-i\hat{p}}  \simeq 1 \pm h \partial_{z} - \frac{1}{2}h^2\partial^2_{z} \label{eq:TaylorExpansionExp }\\
-&	 b_{h}(z) \simeq  1 + h \partial_{h}b_{h}(z)|_{h = 0} + \frac{1}{2}h^2\partial_h^2b_{h}(z)|_{h = 0} \label{eq:TaylorExpansionB }.
+	 & e^{-i\hat{p}}  \simeq 1 \pm h \partial_{z} - \frac{1}{2}h^2\partial^2_{z} \label{eq:TaylorExpansionExp }                         \\
+	 & b_{h}(z) \simeq  1 + h \partial_{h}b_{h}(z)|_{h = 0} + \frac{1}{2}h^2\partial_h^2b_{h}(z)|_{h = 0} \label{eq:TaylorExpansionB }.
 \end{align}
 By carrying out the calculations,we obtain the following Schr{\"o}dinger equation
 \begin{equation}
-\label{eq:TaylorExpansionHamiltonian}
-	ih\partial_t\psi(z) = 
+	\label{eq:TaylorExpansionHamiltonian}
+	ih\partial_t\psi(z) =
 	-h^2\partial_z\left(b_{0}(z)\partial_z\psi(z) \right)+
 	\left[ 	\Lambda z^2 - 2b_{0}(z) \right] \psi(z)
 \end{equation}
 where $ b_{0}(z) = \sqrt{1-z^2}  $.
 We can retrieve equation (7) in \cite{FastGenerationJulia2012} by setting a new $ \tilde{h} \equiv h/2 = 1/N $.
 In the following we will stick to definition of $ h = 1/N/2 $ instead of using the other definition.\\
-The last approximation we need to perform in order to obtain an oscillator-like Schr{\"o}dinger equation for this system is given by neglecting the $ z $ dependence of the effective mass term and expanding the $ \sqrt{1 - z^2}  $ term into $ 1 - z^2/2 $ in the external potential term. We can finally write down the Schr{\"o}dinger equation 
-\begin{equation} 
-\label{eq:SchrodingerEquationHarmonicLike}
+The last approximation we need to perform in order to obtain an oscillator-like Schr{\"o}dinger equation for this system is given by neglecting the $ z $ dependence of the effective mass term and expanding the $ \sqrt{1 - z^2}  $ term into $ 1 - z^2/2 $ in the external potential term. We can finally write down the Schr{\"o}dinger equation
+\begin{equation}
+	\label{eq:SchrodingerEquationHarmonicLike}
 	ih\partial_t\psi(z) = H_{ho}\psi(z)
 \end{equation}
-where the Hamiltonian of the system is given by 
+where the Hamiltonian of the system is given by
 \begin{equation}
-\label{eq:HamiltonianJosephsonJunctionHarmonic}
-	H_{ho} = -h^2\partial_z^2 + (1 + \Lambda)z^2  = 
-	 -h^2\partial_z^2 + \frac{1}{4}\omega^2 z^2  
+	\label{eq:HamiltonianJosephsonJunctionHarmonic}
+	H_{ho} = -h^2\partial_z^2 + (1 + \Lambda)z^2  =
+	-h^2\partial_z^2 + \frac{1}{4}\omega^2 z^2
 \end{equation}
 if we set $ \omega^2 \equiv 4(1+\Lambda) $.
