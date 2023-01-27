@@ -1,0 +1,45 @@
+In this section we will outline the calculations that allow STA to be applied in these Josephson Junction settings.
+%Full Hamiltonian of the system
+Starting from \cref{eq:HamiltonianTwoModeFinal} it can be shown that the operators $ \hat{n} $ and $ \hat{ \alpha } $ behave as pseudoangular momentum operators if we set
+\begin{equation}
+	\label{eq:PseudoAngularMomentumDefinition}
+	\hat{J}_z = \frac{\hat{c}_{r}^{\dagger}\hat{c}_{r} - \hat{c}_{l}^{\dagger}\hat{c}_{l}}{2} = \hat{n},\hspace{3em} \hat{J}_x =\frac{\hat{c}_{r}^{\dagger}\hat{c}_{l} - \hat{c}_{l}^{\dagger}\hat{c}_{r}}{2} =  \hat{ \alpha }  ,\hspace{3em}  \hat{J}_y = \frac{\hat{c}_{r}^{\dagger}\hat{c}_{l} - \hat{c}_{l}^{\dagger}\hat{c}_{r}}{2i}
+\end{equation}
+and we obtain the Bose Hubbard Hamiltonian
+\begin{equation}
+	\label{eq:HamiltonianJosephsonJunctionSTA}
+	H_{BH} =  U \hat{J}_z^2 - 2J\hat{J}_x
+\end{equation}
+if the value $ U $ and $ J $ are chosen accordingly.
+It can also be shown that the operators defined in \cref{eq:PseudoAngularMomentumDefinition} follow in fact the angular momentum relations.\\
+%Description of the basis states 
+By using the pseudoangular momentum approach, a system of N particles can be described as a single particle with spin $ N/2 $ and the basis set is of the form $ \{\ket{m}\} $ with $ m = -N/2, ..., N/2 $ eigenstates of the $ \hat{J}_{z} $ operator.\\
+The Hamiltonian of the system is then defined via \cref{eq:HamiltonianJosephsonJunctionSTA} and the general state $ \ket{\Psi} $ can be written as
+\begin{equation}
+	\label{eq:GeneralStateAngularMomentum}
+	\ket{\Psi} = \sum_{m = -N/2}^{N/2} c_{m}\ket{m}.
+\end{equation}
+% Schr{\"o}dinger equation 
+The Schr{\"o}dinger equation is then written as
+\begin{equation}
+	\label{eq:SchrodingerEquationBoseHubbardAngular}
+	i\partial_t \ket{\Psi} = H_{BH}\ket{\Psi}
+\end{equation}
+If we want to apply STA to \cref{eq:SchrodingerEquationBoseHubbardAngular}, we need to perform some approximations.
+In the following I will try to perform the same approximation they used in \cite{BoseEinsteinCJulia2010} in order to move from the discrete to the continuous variable.
+I will follow the calculations I found in \cite{BoseEinsteinCJulia2010} as they give a better idea on what is the Hamiltonian of the system and what are the steps and approximations we need to make in order to obtain an idealised version of the Hamiltonian where we can apply STA.
+My plan is to obtain the idealised version of the Hamiltonian they used in \cite{FastGenerationJulia2012}.
+The first thing to do is to define a new dimensionless Hamiltonian $ H_{S} = \frac{H_{BH}}{NJ} $ that reads
+\begin{equation}
+	\label{eq:DimensionlessBoseHubbardHamiltonian}
+	H_{S} = -\frac{2}{N}\hat{J}_x +\frac{U}{NJ}\hat{J}_z ^{2} = -\frac{2}{N} \hat{J}+ \frac{2\Lambda}{N^2}\hat{J}_z^2
+\end{equation}
+where we defined $ \Lambda = NU/(2J) $.
+The corresponding Schr{\"o}dinger equation then becomes $ \frac{i}{NJ}\partial_t\ket{\Psi} = H_{S}\ket{\Psi} $ and if we introduce the dimensionless time $ \tau = t/J $, it simplifies even more, becoming
+\begin{equation}
+	\label{eq:SchrodingerEquationDimensionless}
+	\frac{i}{N}\partial_{\tau} \ket{\Psi} =
+	\left(
+	-\frac{2}{N} \hat{J}_{x}+ \frac{2\Lambda}{N^2}\hat{J}_z^2
+	\right)\ket{\Psi}
+\end{equation}

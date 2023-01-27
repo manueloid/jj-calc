@@ -1,9 +1,9 @@
-% Layout of the chapter is the following 
+Layout of the chapter is the following
 % First I introduce the stuff that I need to calculate the corrections.
 % i.e. H0, Hs as  well as the STA wavefunctions of the harmonic oscillator and how they are written in terms of the JJ
 \section{eSTA Calculations}
 
-\subsection{Introduction} % Introduction and definitions of the quantities in place 
+\subsection{Introduction} % Introduction and definitions of the STA wavefunctions  
 \input{introduction.tex}
 
 \subsection{Calculation of the corrections} % Definition of the variables Gn and Kn

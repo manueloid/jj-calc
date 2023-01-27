@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex notes"] 1674578656 "notes.aux" "notes.bbl" "notes" 1674578658 0
+["bibtex latex_build/notes"] 1674656507 "latex_build/notes.aux" "latex_build/notes.bbl" "latex_build/notes" 1674656508 0
   "./bibliography.bib" 1673019542 2218 5c6c0734384130fc56f755fe5fb6dd55 ""
   "/home/manuel/.local/share/texlive/2022/texmf-dist/bibtex/bst/base/alpha.bst" 1292289607 23907 a5f93555796fb564b924339521f10a7c ""
-  "notes.aux" 1674576315 6087 372f10c56fb21a32c1d6fa107e890d66 ""
+  "latex_build/notes.aux" 1674656508 6255 34b9f50e4bea35a4ecf88bc95f0361cc "pdflatex"
   (generated)
-  "notes.bbl"
-  "notes.blg"
+  "latex_build/notes.bbl"
+  "latex_build/notes.blg"
   (rewritten before read)
-["pdflatex"] 1674578657 "notes.tex" "latex_build/notes.pdf" "notes" 1674578658 0
+["pdflatex"] 1674656507 "notes.tex" "latex_build/notes.pdf" "notes" 1674656508 0
   "/home/manuel/.local/share/texlive/2022/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/home/manuel/.local/share/texlive/2022/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/home/manuel/.local/share/texlive/2022/texmf-dist/fonts/tfm/adobe/palatino/pplb7t.tfm" 1136768653 1616 371d1ee60c04b008c8fd760060cd34f1 ""
@@ -151,14 +151,16 @@
   "/home/manuel/.local/share/texlive/2022/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1674573047 4545765 60e628f4c497fb7ec54ea0b02db7ce72 ""
   "/home/manuel/.local/share/texlive/2022/texmf-var/web2c/pdftex/pdflatex.fmt" 1674573063 6475583 324c4646d9755cde8676fbae0bab68e0 ""
   "/home/manuel/.local/share/texlive/2022/texmf.cnf" 1674573042 455 5b996dcaa0eb4ef14a83b026bc0a008c ""
-  "Chapters/Introduction//./bosehubbardintro.tex" 1674574815 4788 9898fead56fcda0a828eb3e08483afac ""
-  "Chapters/Introduction/main.tex" 1674574833 31 42f1d97a983c90e82559a566b66596a4 ""
-  "Chapters/STA//sta.tex" 1674576713 8471 d0130d2bc445ac6865a6e00bfd7636d3 ""
-  "Chapters/STA/main.tex" 1674576313 162 0f53efb1c166de45b1b76d5f11e84ce7 ""
-  "latex_build/notes.aux" 1674578658 6151 5abe855d5d83fca857f0422758d5bf33 "pdflatex"
-  "latex_build/notes.out" 1674578658 949 691d00c03d14522fcc20aaeaa9dc901e "pdflatex"
-  "notes.bbl" 1674578656 796 967db176c9af33373badb1ce5c473f66 "bibtex notes"
-  "notes.tex" 1674575980 877 56a1190fa67e4c0c0c609a956ca43466 ""
+  "Chapters/Approximation//angularmomentum.tex" 1674655024 3253 845ec799e4dfe0fba65da2dd19ac8772 ""
+  "Chapters/Approximation//continous.tex" 1674656502 3427 0726c5737516d9c403470a125b972db1 ""
+  "Chapters/Approximation//harmonicosc.tex" 1674656475 1769 e441960e3c11f8370cae603259935aed ""
+  "Chapters/Approximation/chapter.tex" 1674656495 267 472692a3deb608e996f6512f5ef1da29 ""
+  "Chapters/Introduction//./bosehubbardintro.tex" 1674654170 4688 38467ba32b7a4491b83700390d21eaf2 ""
+  "Chapters/Introduction/chapter.tex" 1674574833 31 42f1d97a983c90e82559a566b66596a4 ""
+  "latex_build/notes.aux" 1674656508 6255 34b9f50e4bea35a4ecf88bc95f0361cc "pdflatex"
+  "latex_build/notes.bbl" 1674656507 796 967db176c9af33373badb1ce5c473f66 "bibtex latex_build/notes"
+  "latex_build/notes.out" 1674656508 1178 c5f54eec9f83493889649df69b4a9da0 "pdflatex"
+  "notes.tex" 1674656274 902 e1e4127b65eccff92a71770440168921 ""
   (generated)
   "latex_build/notes.aux"
   "latex_build/notes.log"

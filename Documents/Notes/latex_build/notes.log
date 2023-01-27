@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.1.24)  24 JAN 2023 16:44
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.1.24)  25 JAN 2023 14:21
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -511,7 +511,7 @@ File: untxsym.fd 2015/03/20 Fontinst v1.933 font definitions for U/ntxsym.
 LaTeX Font Info:    Trying to load font information for U+ntxsyc on input line 25.
  (/home/manuel/.local/share/texlive/2022/texmf-dist/tex/latex/newtx/untxsyc.fd
 File: untxsyc.fd 2012/04/12 Fontinst v1.933 font definitions for U/ntxsyc.
-) (./Chapters/Introduction/main.tex (./Chapters/Introduction//./bosehubbardintro.tex
+) (./Chapters/Introduction/chapter.tex (./Chapters/Introduction//./bosehubbardintro.tex
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
 (Font)              scaled to size 10.42007pt on input line 3.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
@@ -529,23 +529,28 @@ LaTeX Font Info:    Trying to load font information for TS1+ppl on input line 41
 File: ts1ppl.fd 2001/06/04 font definitions for TS1/ppl.
 ) [1
 
-{/home/manuel/.local/share/texlive/2022/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2] [3])) (./Chapters/STA/main.tex (./Chapters/STA//sta.tex [4])) (./notes.bbl [5]) [6] (latex_build/notes.aux)
+{/home/manuel/.local/share/texlive/2022/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2] [3])) (./Chapters/Approximation/chapter.tex (./Chapters/Approximation//angularmomentum.tex) (./Chapters/Approximation//continous.tex
+Underfull \hbox (badness 10000) in paragraph at lines 18--20
+
+ []
+
+[4]) (./Chapters/Approximation//harmonicosc.tex [5])) (latex_build/notes.bbl) [6] (latex_build/notes.aux)
 Package rerunfilecheck Info: File `notes.out' has not changed.
-(rerunfilecheck)             Checksum: 691D00C03D14522FCC20AAEAA9DC901E;949.
+(rerunfilecheck)             Checksum: C5F54EEC9F83493889649DF69B4A9DA0;1178.
  ) 
 Here is how much of TeX's memory you used:
- 16214 strings out of 478051
- 296630 string characters out of 5839265
+ 16227 strings out of 478051
+ 297318 string characters out of 5839265
  1874330 words of memory out of 5000000
- 36036 multiletter control sequences out of 15000+600000
+ 36043 multiletter control sequences out of 15000+600000
  553269 words of font info for 133 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 75i,11n,76p,519b,531s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,11n,76p,519b,494s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {/home/manuel/.local/share/texlive/2022/texmf-dist/fonts/enc/dvips/base/8r.enc}</home/manuel/.local/share/texlive/2022/texmf-dist/fonts/type1/public/newtx/NewTXMI.pfb></home/manuel/.local/share/texlive/2022/texmf-dist/fonts/type1/public/newtx/NewTXMI5.pfb></home/manuel/.local/share/texlive/2022/texmf-dist/fonts/type1/public/newtx/NewTXMI7.pfb></home/manuel/.local/share/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/latxfont/line10.pfb></home/manuel/.local/share/texlive/2022/texmf-dist/fonts/type1/public/newtx/txexs.pfb></home/manuel/.local/share/texlive/2022/texmf-dist/fonts/type1/public/newtx/txmiaX.pfb></home/manuel/.local/share/texlive/2022/texmf-dist/fonts/type1/public/newtx/txsys.pfb></home/manuel/.local/share/texlive/2022/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></home/manuel/.local/share/texlive/2022/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></home/manuel/.local/share/texlive/2022/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on latex_build/notes.pdf (6 pages, 127270 bytes).
+Output written on latex_build/notes.pdf (6 pages, 127807 bytes).
 PDF statistics:
- 160 PDF objects out of 1000 (max. 8388607)
- 130 compressed objects within 2 object streams
- 42 named destinations out of 1000 (max. 500000)
- 33 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 165 PDF objects out of 1000 (max. 8388607)
+ 135 compressed objects within 2 object streams
+ 43 named destinations out of 1000 (max. 500000)
+ 41 words of extra memory for PDF output out of 10000 (max. 10000000)
 

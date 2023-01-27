@@ -1,0 +1,60 @@
+%Applying angular momentum operators  
+We now want to find a differential equation for the coefficients $ c_{m} $ of \cref{eq:GeneralStateAngularMomentum}.
+In order to do that, we are going to project \cref{eq:SchrodingerEquationDimensionless} onto $ \bra{m} $.
+Moreover, we are going to use the fact that $ \hat{J}_x = \frac{1}{2}\left(\hat{J}_{+} + \hat{J}_{-}\right) $.
+If we are to project onto $ \bra{m} $ we should remember how the ladder operators $ \hat{J}_{\pm} $ act.
+In particular, we can see we are only interested in those states $ \ket{k} $ such that $ \hat{J}_{\pm}\ket{k} = \beta_{k} \ket{m} $ with $ \beta_{k} $ some coefficient depending on the quantum number $ k $.
+We are interested in such states as they are the ones which the projection on $ \bra{m} $ is non zero and we can see that for a fixed $ m $   only the states $ \ket{m \pm 1} $ meet the requirements.
+Take for example $ \ket{m +1} $ then
+\begin{equation}
+	\label{eq:LadderOperatorsProjected}
+	\braket{m|\hat{J}_{-} |m + 1 } = \sqrt{
+		\left(\frac{N}{2} + m +1\right)
+		\left(\frac{N}{2} -m\right)
+	}
+	\braket{m|m}
+	=
+	\beta_{m}
+\end{equation}
+where we set $ \beta_{m} =\sqrt {    \left(\frac{N}{2} + m +1\right)  \left(\frac{N}{2} -m\right) }$.\\
+
+% Discrete formulation for the Schr{\"o}dinger equation
+By putting everything back together, we obtain
+\begin{align}
+	 & \braket{m|\frac{i}{N}\partial_t|\Psi} = \braket{m|\tilde{H}_{S}|\Psi}\label{eq:SchrodingerEquationCoefficientsDiscrete1}                                                               \\
+	 & \frac{i}{N}\frac{d}{dt}c_{m}(t) =  -\frac{2}{N}\left( b_{m}c_{m+1}(t) + b_{m-1}c_{m-1}(t) \right) + \frac{2\Lambda}{N^2}m^2c_{m}(t)\label{eq:SchrodingerEquationCoefficientsDiscrete2}
+\end{align}
+where in this case we set $ b_{m} = \beta_m/N $.
+The result in \cref{eq:SchrodingerEquationCoefficientsDiscrete2} gives us a Schr{\"o}dinger equation for the coefficients $ c_{m} $ which is discrete. We now need to move from a discrete formualtion to a continuous one and we are going to do that by performing a change of variable.
+If we look at the definition of $ b_{m} $, we see that we can collect the $ N/2 $ term as shown in the following
+\begin{equation}
+	\label{eq:CoefficientCollectingN}
+	b_m =\frac{1}{N}\sqrt{
+		\left(\frac{N}{2} + m +1\right)  \left(\frac{N}{2} -m\right)
+	}  =
+	\frac{1}{N}\sqrt{
+		\frac{N^2}{4}
+		\left(1 + \frac{m}{N/2} +\frac{1}{N/2}\right)
+		\left(1 -\frac{m}{N/2}\right)
+	}
+\end{equation}
+and if we define the continuous variable $ z = \frac{m}{N/2} $  and $ h = \frac{1}{N/2} $, we obtain
+\begin{equation}
+	\label{eq:CoefficientContinuous}
+	\frac{1}{2}
+	\sqrt{
+		\left(1 + z +h\right)
+		\left(1 -z\right)
+	}
+	:=  b_{h}(z)
+\end{equation}
+where we can see that $ b_{h}(z-h) = \sqrt{ \left(1 + z \right)\left(1 -z -h\right) } $ which can be mapped back to $ b_{m-1} $.
+Additionaly, if we define $ \sqrt{N/2}  c_{m}= \psi(z) $ we see that $ \psi(z \pm h) $ can be mapped to $ c_{m\pm 1} $.
+Finally, by recalling that for a function $f(x)$ we have $ f(x \pm \epsilon) = e^{\pm \epsilon\partial_{x}}f(x) $ we can rewrite \cref{eq:SchrodingerEquationCoefficientsDiscrete2} as
+\begin{equation}
+	\label{eq:SchrodingerEquationCoefficientsContinuous}
+	\cancel{\frac{1}{2}}ih\partial_t\psi(z) =
+	-\cancel{\frac{1}{2}}[ e^{-i\hat{p}} b_{h}(z) + b_{h}(z)e^{i\hat{p}} ]\psi(z) +
+	\cancel{\frac{1}{2}}\Lambda z^2 \psi(z)
+\end{equation}
+where $ \hat{p} = -ih\partial_z $.
