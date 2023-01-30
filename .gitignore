@@ -1,3 +1,4 @@
 # Files I don't want to track
 /Documents/Notes/latex_build/*
+/indent.log
 !/Documents/Notes/latex_build/notes.pdf
