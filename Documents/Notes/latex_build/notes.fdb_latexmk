@@ -1,12 +1,12 @@
 # Fdb version 3
-["bibtex latex_build/notes"] 1675075761 "latex_build/notes.aux" "latex_build/notes.bbl" "latex_build/notes" 1675080749
+["bibtex latex_build/notes"] 1675075761 "latex_build/notes.aux" "latex_build/notes.bbl" "latex_build/notes" 1675081552
   "/usr/share/texlive/texmf-dist/bibtex/bst/base/alpha.bst" 1292289607 23907 a5f93555796fb564b924339521f10a7c ""
   "bibliography.bib" 1675075661 2218 5c6c0734384130fc56f755fe5fb6dd55 ""
   "latex_build/notes.aux" 1675075761 6363 608e8280d9b44249267b8e1e4399dfed "pdflatex"
   (generated)
   "latex_build/notes.blg"
   "latex_build/notes.bbl"
-["pdflatex"] 1675075761 "notes.tex" "latex_build/notes.pdf" "notes" 1675080749
+["pdflatex"] 1675075761 "notes.tex" "latex_build/notes.pdf" "notes" 1675081552
   "/etc/texmf/web2c/texmf.cnf" 1631795551 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -157,6 +157,6 @@
   "notes.tex" 1675075661 868 c2e3f38ce82afeab0468528e24bb85f3 ""
   (generated)
   "latex_build/notes.aux"
+  "latex_build/notes.log"
   "latex_build/notes.out"
   "latex_build/notes.pdf"
-  "latex_build/notes.log"
