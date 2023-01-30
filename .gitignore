@@ -1,0 +1,3 @@
+# Files I don't want to track
+./Documents/Notes/latex_build/*
+!./Documents/Notes/latex_build/notes.pdf

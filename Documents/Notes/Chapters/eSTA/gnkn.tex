@@ -1,4 +1,18 @@
 The wavefunctions \cref{eq:STAWavefunctionBoseHubbard} and the two Hamiltonians are the starting points to evaluate the eSTA corrections.
 These corrections are calculated by making approximation about the value of the fidelity landscape and we need to define some variables conveniently.
-We will start by defining the variables $G_n$
+We will start by defining the variables $G_n$ and $ K_{n} $ that will later be used to calculate the corrections.
+\subsection*{$ G_{n} $ }
+If we call $ \Chi_{n} $ the $ n^{th} $ STA wavefunctions, we can evaluate $ G_n $ with the following formula
+\begin{equation}
+	\int_{0}^{t_{f}} dt \braket{\chi_{m}|\Delta H |\chi_{0}}
+	\label{eq:Gn}
+\end{equation}
+where $ \Delta H $ is the difference between the original Hamiltonian $ H_{0} $ and the approximated one $ H_{ho} $.
+\subsection*{$ K_{n} $ }
+Similarly we can calculate the numbers $ K_{n} $ with
+\begin{equation}
+	\int_{0}^{t_{f}} dt \braket{\chi_{m}|\vec{\Nabla} H|\chi_{0}}
+	\label{eq:Gn}
+\end{equation}
+where $ \vec{\Nabla} H$ is the gradient of the Hamiltonian with respect to the control parameter.
 
