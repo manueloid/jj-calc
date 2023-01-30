@@ -1,6 +1,13 @@
 \newcommand{\etalchar}[1]{$^{#1}$}
 \begin{thebibliography}{JDTM{\etalchar{+}}12}
 
+\bibitem[CRS{\etalchar{+}}10]{FastOptimalFrChen2010}
+Xi~Chen, A.~Ruschhaupt, S.~Schmidt, A.~del Campo, D.~Guery-Odelin, and J.~G.
+  Muga.
+\newblock Fast optimal frictionless atom cooling in harmonic traps: Shortcut to
+  adiabaticity.
+\newblock {\em Physical Review Letters}, 104, 2 2010.
+
 \bibitem[GO07]{ABosonicJosepGati2007}
 R~Gati and M~K Oberthaler.
 \newblock A bosonic josephson junction.

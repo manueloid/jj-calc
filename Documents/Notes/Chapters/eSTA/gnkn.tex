@@ -1,18 +1,52 @@
 The wavefunctions \cref{eq:STAWavefunctionBoseHubbard} and the two Hamiltonians are the starting points to evaluate the eSTA corrections.
 These corrections are calculated by making approximation about the value of the fidelity landscape and we need to define some variables conveniently.
 We will start by defining the variables $G_n$ and $ K_{n} $ that will later be used to calculate the corrections.
-\subsection*{$ G_{n} $ }
-If we call $ \Chi_{n} $ the $ n^{th} $ STA wavefunctions, we can evaluate $ G_n $ with the following formula
+If we call $ \chi_{n} $ the nth STA wavefunctions, we can evaluate $ G_n $ with the following formula
 \begin{equation}
-	\int_{0}^{t_{f}} dt \braket{\chi_{m}|\Delta H |\chi_{0}}
+	G_{n} = \int_{0}^{t_{f}} dt \braket{\chi_{m}|\Delta H |\chi_{0}}
 	\label{eq:Gn}
 \end{equation}
 where $ \Delta H $ is the difference between the original Hamiltonian $ H_{0} $ and the approximated one $ H_{ho} $.
-\subsection*{$ K_{n} $ }
 Similarly we can calculate the numbers $ K_{n} $ with
 \begin{equation}
-	\int_{0}^{t_{f}} dt \braket{\chi_{m}|\vec{\Nabla} H|\chi_{0}}
-	\label{eq:Gn}
+	K_{n} = \int_{0}^{t_{f}} dt \braket{\chi_{m}|\vec{\nabla} H|\chi_{0}}
+	\label{eq:Kn}
 \end{equation}
-where $ \vec{\Nabla} H$ is the gradient of the Hamiltonian with respect to the control parameter.
-
+where $ \vec{\nabla} H$ is the gradient of the Hamiltonian with respect to the control parameter.
+To summarize and to put everything in perspective, we have
+\begin{itemize}
+	\item  $ G_{n} $ as a complex number
+	\item  $ K_{n} $ is a vector of complex numbers.
+\end{itemize}
+In the first formulation of the eSTA protocol, there was an assumptions by virtue of which the optimal fidelity of the protocol has been set to 1.
+In this case, the corrections were calculated via:
+\begin{equation}
+	\label{eq:eSTAcorrections}
+	-\frac
+	{
+	\left( \sum_{n=1}^{\mathcal{N}} |G_{n}|^2 \right)
+	\left[ \sum_{n=1}^{\mathcal{N}}\text{Re}(G_{n}^{*}\vec{K}_{n})\right]
+	}
+	{\left|\sum_{n=1}^{\mathcal{N}}\text{Re}(G_{n}^{*}\vec{K}_{n})\right|^2 }
+\end{equation}
+where $ \mathcal{N} $ is the number of STA wavefunctions we take into account.
+The assumption of the fidelity being 1 has been deemed to optimistic, and recently a new formalism has been proposed.
+In this case, the only assumption is that exists a point where the fidelity hits a local maximum.
+If we follow this prescription, the corrections can be calculated via
+\begin{equation}
+	\frac
+	{\vec{v}\norm{v}^{2}}
+	{\vec{v}^{T}\mathrm{H}\vec{v}}
+	\label{eq:eSTAcorrectionsHessian}
+\end{equation}
+where
+\begin{equation}
+	\vec{v} = \sum_{n=1}^{\mathcal{N}}\text{Re}(G_{n}^{*}\vec{K}_{n})
+	\label{eq:FidelityVector}
+\end{equation}
+and $ \mathrm{H} $ is the Hessian matrix approximation given by
+\begin{equation}
+	\mathrm{H}_{l,k} = \sum_{n = 1}^{\mathrm{N}}\left[G_{n}(W_{n})_{l,k} - \left(  \vec{K}^{*}_{n} \right)_{k}\left(  \vec{K}_{n} \right)_{l}\right]
+	\label{eq:HessianMatrix}
+\end{equation}
+where we $ W_{n} $ is a matrix evaluated by taking the second derivative with respect of the control parameter.
