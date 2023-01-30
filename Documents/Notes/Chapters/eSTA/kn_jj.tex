@@ -1,0 +1,26 @@
+The quantity $ \vec{ K }_{n} $ can be evaluated using the following formula of \cref{eq:Kn} where $ \nabla H_{N}(\vec{ \lambda }_{0}, t)$ is the gradient of the Hamiltonian of the system with respect to the control parameters.\\
+%Adding polynomial
+The idea here is to start with the control parameter $ \Lambda $ that works for the STA protocol and add another polynomial $ P_{\vec{\lambda}}(t) $ that would take some values $ \vec{\lambda}  = (\lambda_{1},..., \lambda_{n})$ in the interval for some $ t \in [t_1, t_{n}] $ with $ \lambda_{1} = \lambda_{n} = 0 $, and $ t_{1}  = t_0 , t_{n} = t_{f} $.
+We can consider values $ (\lambda_{1},..., \lambda_n) $ as variables and then define a new $ \tilde{\Lambda}(t) = \Lambda(t) +   P_{\vec{\lambda}}(t) $ where $ \nabla H_{N}(\vec{\lambda}_0,t) $ means $ (\partial_\lambda_1 H_{N},..., \partial_\lambda_{n} H_{N}) $.
+Since we want to interpolate just for a limited number of points, it is helpful to use the Lagrange interpolation that would take the form
+\begin{equation}
+	\label{eq:LagrangeInterpolationPolynomial}
+	P_{\vec{ \lambda }}(t) = \sum_{j=1}^{n}\lambda_{j}\prod_{\substack{k=1\\k\neq j }}^{n}\frac{t-t_{k}}{t_{j} - t_{k}}.
+\end{equation}
+It can be simplified even further by recalling that $ \lambda_{1} = \lambda_{n} = 0 $
+\begin{equation}
+	\label{eq:LagrangeInterpolationPolynomialSimplified}
+	P_{\vec{ \lambda }}(t) = \sum_{j=2}^{n-1}\lambda_{j}\prod_{\substack{k=2\\k\neq j }}^{n-1}\frac{t-t_{k}}{t_{j} - t_{k}}.
+\end{equation}
+Recalling the form of $   H_{N} $ from \cref{eq:SchrodingerEquationCoefficientsContinuous} we can see that the only part dependent from $ \lambda_{i} $ is the $ z^2 $ term.
+Now taking the gradient of $ H_{N} $ with respect to the control parameters in this case only amounts to perform the following derivatives
+\begin{equation}
+	\label{eq:GradientLambda}
+	\partial_{\lambda_{i}} H_{N}=\partial_{\lambda_{i}} \tilde{ \Lambda }(t)z = \partial_{\lambda_{i}} \left(\Lambda z^2 + P_{\vec{ \lambda }}(t)z^2    \right) =z^2\prod_{\substack{k=2\\k\neq i }}^{n-1}\frac{t-t_{k}}{t_{i} - t_{k}}
+\end{equation}
+We are now in a position to calculate the following quantity
+\begin{equation}
+	\label{eq:KnOverSpace}
+	\braket{\chi_{m}|\partial_{\lambda_{i}} H_{N}|\chi_{0}} = \prod_{\substack{k=2\\k\neq i }}^{n-1}\frac{t-t_{k}}{t_{i} - t_{k}} \braket{\chi_{m}|z^2 |\chi_{0}}
+\end{equation}
+and we can recall that this integral is non-zero only for $ m = 2 $.

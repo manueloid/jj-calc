@@ -1,0 +1,21 @@
+In order to calculate the eSTA corrections, we need to evalute the difference between the two Hamiltonians
+\begin{equation}
+	\label{eq:DeltaH}
+	\Delta H = H_{N} - H_{ho} =
+	- e^{-i\hat{p}} b_{h}(z) - b_{h}(z)e^{i\hat{p}} + h^2 \partial_z^2 - z^2
+\end{equation}
+where we can see that the control parameter $ \omega $ is cancelled out.\\
+The correction numbers $ G_{n} $ are found according to \cref{eq:Gn} and since we are only interested in the effects of $ \Delta H  $ when applied to the ground state of the STA wavefunctions $ \ket{\chi_{0}} $, we can expand the exponential parts in \cref{eq:DeltaH} and obtain
+\begin{equation}
+	\label{eq:DeltaHOnGroundState}
+	\Delta H \chi_{0}(z,t) = - b_{h}(z-h)\chi_{0}(z-h,t) - b_{h}(z)\chi_{0}(z+h,t) + h^2\partial^2_{z}\chi_{0}(z,t) - z^2\chi_{0}(z,t).
+\end{equation}
+We can exploit some symmetries of the system in order to avoid calculating some integrals.
+In particular due to the parity of the STA wavefunctions \cref{eq:STAWavefunctionBoseHubbard} we can show that both $ G_{2n+1} $ and $ \vec{K}_{2n +1} $ are identically 0 for $ n \in \mathbb{N} $ thus saving us a lot of time and effort.
+Moreover, it can be shown that $ \braket{\chi_{2m}|\partial_z^{2}|\chi_{0} } = \braket{\chi_{2m}|z^{2}|\chi_{0} } = 0 $ for $ m \neq 1 $.
+In addition, we can numerically see that
+\begin{equation}
+    \int_{0}^{t_{f}}\braket{\chi_{2m}(z,t)|b_{h}(z-h)\chi_{0}(z-h,t)} =     \int_{0}^{t_{f}}\braket{\chi_{2m}(z,t)|b_{h}(z)\chi_{0}(z+h,t)}
+\label{eq:bhEquality}
+\end{equation}
+for each $ m \in \mathbb{N} $.
