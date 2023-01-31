@@ -1,35 +1,36 @@
 \documentclass{article}
-\usepackage{cancel}
-\usepackage{fullpage}
-\usepackage{hyperref}
+
+% Packages Section
 \usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{braket}
+\usepackage{cancel}
+\usepackage{color}
 \usepackage{derivative}
-\usepackage[parfill]{parskip}
+\usepackage{fullpage}
 \usepackage{graphicx}
-\usepackage{cleveref}
+\usepackage{import}
+\usepackage{hyperref}
 \usepackage{mathpazo}
 \usepackage[cmintegrals,cmbraces]{newtxmath}
-\usepackage{import}
+\usepackage[parfill]{parskip}
 \usepackage{physics}
+
+\usepackage{cleveref}
+% Front title
 \title{eSTA approach to Josephson Junction}
 \date{}
 \author{}
-\usepackage{braket}
 \newcommand{\trans}[1]{\ensuremath{{#1}^\intercal}}
-
-\usepackage{color}
-
 \setlength\parskip{2mm}
+
+% Body of the document
 \begin{document}
 \bibliographystyle{alpha}
 \maketitle
 
-%%%%%%%%%%%%%%%%%%%%%%%%%
-%Section where I summarize the STA to Josephson Junction
-%%%%%%%%%%%%%%%%%%%%%%%%%
 \import{Chapters/Introduction/}{chapter.tex}
 \import{Chapters/Approximation/}{chapter.tex}
 \import{Chapters/eSTA/}{chapter.tex}
-%\input{Chapters/Results/chapter.tex}
+\import{Chapters/Results/}{chapter.tex}
 \bibliography{bibliography}
 \end{document}
