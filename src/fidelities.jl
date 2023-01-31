@@ -18,7 +18,6 @@ function fidelity(cp::ControlParameter, qts::ConstantQuantities, Λ::Function; h
     return timeevolution.schroedinger_dynamic([0.0, tf], qts.ψ0, H_eSTA; fout=fidelity)[2][end]  # Time evolution where the output is not the resulting state but the fidelity. It helps improving the speed of the calculation
 end
 
-##{{{Functions to evaluate the fidelity with respect of time
 function fidelity_time_esta(cp::ControlParameter, tarr::Vector{Float64}; hessian::Bool=true, nlambda::Int64=5, maxbra::Int64=4)
     qts = ConstantQuantities(cp)
     fidelity_array = zeros(length(tarr))
@@ -78,8 +77,7 @@ function fidelity_search(cp::ControlParameter, epsilons::Vector{Float64}; hessia
     end
     return fidelity_array
 end
-##}}}
-##{{{ Functions to evaluate the robustness against noise
+
 using FiniteDifferences
 """
 `robustness(cp::ControlParameter, qts::ConstantQuantities, ω::Function; order::Int64=5)`
@@ -132,4 +130,3 @@ function robustness_time(cp::ControlParameter, tarr::Vector{Float64}; nlambda::I
         return robustness_time_sta(cp, tarr)
     end
 end
-##}}}

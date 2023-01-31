@@ -1,4 +1,5 @@
 # Files I don't want to track
 /Documents/Notes/latex_build/*
 /indent.log
-!/Documents/Notes/latex_build/notes.pdf
+# I will keep adding data here so there is no need to save them
+/Documents/Notes/Chapters/Results/gfx/data/* 
