@@ -16,3 +16,9 @@ styles = (
     dot_dashed="dash pattern={on 4pt off 1pt on 1pt off 1pt}"
 )
 
+##
+# Reading from file
+##
+using DataFrames, CSV
+filename(np::Int64) = "./Documents/Notes/Chapters/Results/gfx/data/fidelity_np$np.dat"
+data(np::Int64) = CSV.read(filename(np), DataFrame; header = true)
