@@ -1,4 +1,9 @@
+##
+# Plot styles and features
+##
+
 # Array where the colors are defined and stored 
+using Colors, PGFPlotsX
 colors = (
     red=colorant"#FF0000",
     yellow=colorant"#FFFF00",
@@ -20,5 +25,5 @@ styles = (
 # Reading from file
 ##
 using DataFrames, CSV
-filename(np::Int64) = "./Documents/Notes/Chapters/Results/gfx/data/fidelity_np$np.dat"
+filename(np::Int64, feature = "fidelity") = "./Documents/Notes/Chapters/Results/gfx/data/$(feature)_np$np.dat"
 data(np::Int64) = CSV.read(filename(np), DataFrame; header = true)
