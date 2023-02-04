@@ -21,7 +21,7 @@ styles = (
     dot_dash="dash pattern={on 4pt off 1pt on 1pt off 1pt}" #STA
 )
 
-names = ( 
+names = (
     "Full Hessian",
     "Full Original",
     "Intermediate Hessian",
@@ -45,27 +45,27 @@ end
 # Assuming the two datasets have already been loaded?
 # I only want to pass the color and the style?
 # I think so. I will load the data outside the declaration of the PlotObj object and only then I will create it
-function PlotObj(options::Options, protocol::Symbol,fidelity::DataFrame, robustness::DataFrame )
+function PlotObj(options::Options, protocol::Symbol, fidelity::DataFrame, robustness::DataFrame)
     return PlotObj(
         options,
-        fidelity[!,protocol],
-        robustness[!,protocol],
-        robustness[!,:tf]
+        fidelity[!, protocol],
+        robustness[!, protocol],
+        robustness[!, :tf]
     )
 end
 
 function PlotObj(options::Options, protocol::Symbol, np::Int64)
     return PlotObj(
         options,
-        data(np)[!,protocol],
-        data(np, "robustness")[!,protocol],
-        data(np)[!,:tf],
+        data(np)[!, protocol],
+        data(np, "robustness")[!, protocol],
+        data(np)[!, :tf],
     )
 end
 
 function PlotObj(np::Int64)
-    fidelities = data(np,"fidelity")
-    robustnesses = data(np,"robustness")
+    fidelities = data(np, "fidelity")
+    robustnesses = data(np, "robustness")
     protocols = propertynames(fidelities)[2:end]
     objects = []
     for (index, protocol) in enumerate(protocols)
@@ -76,35 +76,3 @@ function PlotObj(np::Int64)
     return (; zip(protocols, objects)...)
 end
 
-whole = PlotObj(30)
-options(opt_obj::Options) = @pgf {color = opt_obj.color, style = opt_obj.style, thick}
-options(plt_obj::PlotObj) = options(plt_obj.options)
-
-plot_fidelity(plt_obj::PlotObj) = @pgf Plot(options(plt_obj), Table([plt_obj.timespan, plt_obj.fidelity]))
-plot_robustness(plt_obj::PlotObj) = @pgf Plot(options(plt_obj), Table([plt_obj.timespan, plt_obj.robustness]))
-legend(plt_obj::PlotObj) = @pgf LegendEntry(plt_obj.options.name)
-
-function export_fidelity(np::Int64, protocols::Vector = [:full, :full_orig, :interm, :interm_orig, :sta])
-    whole = PlotObj(np)
-    plots = []
-    legends = []
-    for symbols in protocols
-        push!(plots, plot_fidelity(whole[ symbols ]))
-        push!(legends, legend(whole[ symbols ]))
-    end
-    ax = @pgf Axis({title = "Fidelity $np particles"}, plots, legends)
-    return ax
-end
-
-function export_robustness(np::Int64, protocols::Vector = [:full, :full_orig, :interm, :interm_orig, :sta])
-    whole = PlotObj(np)
-    plots = []
-    legends = []
-    for symbols in protocols
-        push!(plots, plot_robustness(whole[ symbols ]))
-        push!(legends, legend(whole[ symbols ]))
-    end
-    ax = @pgf Axis({title = "Fidelity $np particles"}, plots, legends)
-    return ax
-end
-export_robustness(30)
