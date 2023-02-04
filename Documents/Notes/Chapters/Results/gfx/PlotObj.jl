@@ -1,7 +1,7 @@
 using DataFrames, CSV
-filename(np::Int64, feature="fidelity") = "./Documents/Notes/Chapters/Results/gfx/data/$(feature)_np$np.dat"
-data(np::Int64, feature="fidelity") = CSV.read(filename(np, feature), DataFrame; header=true)
-
+data_dir(nlambda::Int64) = "data/nlambda$(nlambda)/" # Saving directory for different lambda
+filename(np::Int64, feature="fidelity", nlambda::Int64=5) = data_dir(nlambda) * "$(feature)_np$np.dat" # Saving filename for given number of lambda and given number of particles
+data(np::Int64, feature="fidelity", nlambda::Int64=5) = CSV.read(filename(np, feature, nlambda), DataFrame; header=true)
 using Colors, PGFPlotsX
 # Colors for the plots
 colors = (
@@ -29,11 +29,14 @@ names = (
     "STA"
 )
 
-struct Options # temporary structure to hold the values of the Option
+struct Options # Structure to hold the values of the Option
     name::String
     color::RGB
     style::String
 end
+pick(number::Int64, array) = array[number%length(array) + 1]
+# Options utility to create the options for different lambdas
+Options(nlambda::Int64) = Options("$nlambda lambdas", pick(nlambda, colors), pick(nlambda, styles))
 
 struct PlotObj
     options::Options
@@ -42,9 +45,6 @@ struct PlotObj
     timespan::Vector{Float64}
 end
 
-# Assuming the two datasets have already been loaded?
-# I only want to pass the color and the style?
-# I think so. I will load the data outside the declaration of the PlotObj object and only then I will create it
 function PlotObj(options::Options, protocol::Symbol, fidelity::DataFrame, robustness::DataFrame)
     return PlotObj(
         options,
@@ -54,18 +54,20 @@ function PlotObj(options::Options, protocol::Symbol, fidelity::DataFrame, robust
     )
 end
 
-function PlotObj(options::Options, protocol::Symbol, np::Int64)
+function PlotObj(options::Options, protocol::Symbol, np::Int64, nlambda::Int64=5)
     return PlotObj(
         options,
         data(np)[!, protocol],
-        data(np, "robustness")[!, protocol],
+        data(np, "robustness", nlambda)[!, protocol],
         data(np)[!, :tf],
     )
 end
 
-function PlotObj(np::Int64)
-    fidelities = data(np, "fidelity")
-    robustnesses = data(np, "robustness")
+PlotObj(protocol::Symbol, np::Int64, nlambda::Int64) = PlotObj(Options(nlambda), protocol, np, nlambda)
+
+function PlotObjects(np::Int64, nlambda::Int64=5)
+    fidelities = data(np, "fidelity", nlambda)
+    robustnesses = data(np, "robustness", nlambda)
     protocols = propertynames(fidelities)[2:end]
     objects = []
     for (index, protocol) in enumerate(protocols)
@@ -75,4 +77,3 @@ function PlotObj(np::Int64)
     end
     return (; zip(protocols, objects)...)
 end
-

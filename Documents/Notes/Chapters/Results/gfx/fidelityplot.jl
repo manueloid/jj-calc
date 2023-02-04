@@ -1,37 +1,31 @@
-include("./Documents/Notes/Chapters/Results/gfx/PlotObj.jl")
+include("PlotObj.jl")
 options(opt_obj::Options) = @pgf {color = opt_obj.color, style = opt_obj.style, thick}
 options(plt_obj::PlotObj) = options(plt_obj.options)
 
-plot_fidelity(plt_obj::PlotObj) = @pgf Plot(options(plt_obj), Table([plt_obj.timespan, plt_obj.fidelity]))
-plot_robustness(plt_obj::PlotObj) = @pgf Plot(options(plt_obj), Table([plt_obj.timespan, plt_obj.robustness]))
+plot_feature(plt_obj::PlotObj, feature::Symbol) = @pgf Plot(options(plt_obj), Table([plt_obj.timespan, getfield(plt_obj, feature)]))
 legend(plt_obj::PlotObj) = @pgf LegendEntry(plt_obj.options.name)
 
-function export_fidelity(np::Int64, protocols::Vector=[:full, :full_orig, :interm, :interm_orig, :sta])
-    whole = PlotObj(np)
+function compare_feature_plot(np::Int64, protocols::Vector=[:full, :full_orig, :interm, :interm_orig, :sta], feature::Symbol=:fidelity, nlambda::Int64=5)
+    whole = PlotObj(np, nlambda)
     plots = []
     legends = []
+    feature_string = String(feature)
     for symbols in protocols
-        push!(plots, plot_fidelity(whole[symbols]))
+        push!(plots, plot_feature(whole[symbols], feature))
         push!(legends, legend(whole[symbols]))
     end
-    ax = @pgf Axis({title = "Fidelity $np particles", legend_pos = "south east"}, plots, legends)
-    filename_save = "./Documents/Notes/Chapters/Results/gfx/fidelity$np.pdf"
-    pgfsave(filename_save, ax)
-    println("Plot saved in $filename_save")
+    ax = @pgf Axis({title = "$(feature_string) $np particles", legend_pos = "south east"}, plots, legends)
+    filename_save = "./Documents/Notes/Chapters/Results/gfx/$(feature_string)_np$(np)_nlambda$(nlambda)"
+    pgfsave(filename_save * ".pdf", ax)
+    println("Plot saved in $filename_save.pdf")
 end
 
-function export_robustness(np::Int64, protocols::Vector=[:full, :full_orig, :interm, :interm_orig, :sta])
-    whole = PlotObj(np)
-    plots = []
-    legends = []
-    for symbols in protocols
-        push!(plots, plot_robustness(whole[symbols]))
-        push!(legends, legend(whole[symbols]))
-    end
-    ax = @pgf Axis({title = "Fidelity $np particles"}, plots, legends)
-    filename_save = "./Documents/Notes/Chapters/Results/gfx/robustness$np.pdf"
-    pgfsave(filename_save, ax)
-    println("Plot saved in $filename_save")
-end
+protocols = [:full, :full_orig, :interm, :interm_orig, :sta]
+# compare_feature_plot(30, [:full], :robustness)
 
-export_fidelity(20)
+# I want a function that given a λ returns a new plotting object. I can do that bc I have defined multiple constructors
+
+@pgf Axis(
+    [plot_feature(PlotObj(:interm, 50, 1), :fidelity),
+    plot_feature(PlotObj(:interm, 50, 8), :fidelity)]
+)
