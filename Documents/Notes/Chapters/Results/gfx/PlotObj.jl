@@ -1,7 +1,7 @@
 using DataFrames, CSV
 data_dir(nlambda::Int64) = "data/nlambda$(nlambda)/" # Saving directory for different lambda
 filename(np::Int64, feature="fidelity", nlambda::Int64=5) = data_dir(nlambda) * "$(feature)_np$np.dat" # Saving filename for given number of lambda and given number of particles
-data(np::Int64, feature="fidelity", nlambda::Int64=5) = CSV.read(filename(np, feature, nlambda), DataFrame; header=true)
+    data(np::Int64, feature="fidelity", nlambda::Int64=5) = CSV.read(filename(np, feature, nlambda), DataFrame; header=true) |> s -> sort(s, :tf)
 using Colors, PGFPlotsX
 # Colors for the plots
 colors = (
