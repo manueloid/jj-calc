@@ -56,7 +56,5 @@ end
 robustness_write(np::Int64, df::Nothing, nlambda::Int64 = 5) = "Nothing to be done here, your file already has the fidelities for the requested final times" # If the DataFrame object is empty, it means all the values of the `time_input` are alredy in the `tf` column of the DataFrame object, so there is nothing to do
 
 # Actual Calculation
-λs = 1
-np = 50
-
+λs = 5
 [robustness_write(np, robustness(np, range(0.05, 0.5, length=100) |> collect, λs), λs) for np in 20:10:50]
