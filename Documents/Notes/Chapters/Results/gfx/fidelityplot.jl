@@ -20,7 +20,6 @@ function compare_robustness_plot(np::Int64, protocols::Vector=[:full, :full_orig
     pgfsave(filename_save * ".pdf", ax)
     println("Plot saved in $filename_save.pdf")
 end
-
 function compare_fidelity_plot(np::Int64, protocols::Vector=[:full, :full_orig, :interm, :interm_orig, :sta], nlambda::Int64=5)
     whole = PlotObjectsFid(np, nlambda)
     plots = []
