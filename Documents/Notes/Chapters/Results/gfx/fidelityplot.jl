@@ -39,5 +39,53 @@ end
 
 ##
 protocols = [:full, :full_orig, :interm, :interm_orig, :sta]
-compare_robustness_plot(30, protocols, 5)
-compare_fidelity_plot(30, protocols, 5)
+compare_robustness_plot(10, protocols, 5)
+compare_fidelity_plot(10, protocols, 5)
+## Section where I plot the comparison between different λs
+λs = [1, 5, 8]
+np = 10
+function compare_fidelity_lambda(protocol::Symbol, np::Int64, nlambda::Vector{Int64})
+    plots = []
+    leg = []
+    for λ in λs 
+        push!(plots, plot(PlotObjFid(protocol, np, λ))) # I will only focus on the :full protocol
+        push!(leg,LegendEntry("\$\\lambda $λ\$") )
+    end
+    ax = @pgf Axis({legend_pos = "south east",  title = "Fidelity $np particles"},plots, leg)
+    filename = "fidelity_compare$np.pdf"
+    pgfsave("fidelity_compare$np.pdf", ax)
+    println("Plot saved in $filename")
+end
+function compare_robustness_lambda(protocol::Symbol, np::Int64, nlambda::Vector{Int64})
+    plots = []
+    leg = []
+    for λ in λs 
+        push!(plots, plot(PlotObjRob(protocol, np, λ))) # I will only focus on the :full protocol
+        push!(leg,LegendEntry("\$\\lambda $λ\$") )
+    end
+    local ax = @pgf Axis({legend_pos = "north east", title = "Robustness $np particles"},plots, leg)
+    filename = "robustness_compare$np.pdf"
+    pgfsave(filename,ax)
+    println("Plot saved in $filename")
+end
+
+compare_robustness_lambda(:full, 50, λs)
+compare_fidelity_lambda(:full, 50, λs)
+## Section where I plot the sensitivity, I just need to massage the data a little bit
+
+function compare_sensitivity_lambda(protocol::Symbol, np::Int64, nlambda::Vector{Int64})
+    plots = []
+    leg = []
+    for λ in λs 
+        F = PlotObjFid(protocol, np, λ).feature
+        R = PlotObjRob(protocol, np, λ).feature
+        η = √((1-F)^2 + R^2)
+        push!(plots,) # I will only focus on the :full protocol
+        push!(leg,LegendEntry("\$\\lambda $λ\$") )
+    end
+    local ax = @pgf Axis({legend_pos = "north east", title = "Robustness $np particles"},plots, leg)
+    filename = "robustness_compare$np.pdf"
+    pgfsave(filename,ax)
+    println("Plot saved in $filename")
+end
+

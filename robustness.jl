@@ -57,4 +57,5 @@ robustness_write(np::Int64, df::Nothing, nlambda::Int64 = 5) = "Nothing to be do
 
 # Actual Calculation
 λs = 8
-[robustness_write(np, robustness(np, range(0.05, 0.5, length=100) |> collect, λs), λs) for np in 20:10:50]
+npmax = 10
+[robustness_write(np, robustness(np, range(0.05, 0.5, length=100) |> collect, λs), λs) for np in 10:10:npmax]
