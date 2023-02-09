@@ -20,6 +20,7 @@ function compare_robustness_plot(np::Int64, protocols::Vector=[:full, :full_orig
     pgfsave(filename_save * ".pdf", ax)
     println("Plot saved in $filename_save.pdf")
 end
+
 function compare_fidelity_plot(np::Int64, protocols::Vector=[:full, :full_orig, :interm, :interm_orig, :sta], nlambda::Int64=5)
     whole = PlotObjectsFid(np, nlambda)
     plots = []
@@ -30,11 +31,13 @@ function compare_fidelity_plot(np::Int64, protocols::Vector=[:full, :full_orig, 
         push!(plots, plot(whole[symbols]))
         push!(legends, legend(whole[symbols]))
     end
-    ax = @pgf Axis({title = "$(title) $np particles, $(nlambda) \\lambda", legend_pos = "south east"}, plots, legends)
+    ax = @pgf Axis({title = "$(title) $np particles", legend_pos = "south east"}, plots, legends)
     filename_save = "$(feature_string)_np$(np)_nlambda$(nlambda)"
     pgfsave(filename_save * ".pdf", ax)
     println("Plot saved in $filename_save.pdf")
 end
 
+##
 protocols = [:full, :full_orig, :interm, :interm_orig, :sta]
-compare_robustness_plot(50, protocols, 5)
+compare_robustness_plot(30, protocols, 5)
+compare_fidelity_plot(30, protocols, 5)
