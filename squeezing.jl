@@ -12,3 +12,11 @@ f = ControlParameterFull(0.3, 30)
 q = ConstantQuantities(f)
 
 ξ(t, psi) = dagger(psi) * (q.Jz)^2 * psi - dagger(psi) * (q.Jz) * psi |> real
+
+```
+function squeezing(cp::ControlParameter,           qts::ConstantQuantities, f::Function)
+    h = 2.0/cp.N
+    tf = cp.final_time
+# to finish
+end
+end
