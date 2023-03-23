@@ -98,7 +98,7 @@ function robustness(cp::ControlParameter, qts::ConstantQuantities, Λ::Function;
         return m(error, 0.0) |> abs
 end
 """
-`robustness_time(cp::ControlParameter, qts::ConstantQuantities, ω::Function; order::Int64=5)`
+`robustness_timenoise(cp::ControlParameter, qts::ConstantQuantities, ω::Function; order::Int64=5)`
 return the derivative of the fidelity given an offset in the time of the control parameter of the form Λδ(t) = Λ(t + δ)
 # Arguments 
 - `cp` 
@@ -107,7 +107,7 @@ return the derivative of the fidelity given an offset in the time of the control
 # Kwargs 
 - `order` is the order of the finite difference method I need to use
 """
-function robustness(cp::ControlParameter, qts::ConstantQuantities, Λ::Function; order::Int64=5)
+function robustness_timenoise(cp::ControlParameter, qts::ConstantQuantities, Λ::Function; order::Int64=5)
         function error(δ)
                 Λ_err(t) = Λ(δ + t)
                 return fidelity(cp, qts, Λ_err)
