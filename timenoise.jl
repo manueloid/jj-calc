@@ -5,7 +5,7 @@ function robustness_timenoise(cp::ControlParameter, qts::ConstantQuantities, Λ:
                 Λ_err(t) = Λ(δ + t)
                 return fidelity(cp, qts, Λ_err)
         end
-        m = central_fdm(order, 2)
+        m = central_fdm(order, 1)
         return m(error, 0.0) |> abs
 end
 function robustness_timenoise_esta(cp::ControlParameter, tarr::Vector{Float64}; nlambda::Int64=5, hessian::Bool=true)
@@ -50,7 +50,6 @@ plot!(tspan, sta, label = "STA")
 cp = ControlParameterFull(.2,40)
 qts = ConstantQuantities(cp)
 corrs = corrections(cp) 
-Λ(t)=Λ_esta(t+.1, cp, corrs) 
-Λ(.2)
+Λ(t)=Λ_esta(t+.001, cp, corrs) 
 
 fidelity(cp, qts, Λ)
