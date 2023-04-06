@@ -1,7 +1,23 @@
 # Josephson Junction optimization via enhanced Shortcuts to Adiabaticity
-In this repo I will try to use [eSTA](https://arxiv.org/abs/1912.06057) to minimize the decoherence of the final state of the system.
-The pdf notes can be found in the `Notes` folder, while the `Documents` is the folder where I store what can be thought as a diary. Its content is made of 
-1. `physicsannotation.md` where I write down all the problems I am having from a physics point of view (change of variables, differentiation you name it)
-2. `annotations.md` is a file where I track all the progresses from a coding  point of view (how I solved this or that, where I optimized the code etc. etc.)
-
-Finally, the `Data` folder is where I store the data files I will then use for postprocessing.
+In this repo I will try to use [eSTA](https://arxiv.org/abs/1912.06057) to minimize the decoherence of the final state of the system in the context of the Josephson Junction.
+The files are organized as follows:
+```
+├── Fidelities
+│   ├── calculations.jl
+│   ├── fidelityplot.jl
+│   ├── robustness.jl
+│   └── squeezing.jl
+├── Manifest.toml
+├── Noise
+│   ├── noise.jl
+│   └── timenoise.jl
+├── Project.toml
+├── README.md
+└── src
+    ├── ConstantQuantities.jl
+    ├── fidelities.jl
+    └── PlotObj.jl
+```
+The `src` folder contains the main functions used in the calculations, while the `Fidelities` folder contains the scripts used to calculate the fidelities and the robustness of the system.
+The `Noise` folder contains the scripts used to calculate the noise of the system for different types of noise.
+This calculations rely on the [JosephsonSTA package](github.com/manueloid/JosephsonSTA) which is a Julia package that implements the eSTA algorithm.
