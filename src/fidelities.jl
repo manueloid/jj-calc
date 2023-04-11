@@ -1,7 +1,12 @@
 # Oneliner functions to produce the control function of the system, both for Λ and ω
 Λ_sta(t::Float64, cp::ControlParameter) = control_ω(t, cp) * 0.25 - 1.0
 ω_esta(t::Float64, cp::ControlParameter, corrections::Vector{Float64}) = control_ω(t, cp) - correction_poly(t, cp, corrections::Vector{Float64})
+function ω_esta(t::Float64, cp::ControlParameter)
+	corrs = corrections(cp)
+	return ω_esta(t, cp, corrs)
+end
 Λ_esta(t::Float64, cp::ControlParameter, corrections::Vector{Float64}) = ω_esta(t, cp, corrections) * 0.25 - 1.0
+Λ_esta(t::Float64, cp::ControlParameter) = ω_esta(t, cp) * 0.25 - 1.0
 
 # Function that will be used by other functions
 """
