@@ -21,3 +21,16 @@ The files are organized as follows:
 The `src` folder contains the main functions used in the calculations, while the `Fidelities` folder contains the scripts used to calculate the fidelities and the robustness of the system.
 The `Noise` folder contains the scripts used to calculate the noise of the system for different types of noise.
 This calculations rely on the [JosephsonSTA package](github.com/manueloid/JosephsonSTA) which is a Julia package that implements the eSTA algorithm.
+
+I have three different types of noise for the moment
+- Modulation noise: of the form Λδ(t) = (1+δ) Λ(t)
+- Time shift noise: of the form Λδ(t) = Λ(t+δ)
+- White noise: of the form Λδ(t) = Λ(ξ(t)), where ξ(t) is a Gaussian noise
+
+For each of them, I will put the relevant scripts in the `src` folder.
+I will name the scripts as follows:
+- `ModulationNoise.jl`
+- `TimeShiftNoise.jl`
+- `WhiteNoise.jl`
+
+I will use the camel case for the files that contain the functions that are used in the calculations, and the  lowercase for the files that contain the scripts that are used to calculate the fidelities and the robustness of the system.

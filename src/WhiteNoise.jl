@@ -1,4 +1,3 @@
-include("../src/ConstantQuantities.jl")
 # I need to backpropagate the wavefunction from the final state to the initial one
 # First, I will define a function that will perform the time reversal of a generic function
 """
@@ -117,7 +116,7 @@ end
 # I will use the trapezoidal rule
 
 """
-sensitivities(n::Int64, final_times::Array{Float64,1}) -> sensitivities
+sensitivities(n::Int64, final_times) -> sensitivities
 This function computes the sensitivities for a given number of particles n and a given array of final times.
 It returns an array containing the sensitivities for each final time for both the esta and sta methods.
 """

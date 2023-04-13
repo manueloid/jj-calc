@@ -5,11 +5,11 @@ data(np::Int64, feature="fidelity", nlambda::Int64=5) = CSV.read(filename(np, fe
 using Colors, PGFPlotsX
 # Colors for the plots
 colors = (
-    colorant"#FF0000", # eSTA Full Hamiltonian with Hessian 
-    colorant"#FFa000", # eSTA Full Hamiltonian with original version
-    colorant"#0000FF", # eSTA Intermediate Hamiltonian with Hessian
-    colorant"#00FF00",# eSTA Intermediate Hamiltonian original version
-    colorant"#000000" # STA
+red =     colorant"#FF0000", # eSTA Full Hamiltonian with Hessian 
+yellow =     colorant"#FFa000", # eSTA Full Hamiltonian with original version
+blue =     colorant"#0000FF", # eSTA Intermediate Hamiltonian with Hessian
+green =     colorant"#00FF00",# eSTA Intermediate Hamiltonian original version
+black =     colorant"#000000" # STA
 )
 
 # Array where all the line styles are stored
@@ -28,90 +28,3 @@ names = (
     "Intermediate Original",
     "STA"
 )
-sensitivity(fidelity::Vector{Float64}, robustness::Vector{Float64}) =  sqrt.((1 .- fidelity) .^2 + robustness.^2) # Calculation of the sensitivity from two vectors
-sensitivity(protocol::Symbol, fidelity::DataFrame, robustness::DataFrame) = sensitivity(fidelity[!,protocol], robustness[!, protocol])
-struct Options # Structure to hold the values of the Option
-    name::String
-    color::RGB
-    style::String
-end
-pick(number::Int64, array) = array[number%length(array)+1]
-# Options utility to create the options for different lambdas given the arrays `colors` and `styles`
-Options(nlambda::Int64) = Options("$nlambda lambdas", pick(nlambda, colors), pick(nlambda, styles))
-
-abstract type PlotObj end
-
-struct PlotObjFid <: PlotObj
-    options::Options
-    feature::Vector{Float64}
-    timespan::Vector{Float64}
-end
-struct PlotObjRob <: PlotObj
-    options::Options
-    feature::Vector{Float64}
-    timespan::Vector{Float64}
-end
-struct PlotObjSens <: PlotObj
-    options::Options
-    feature::Vector{Float64}
-    timespan::Vector{Float64}
-end
-
-PlotObjFid(options::Options, protocol::Symbol, input_data::DataFrame) = PlotObjFid(options, input_data[!, protocol], input_data[!, :tf])
-PlotObjRob(options::Options, protocol::Symbol, input_data::DataFrame) = PlotObjRob(options, input_data[!, protocol], input_data[!, :tf])
-PlotObjSens(options::Options, protocol::Symbol, fidelity::DataFrame, robustness::DataFrame) = PlotObjSens(options, sensitivity(protocol, fidelity, robustness), fidelity[!,:tf])
-# I will not pass a DataFrame to the sensitivity as I need to evaluate it from two columns
-
-function PlotObjFid(options::Options, protocol::Symbol, np::Int64, nlambda::Int64=5)
-    input_data = data(np, "fidelity", nlambda)
-    return PlotObjFid(options, protocol, input_data)
-end
-function PlotObjRob(options::Options, protocol::Symbol, np::Int64, nlambda::Int64=5)
-    input_data = data(np, "robustness", nlambda)
-    return PlotObjRob(options, protocol, input_data)
-end
-function PlotObjSens(options::Options, protocol::Symbol, np::Int64, nlambda::Int64=5)
-    Fs = data(np, "fidelity", nlambda) # DataFrame where all the different fidelities are stored
-    Rs = data(np, "robustness", nlambda) # DataFrame where all the different robustnesses are stored
-    η = sensitivity(Fs[!,protocol], Rs[!, protocol])
-    return PlotObjSens(options, η, Fs[!, Fs.timespan]  )
-end
-
-PlotObjFid(protocol::Symbol, np::Int64, nlambda::Int64) = PlotObjFid(Options(nlambda), protocol, np, nlambda)
-PlotObjRob(protocol::Symbol, np::Int64, nlambda::Int64) = PlotObjRob(Options(nlambda), protocol, np, nlambda)
-PlotObjSens(protocol::Symbol, np::Int64, nlambda::Int64) = PlotObjSens(Options(nlambda), protocol, np, nlambda)
-
-function PlotObjectsFid(np::Int64, nlambda::Int64=5)
-    fidelities = data(np, "fidelity", nlambda)
-    protocols = propertynames(fidelities)[2:end]
-    objects = []
-    for (index, protocol) in enumerate(protocols)
-        options = Options(names[index], colors[index], styles[index])
-        object = PlotObjFid(options, protocol, fidelities)
-        push!(objects, object)
-    end
-    return (; zip(protocols, objects)...)
-end
-function PlotObjectsRob(np::Int64, nlambda::Int64=5)
-    fidelities = data(np, "robustness", nlambda)
-    protocols = propertynames(fidelities)[2:end]
-    objects = []
-    for (index, protocol) in enumerate(protocols)
-        options = Options(names[index], colors[index], styles[index])
-        object = PlotObjRob(options, protocol, fidelities)
-        push!(objects, object)
-    end
-    return (; zip(protocols, objects)...)
-end
-function PlotObjectsSens(np::Int64, nlambda::Int64=5)
-    fidelities = data(np, "fidelity", nlambda)
-    robustnesses = data(np, "robustness", nlambda)
-    protocols = propertynames(fidelities)[2:end]
-    objects = []
-    for (index, protocol) in enumerate(protocols)
-        options = Options(names[index], colors[index], styles[index])
-        object = PlotObjSens(options, protocol,fidelities, robustnesses)
-        push!(objects, object)
-    end
-    return (; zip(protocols, objects)...)
-end

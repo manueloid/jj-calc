@@ -29,4 +29,8 @@ function rollout(qts::ConstantQuantities)
     return [getfield(qts, field) for field in fieldnames(typeof(qts))]
 end
 
-include("fidelities.jl")
+include("Fidelities.jl")
+include("ModulationNoise.jl")
+include("WhiteNoise.jl")
+include("TimeNoise.jl")
+include("Squeezing.jl")

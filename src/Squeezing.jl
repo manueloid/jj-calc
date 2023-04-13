@@ -19,20 +19,20 @@ squeezings(cp::ControlParameter, final_times)
 This function returns the squeezing parameter ξ² for different final times for the STA protocol and sthe eSTA one
 """
 function squeezings(cp::ControlParameter, final_times)
-	squeezings_esta = zeros(length(final_times))
-	squeezings_sta = zeros(length(final_times))
-	qts = ConstantQuantities(cp)
-	Threads.@threads for (index, final_time) in enumerate(final_times)
-		cparam = cp_time(cp, final_time)
-		corrs = corrections(cparam)
-		esta(t) = Λ_esta(t, cparam, corrs)
-		sta(t) = Λ_sta(t, cparam)
-		squeezings_esta[index] = squeezing(cparam, qts, esta, 2)[2][2] 
-		println("eSTA squeezing for final time $final_time is $(squeezings_esta[index])\r")
-		squeezings_sta[index] = squeezing(cparam, qts, sta, 2)[2][2]
-		println("STA squeezing for final time $final_time is $(squeezings_sta[index])\r")
-	end
-	return squeezings_esta, squeezings_sta
+    squeezings_esta = zeros(length(final_times))
+    squeezings_sta = zeros(length(final_times))
+    qts = ConstantQuantities(cp)
+    Threads.@threads for i in 1:length(final_times)
+        cparam = cp_time(cp, final_times[i])
+        corrs = corrections(cparam)
+        esta(t) = Λ_esta(t, cparam, corrs)
+        sta(t) = Λ_sta(t, cparam)
+        squeezings_esta[i] = squeezing(cparam, qts, esta, 2)[2][2]
+        println("Squeezing for eSTA: ", squeezings_esta[i], " for final time: ", final_times[i])
+        squeezings_sta[i] = squeezing(cparam, qts, sta, 2)[2][2]
+        println("Squeezing for STA: ", squeezings_sta[i], " for final time: ", final_times[i])
+    end
+    return squeezings_esta, squeezings_sta
 end
 
 """
