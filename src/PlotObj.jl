@@ -5,11 +5,11 @@ data(np::Int64, feature="fidelity", nlambda::Int64=5) = CSV.read(filename(np, fe
 using Colors, PGFPlotsX
 # Colors for the plots
 colors = (
-red =     colorant"#FF0000", # eSTA Full Hamiltonian with Hessian 
-yellow =     colorant"#FFa000", # eSTA Full Hamiltonian with original version
-blue =     colorant"#0000FF", # eSTA Intermediate Hamiltonian with Hessian
-green =     colorant"#00FF00",# eSTA Intermediate Hamiltonian original version
-black =     colorant"#000000" # STA
+    black=colorant"#000000", # STA	
+    red=colorant"#FF0000", # eSTA Full Hamiltonian with Hessian 
+    blue=colorant"#0000FF", # eSTA Intermediate Hamiltonian with Hessian
+    yellow=colorant"#FFa000", # eSTA Full Hamiltonian with original version
+    green=colorant"#00FF00"# eSTA Intermediate Hamiltonian original version
 )
 
 # Array where all the line styles are stored

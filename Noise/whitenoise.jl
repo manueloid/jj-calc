@@ -30,6 +30,7 @@ Hamiltonian(qts::ConstantQuantities, ω::Function, h::Float64) = Hamiltonian(qts
 """
 evolution(ψ0, H, tspan) -> ψ(t) 
 Time evolution of a system starting from the initial state ψ0, under the Hamiltonian H, for a time span tspan.
+This function returns a tuple containing the time span and the wavefunction with respect to time.
 """
 function evolution(ψ0, H, tspan)
     return timeevolution.schroedinger_dynamic(tspan, ψ0, H)
@@ -77,7 +78,7 @@ function bf_evolution(cp::ControlParameter, ω::Function; t=tspan(cp, 1000))
     ψT = qts.ψf # Initial state for the backward evolution
     tout, ψ0 = evolution(ψ0, H_fwd, t) # Time span and wavefunction with respect of time for the forward evolution
     tout, ψT = evolution(ψT, H_rev, t) # Time span and wavefunction with respect of time for the backward evolution
-    H1_fwd(t) = h * H1(t, qts, ω) # Forward Hamiltonian with respect to time, that I will use to compute the sensitivity
+    H1_fwd(t) = h^2 * H1(t, qts, ω) # Forward Hamiltonian with respect to time, that I will use to compute the sensitivity
     return ψ0, ψT, H1_fwd.(t) # I return the wavefunctions and the time dependent Hamiltonian
 end
 # trapezoidal rule for integration
@@ -100,17 +101,22 @@ function simpson_rule(f::Array{Float64,1}, t::Array{Float64,1})
     h = t[2] - t[1]
     return h / 3.0 * (f[1] + 4.0 * sum(f[2:2:n-1]) + 2.0 * sum(f[3:2:n-2]) + f[n])
 end
+"""
+sensitivity(cp::ControlParameter, ω::Function; t=tspan(cp, 1000)) -> S
+This function computes the sensitivity of the system with respect to the control function ω.
+It first performs the backward forward evolution and then computes the sensitivity using the formula from the white noise sensitivity.
+"""
 function sensitivity(cp::ControlParameter, ω::Function; t=tspan(cp, 1000))
-    ψ0, ψf, H1_in = bf_evolution(cp, ω) # Results of the backward forward evolution
-    ψ0d = dagger.(ψ0) # Conjugate transpose of the wavefunction of the forward evolution
-    ψfd = dagger.(ψf) # Conjugate transpose of the wavefunction of the backward evolution
-    ψ0dψf = ψ0d .* ψf # <ψ0|ψf> term
-    ψfH12ψ0 = ψfd .* H1_in .^ 2 .* ψ0 # <ψf|H1^2|ψ0> term
-    first = real.(ψ0dψf .* ψfH12ψ0) # real part of the <ψ0|ψf><ψf|H1^2|ψ0> term
-    ψ0dH1ψf = ψ0d .* H1_in .* ψf # <ψ0|H1|ψf> term that will be subtracted from the previous term
-    second = abs2.(ψ0dH1ψf) # |<ψ0|H1|ψf>|^2 term
     h = 2.0 / cp.NParticles # Scaling factor
-    integrand = abs.(first .- second) ./ h^2 # I compute the integrand
+    ψ0, ψT, H1_in = bf_evolution(cp, ω) # Results of the backward forward evolution
+    ψ0d = dagger.(ψ0) # Conjugate transpose of the wavefunction of the forward evolution
+    ψfd = dagger.(ψT) # Conjugate transpose of the wavefunction of the backward evolution
+    ψ0dψf = ψ0d .* ψT # <ψ0|ψT> term
+    ψfH12ψ0 = ψfd .* H1_in .^ 2 .* ψ0 # <ψT|H1^2|ψ0> term
+    first = real.(ψ0dψf .* ψfH12ψ0) # real part of the <ψ0|ψf><ψf|H1^2|ψ0> term
+    ψ0dH1ψf = ψ0d .* H1_in .* ψT # <ψ0|H1|ψT> term that will be subtracted from the previous term
+    second = abs2.(ψ0dH1ψf) # |<ψ0|H1|ψT>|^2 term
+    integrand = abs.(first .- second) ./ h^4 # I compute the integrand
     return simpson_rule(integrand, t) # I integrate the integrand using the Simpson rule
 end
 # I need to integrate the integrand array over the time.

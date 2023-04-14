@@ -1,4 +1,3 @@
-# squeezing return the squeezing parameter ξ with respect of time. ξ(t)
 """
 squeezing(cp::ControlParameter, qts::ConstantQuantities, Λ::Function, npoints=100) -> (tspan, ξ)
 This function returns the squeezing parameter ξ² with respect of time as a tuple (tspan, ξ²)
@@ -45,3 +44,23 @@ function squeezing(cp::ControlParameter)
     h = 2.0 / cp.NParticles
     return ΔJ * 2.0h
 end
+
+"""
+squeezing(n::Int, tf::Float64, npoints=100) -> (ξ_esta, ξ_sta, ξ_ideal, tspan)
+This function returns the evolution squeezing parameter ξ² for the STA, eSTA and ideal case for a given number of particles and final time.
+It returns a tuple (ξ_esta, ξ_sta, ξ_ideal, tspan) where ξ_esta and ξ_sta are the squeezing parameters for the eSTA and STA protocols and ξ_ideal is the squeezing parameter for the ideal case.
+tspan is the time span used for the calculation.
+"""
+function squeezing(n::Int, tf::Float64, npoints=100)
+    cp = ControlParameterFull(n, tf)
+    qts = ConstantQuantities(cp)
+    corrs = corrections(cp)
+    esta(t) = Λ_esta(t, cp, corrs)
+    sta(t) = Λ_sta(t, cp)
+    tspan, ξ_esta = squeezing(cp, qts, esta, npoints)
+    ξ_sta = squeezing(cp, qts, sta, npoints)[2]
+    ξ_ideal = squeezing(cp)
+    return ξ_esta, ξ_sta, ξ_ideal, tspan
+end
+
+squeezing(10, 0.3)
