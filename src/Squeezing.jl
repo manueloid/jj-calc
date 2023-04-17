@@ -14,8 +14,20 @@ function squeezing(cp::ControlParameter, qts::ConstantQuantities, Λ::Function, 
     return tspan, ξ
 end
 """
+squeezing(cp::ControlParameter) -> Float64 
+This function returns the squeezing parameter ξ² for the ideal case.
+"""
+function squeezing(cp::ControlParameter)
+    qts = ConstantQuantities(cp)
+    ΔJ = dagger(qts.ψf) * (qts.Jz)^2 * qts.ψf - (dagger(qts.ψf) * (qts.Jz) * qts.ψf)^2 |> real
+    h = 2.0 / cp.NParticles
+    return ΔJ * 2.0h
+end
+
+
+"""
 squeezings(cp::ControlParameter, final_times)
-This function returns the squeezing parameter ξ² for different final times for the STA protocol and sthe eSTA one
+This function returns the squeezing parameter ξ² for different final times for the STA protocol and sthe eSTA one, as well as the squeezing for the ideal case.
 """
 function squeezings(cp::ControlParameter, final_times)
     squeezings_esta = zeros(length(final_times))
@@ -31,36 +43,14 @@ function squeezings(cp::ControlParameter, final_times)
         squeezings_sta[i] = squeezing(cparam, qts, sta, 2)[2][2]
         println("Squeezing for STA: ", squeezings_sta[i], " for final time: ", final_times[i])
     end
-    return squeezings_esta, squeezings_sta
+    ξ_ideal = squeezing(cp)*ones(length(final_times))
+    return squeezings_esta, squeezings_sta, ξ_ideal
 end
 
-"""
-squeezing(cp::ControlParameter) -> Float64 
-This function returns the squeezing parameter ξ² for the ideal case.
-"""
-function squeezing(cp::ControlParameter)
-    qts = ConstantQuantities(cp)
-    ΔJ = dagger(qts.ψf) * (qts.Jz)^2 * qts.ψf - (dagger(qts.ψf) * (qts.Jz) * qts.ψf)^2 |> real
-    h = 2.0 / cp.NParticles
-    return ΔJ * 2.0h
-end
-
-"""
-squeezing(n::Int, tf::Float64, npoints=100) -> (ξ_esta, ξ_sta, ξ_ideal, tspan)
-This function returns the evolution squeezing parameter ξ² for the STA, eSTA and ideal case for a given number of particles and final time.
-It returns a tuple (ξ_esta, ξ_sta, ξ_ideal, tspan) where ξ_esta and ξ_sta are the squeezing parameters for the eSTA and STA protocols and ξ_ideal is the squeezing parameter for the ideal case.
-tspan is the time span used for the calculation.
-"""
-function squeezing(n::Int, tf::Float64, npoints=100)
-    cp = ControlParameterFull(n, tf)
-    qts = ConstantQuantities(cp)
-    corrs = corrections(cp)
-    esta(t) = Λ_esta(t, cp, corrs)
-    sta(t) = Λ_sta(t, cp)
-    tspan, ξ_esta = squeezing(cp, qts, esta, npoints)
-    ξ_sta = squeezing(cp, qts, sta, npoints)[2]
-    ξ_ideal = squeezing(cp)
-    return ξ_esta, ξ_sta, ξ_ideal, tspan
-end
-
-squeezing(10, 0.3)
+cp = ControlParameterFull(10, .1)
+final_times = range(0.1, 1.0, length=100)
+ξ_esta, ξ_sta, ξ_ideal = squeezings(cp, final_times)
+using Plots
+plot(final_times,ξ_esta, label="eSTA")
+plot!(final_times,ξ_sta, label="STA")
+plot!(final_times,ξ_ideal, label="Ideal")
