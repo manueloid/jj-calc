@@ -15,10 +15,10 @@ colors = (
 # Array where all the line styles are stored
 styles = (
     solid="solid",                         # eSTA Intermediate Hamiltonian with Hessian
+    dot_dash="dash pattern={on 4pt off 1pt on 1pt off 1pt}",#STA
     ldash="dash pattern={on 2pt off 2pt}",# eSTA Full Hamiltonian with Hessian 
     dash=" dashed",                        # eSTA Full Hamiltonian with original version
     dot="dash pattern={on 1pt off 1pt}",  # eSTA Intermediate Hamiltonian original version
-    dot_dash="dash pattern={on 4pt off 1pt on 1pt off 1pt}" #STA
 )
 
 names = (

@@ -37,8 +37,6 @@ function robustnesses_tn(cp::ControlParameter, final_times, δ::Float64)
     end
     return robustnesses_esta, robustnesses_sta
 end
-
-
 # up until now, the robustnesses are calculated for a single value of the modulation noise amplitude δ, where δ is fixed.
 # From now on, the derivative will be calculated automatically
 
@@ -55,7 +53,7 @@ return the derivative of the fidelity given an error in the modulation of the co
 """
 function robustness_tn(cp::ControlParameter, qts::ConstantQuantities, Λ::Function; order::Int64=5)
     function error(δ)
-        Λ_err(t) =   Λ(t + δ)
+        Λ_err(t) = Λ(t + δ)
         return fidelity(cp, qts, Λ_err)
     end
     m = central_fdm(order, 1)

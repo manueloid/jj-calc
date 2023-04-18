@@ -23,8 +23,6 @@ function squeezing(cp::ControlParameter)
     h = 2.0 / cp.NParticles
     return ΔJ * 2.0h
 end
-
-
 """
 squeezings(cp::ControlParameter, final_times)
 This function returns the squeezing parameter ξ² for different final times for the STA protocol and sthe eSTA one, as well as the squeezing for the ideal case.
@@ -46,11 +44,3 @@ function squeezings(cp::ControlParameter, final_times)
     ξ_ideal = squeezing(cp)*ones(length(final_times))
     return squeezings_esta, squeezings_sta, ξ_ideal
 end
-
-cp = ControlParameterFull(10, .1)
-final_times = range(0.1, 1.0, length=100)
-ξ_esta, ξ_sta, ξ_ideal = squeezings(cp, final_times)
-using Plots
-plot(final_times,ξ_esta, label="eSTA")
-plot!(final_times,ξ_sta, label="STA")
-plot!(final_times,ξ_ideal, label="Ideal")
