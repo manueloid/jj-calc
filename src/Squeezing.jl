@@ -31,16 +31,16 @@ function squeezings(cp::ControlParameter, final_times)
     squeezings_esta = zeros(length(final_times))
     squeezings_sta = zeros(length(final_times))
     qts = ConstantQuantities(cp)
+    p = Progress(length(final_times), 1, "Computing squeezings")
     Threads.@threads for i in 1:length(final_times)
         cparam = cp_time(cp, final_times[i])
         corrs = corrections(cparam)
         esta(t) = Λ_esta(t, cparam, corrs)
         sta(t) = Λ_sta(t, cparam)
         squeezings_esta[i] = squeezing(cparam, qts, esta, 2)[2][2]
-        println("Squeezing for eSTA: ", squeezings_esta[i], " for final time: ", final_times[i])
         squeezings_sta[i] = squeezing(cparam, qts, sta, 2)[2][2]
-        println("Squeezing for STA: ", squeezings_sta[i], " for final time: ", final_times[i])
+        next!(p)
     end
-    ξ_ideal = squeezing(cp)*ones(length(final_times))
+    ξ_ideal = squeezing(cp) * ones(length(final_times))
     return squeezings_esta, squeezings_sta, ξ_ideal
 end

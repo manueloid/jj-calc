@@ -31,15 +31,15 @@ function fidelities(cp::ControlParameter, final_times; nlambda=5)
     qts = ConstantQuantities(cp) # Constant quantities not depending on the final time
     fidelities_esta = zeros(length(final_times)) # Array to store the fidelities for the eSTA protocol
     fidelities_sta = zeros(length(final_times)) # Array to store the fidelities for the STA protocol
+    p = Progress(length(final_times))
     Threads.@threads for index in 1:length(final_times) # Iterate over the final times
         cparam = cp_time(cp, final_times[index]) # Control parameter with the new final time
         corrs = corrections(cparam; nlambda=nlambda) # Corrections for the eSTA protocol for the new final time
         esta(t) = Λ_esta(t, cparam, corrs) # eSTA control function for the new final time and corrections
         sta(t) = Λ_sta(t, cparam) # STA control function for the new final time 
         fidelities_esta[index] = fidelity(cparam, qts, esta) # Fidelity for the eSTA protocol
-        println("Fidelity eSTA: ", fidelities_esta[index])
         fidelities_sta[index] = fidelity(cparam, qts, sta) # Fidelity for the STA protocol
-        println("Fidelity STA: ", fidelities_sta[index])
+        next!(p)
     end
     return fidelities_esta, fidelities_sta # Return the fidelities for both protocols as a tuple
 end

@@ -36,15 +36,15 @@ function robustnesses_mn(cp::ControlParameter, final_times, δ::Float64)
     qts = ConstantQuantities(cp) # Constant quantities for the control parameter cp
     robustnesses_esta = zeros(length(final_times)) # Array to store the robustnesses of the eSTA protocol
     robustnesses_sta = zeros(length(final_times)) # Array to store the robustnesses of the STA protocol
+    p = Progress(length(final_times), 1, "Calculating robustnesses")
     Threads.@threads for i in 1:length(final_times) # Loop over the final times
         cparam = cp_time(cp, final_times[i]) # Control parameter with the new final time
         corrs = corrections(cparam) # Corrections for the control parameter cp with the new final time
         esta(t) = Λ_esta(t, cparam, corrs) # eSTA control function for the control parameter cp with the new final time
         sta(t) = Λ_sta(t, cparam) # STA control function for the control parameter cp with the new final time
         robustnesses_esta[i] = robustness_mn(cparam, qts, esta, δ) # Robustness of the eSTA protocol
-        println("Robustness of eSTA: ", robustnesses_esta[i], " for final time ", final_times[i])
         robustnesses_sta[i] = robustness_mn(cparam, qts, sta, δ) # Robustness of the STA protocol
-        println("Robustness of STA: ", robustnesses_sta[i], " for final time ", final_times[i])
+        next!(p)
     end
     return robustnesses_esta, robustnesses_sta # Return the robustnesses of the eSTA and STA protocols
 end
@@ -81,15 +81,15 @@ function robustnesses_mn(cp::ControlParameter, final_times; order::Int64=5)
     qts = ConstantQuantities(cp) # Constant quantities for the control parameter cp
     robustnesses_esta = zeros(length(final_times)) # Array to store the robustnesses of the eSTA protocol
     robustnesses_sta = zeros(length(final_times)) # Array to store the robustnesses of the STA protocol
+    p = Progress(length(final_times), 1, "Calculating robustnesses")
     Threads.@threads for i in 1:length(final_times) # Loop over the final times
         cparam = cp_time(cp, final_times[i]) # Control parameter with the new final time
         corrs = corrections(cparam) # Corrections for the control parameter cp with the new final time
         esta(t) = Λ_esta(t, cparam, corrs) # eSTA control function for the control parameter cp with the new final time
         sta(t) = Λ_sta(t, cparam) # STA control function for the control parameter cp with the new final time
         robustnesses_esta[i] = robustness_mn(cparam, qts, esta; order=order) # Robustness of the eSTA protocol
-        println("Robustness of eSTA: ", robustnesses_esta[i], " for final time ", final_times[i])
         robustnesses_sta[i] = robustness_mn(cparam, qts, sta; order=order) # Robustness of the STA protocol
-        println("Robustness of STA: ", robustnesses_sta[i], " for final time ", final_times[i])
+        next!(p)
     end
     return robustnesses_esta, robustnesses_sta # Return the robustnesses of the eSTA and STA protocols
 end

@@ -123,15 +123,17 @@ It returns an array containing the sensitivities for each final time for both th
 function sensitivities(n::Int64, final_times)
     sensitivities_esta = zeros(length(final_times))
     sensitivities_sta = zeros(length(final_times))
+    p = Progress(length(final_times))
     Threads.@threads for i in 1:length(final_times)
         cp = ControlParameterFull(final_times[i], n)
         corrs = corrections(cp)
         esta(t) = Λ_esta(t, cp, corrs)
         sta(t) = Λ_sta(t, cp)
         sensitivities_esta[i] = sensitivity(cp, esta; t=tspan(cp, 10000))
-        println("esta: ", sensitivities_esta[i])
+        # println("esta: ", sensitivities_esta[i])
         sensitivities_sta[i] = sensitivity(cp, sta, t=tspan(cp, 10000))
-        println("sta: ", sensitivities_sta[i])
+        next!(p)
+        # println("sta: ", sensitivities_sta[i])
     end
     return sensitivities_esta, sensitivities_sta
 end
