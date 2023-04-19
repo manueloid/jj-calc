@@ -109,8 +109,8 @@ function sensitivity(cp::ControlParameter, ω::Function; t=tspan(cp, 1000))
     ψ0dH1ψf = ψ0d .* H1_in .* ψf # <ψ0|H1|ψf> term that will be subtracted from the previous term
     second = abs2.(ψ0dH1ψf) # |<ψ0|H1|ψf>|^2 term
     h = 2.0 / cp.NParticles # Scaling factor
-    integrand = abs.(first .- second) ./ h^2 # I compute the integrand
-    return simpson_rule(integrand, t) # I integrate the integrand using the Simpson rule
+    integrand =first .- second ./ h^2 # I compute the integrand
+	return abs(simpson_rule(integrand, t)) # I integrate the integrand using the Simpson rule
 end
 # I need to integrate the integrand array over the time.
 # I will use the trapezoidal rule
@@ -123,17 +123,15 @@ It returns an array containing the sensitivities for each final time for both th
 function sensitivities(n::Int64, final_times)
     sensitivities_esta = zeros(length(final_times))
     sensitivities_sta = zeros(length(final_times))
-    p = Progress(length(final_times))
+	p = Progress(length(final_times), 1, "Computing sensitivities")
     Threads.@threads for i in 1:length(final_times)
         cp = ControlParameterFull(final_times[i], n)
         corrs = corrections(cp)
         esta(t) = Λ_esta(t, cp, corrs)
         sta(t) = Λ_sta(t, cp)
         sensitivities_esta[i] = sensitivity(cp, esta; t=tspan(cp, 10000))
-        # println("esta: ", sensitivities_esta[i])
         sensitivities_sta[i] = sensitivity(cp, sta, t=tspan(cp, 10000))
         next!(p)
-        # println("sta: ", sensitivities_sta[i])
     end
     return sensitivities_esta, sensitivities_sta
 end

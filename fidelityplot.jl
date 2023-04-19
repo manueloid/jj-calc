@@ -131,7 +131,7 @@ end
 save_sensitivity_wn(n, final_times) = pgfsave(plot_folder * "sensitivity_wn_$(n).pdf", plot_sensitivity_wn(n, final_times))
 
 # Here I will save the plots
-final_times = range(0.05, 0.8, length=100) |> collect
+final_times = range(0.15, 0.8, length=100) |> collect
 # Plotting with PGFPlotsX
 using PGFPlotsX
 # Shared options for all plots
@@ -139,7 +139,6 @@ plot_folder = "./gfx/"
 cp = ControlParameterFull(0.1, 10)
 
 include("./src/ConstantQuantities.jl")
-sensitivities(10, final_times)
 
 save_fidelity(10, final_times)
 save_sensitivity_mn(10, final_times)
