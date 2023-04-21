@@ -38,6 +38,7 @@ fidelity_write(20, fidelity(20, range(0.05, 0.5, length=100) |> collect))
 # λ = Number of correction points -> the number of correction points used in the eSTA method
 # F_eSTA = fidelity of eSTA -> the fidelity of the eSTA method for the given final time
 # F_STA = fidelity of STA -> the fidelity of the STA method for the given final time
+# F_ad = fidelity of adiabatic -> the fidelity of the adiabatic method for the given final time
 # Wn_eSTA = Sensitivity of eSTA -> the sensitivity of the eSTA method with respect to the white noise
 # Wn_STA = Sensitivity of STA -> the sensitivity of the STA method with respect to the white noise
 # Tn_eSTA = Sensitivity of eSTA -> the sensitivity of the eSTA method with respect to the time noise
@@ -51,15 +52,53 @@ fidelity_write(20, fidelity(20, range(0.05, 0.5, length=100) |> collect))
 # The file will be called `whole_data.dat` and will be stored in the `data` folder
 data_name = "./data/whole_data.dat"
 # Let's create the empty DataFrame
-# df = DataFrame(tf = Float64[], N = Int64[], λ = Int64[], F_eSTA = Float64[], F_STA = Float64[], Wn_eSTA = Float64[], Wn_STA = Float64[], Tn_eSTA = Float64[], Tn_STA = Float64[], Mn_eSTA = Float64[], Mn_STA = Float64[], Sq_eSTA = Float64[], Sq_STA = Float64[], Λf = Float64[], Λ0 = Float64[])
-
-final_time = range(0.05, 0.5, length=100)
-np = 10
-nlambda = 5
+empty() = DataFrame(tf = Float64[],N = Int64[], λ = Int64[], F_eSTA = Float64[], F_STA = Float64[],F_ad=Float64[], Wn_eSTA = Float64[], Wn_STA = Float64[], Tn_eSTA = Float64[], Tn_STA = Float64[], Mn_eSTA = Float64[], Mn_STA = Float64[], Sq_eSTA = Float64[], Sq_STA = Float64[], Λf = Float64[], Λ0 = Float64[])
 Λfromω(ω) = 0.25 * ω - 1.0
 ωfromΛ(Λ) = 2.0√(Λ + 1.0)
-Λ0 = 0.0
-Λf = 50.0
-ω0 = ωfromΛ(Λ0)
-ωf = ωfromΛ(Λf)
-cparam = ControlParameterFull(ω0, ωf, final_time[1], np)
+# Here I will define a function to calculate all the features, and will use the same name of the name of the respective column in the dataframe 
+"""
+calculate_all!(cp::ControlParameter, final_times; nlambda::Int64=5)
+Calculates the fidelity, sensitivity and squeezing for the STA and eSTA methods for the given final times.
+It returns a new DataFrame with the calculated features, so that it can be appended to an existing DataFrame or saved in a new file.
+It also supports the following keyword argument:
+	- nlambda: the number of correction points used in the eSTA method
+"""
+function calculate_all(cp::ControlParameter, final_times; nlambda::Int64=5)
+    qts = ConstantQuantities(cp) # Constant quantities not depending on the final time
+	df = empty()
+	p=Progress(length(final_times), 1, "Calculating features for all final times")
+	Threads.@threads for tf in final_times
+        cparam = cp_time(cp,tf) # Control parameter with the new final time
+        corrs = corrections(cparam; nlambda=nlambda) # Corrections for the eSTA protocol for the new final time
+        esta(t) = Λ_esta(t, cparam, corrs) # eSTA control function for the new final time and corrections
+        sta(t) = Λ_sta(t, cparam) # STA control function for the new final time 
+		ad(t) = Λ_ad(t, cparam) # Adiabatic control function for the new final time
+		row=Dict(
+			:tf => tf,
+			:N => cp.NParticles,
+			:λ => nlambda,
+			:F_eSTA => fidelity(cparam, qts,esta),
+			:F_STA => fidelity(cparam, qts,sta),
+			:F_ad => fidelity(cparam, qts,ad),
+			:Wn_eSTA => sensitivity(cparam, esta),
+			:Wn_STA => sensitivity(cparam, sta),
+			:Tn_eSTA => robustness_tn(cparam, qts, esta, 1e-7),
+			:Tn_STA => robustness_tn(cparam, qts, sta, 1e-7),
+			:Mn_eSTA => robustness_mn(cparam, qts, esta),
+			:Mn_STA => robustness_mn(cparam, qts, sta),
+			:Sq_eSTA => squeezing(cparam, qts, esta,2)[2][2],
+			:Sq_STA => squeezing(cparam, qts, sta,2)[2][2],
+			:Λf => Λfromω(cparam.ωf),
+			:Λ0 => Λfromω(cparam.ω0)
+		)
+	df=	vcat(df, DataFrame(row))
+	next!(p)
+	end
+	return df
+end
+
+final_times = range(0.05, 0.5, length=400) |> collect
+cp=ControlParameterFull(.1,10)
+df = calculate_all(cp, final_times)
+
+CSV.write(data_name, df, append=true)

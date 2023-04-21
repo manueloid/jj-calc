@@ -43,3 +43,4 @@ function fidelities(cp::ControlParameter, final_times; nlambda=5)
     end
     return fidelities_esta, fidelities_sta # Return the fidelities for both protocols as a tuple
 end
+
