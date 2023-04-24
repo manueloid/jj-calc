@@ -60,10 +60,13 @@ empty() = DataFrame(tf = Float64[],N = Int64[], λ = Int64[], F_eSTA = Float64[]
 calculate_all!(cp::ControlParameter, final_times; nlambda::Int64=5)
 Calculates the fidelity, sensitivity and squeezing for the STA and eSTA methods for the given final times.
 It returns a new DataFrame with the calculated features, so that it can be appended to an existing DataFrame or saved in a new file.
+It takes as input:
+	- cp: the control parameter used in the simulation
+	- final_times: the final times at which the features are calculated. It can be a vector or a range.
 It also supports the following keyword argument:
 	- nlambda: the number of correction points used in the eSTA method
 """
-function calculate_all(cp::ControlParameter, final_times; nlambda::Int64=5)
+function calculate_all(cp::ControlParameter, final_times::AbstractVector; nlambda::Int64=5)
     qts = ConstantQuantities(cp) # Constant quantities not depending on the final time
 	df = empty()
 	p=Progress(length(final_times), 1, "Calculating features for all final times")
@@ -101,4 +104,42 @@ final_times = range(0.05, 0.5, length=400) |> collect
 cp=ControlParameterFull(.1,10)
 df = calculate_all(cp, final_times)
 
+CSV.write(data_name, df)
 CSV.write(data_name, df, append=true)
+
+# Up until this point, I have calculated the features for all the final times and stored them in a DataFrame.
+# Now I will focus on those quantitities that need to plotted as a function of time, not only depending on the final time.
+# Those are the squeezing ξs and the control function Λ(t)
+evo_name = "./data/evo_data.dat"
+# Again, I will store all the relevant features and the constant quantities in a DataFrame
+# The only big difference in this case is that I will call the time t instead of tf as it is not the final time anymore
+empty_evo() = DataFrame(t = Float64[],N = Int64[], λ = Int64[], ξs_eSTA = Float64[], ξs_STA = Float64[], Λ_eSTA = Float64[], Λ_STA = Float64[], Λ_ad = Float64[], Λ0 = Float64[], Λf = Float64[])
+
+"""
+calculate_all(cp::ControlParameter, final_time::Float64; nlambda::Int64=5, steps::Int64=1000)
+Calculates the squeezing and the control function for the STA and eSTA methods for the given final time, as well as the control function for the adiabatic approach.
+This function has the same name as the other one, but it takes a single final time as input.
+Again, it returns a new DataFrame with the calculated features, so that it can be appended to an existing DataFrame or saved in a new file.
+It takes as input:
+	- `cp`: the control parameter used in the simulation
+	- `final_time`: the final time at which the features are calculated.
+It also supports the following keyword argument:
+	- nlambda: the number of correction points used in the eSTA method
+	- steps: the number of steps used in the simulation
+"""
+function calculate_all(cp::ControlParameter, final_time::Float64; nlambda::Int64=5, steps::Int64=1000)
+	qts = ConstantQuantities(cp) # Constant quantities not depending on the final time
+	df = empty_evo()
+	corrs = corrections(cp; nlambda=nlambda) # Corrections for the eSTA protocol for a given final time
+	times = range(0.0, final_time, length=steps) # Times at which the features are calculated
+	cparam = cp_time(cp,final_time) # Control parameter with the new final time
+	corrs = corrections(cparam; nlambda=nlambda) # Corrections for the eSTA protocol for the new final time
+		esta(t) = Λ_esta(t, cparam, corrs) # eSTA control function for the new final time and corrections
+		sta(t) = Λ_sta(t, cparam) # STA control function for the new final time 
+		ad(t) = Λ_ad(t, cparam) # Adiabatic control function for the new final time
+	df=	vcat(df, DataFrame(row))
+	next!(p)
+	return df
+end
+
+

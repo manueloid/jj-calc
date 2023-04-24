@@ -7,6 +7,7 @@ function ω_esta(t::Float64, cp::ControlParameter)
 end
 Λ_esta(t::Float64, cp::ControlParameter, corrections::Vector{Float64}) = ω_esta(t, cp, corrections) * 0.25 - 1.0
 Λ_esta(t::Float64, cp::ControlParameter) = ω_esta(t, cp) * 0.25 - 1.0
+Λ_ad(t::Float64, cp::ControlParameter) = control_ad(t, cp) * 0.25 - 1.0
 
 # Function that will be used by other functions
 """

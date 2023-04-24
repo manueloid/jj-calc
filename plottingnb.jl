@@ -81,15 +81,62 @@ sort!(df, :tf) # Sorting all the data with respect of time
 @pgf TikzPicture({ "scale" => 3 }, 
 	Axis(	
 		Plot(esta_opt, Table(df.tf, df.F_eSTA)),
-				Plot(sta_opt, Table(df.tf, df.F_STA))
+		Plot(sta_opt, Table(df.tf, df.F_STA)),
+		Plot(ad_opt, Table(df.tf, df.F_ad))
 )
 )
 
-# ╔═╡ 8526e2d1-a017-4a18-8321-67efbde0aa38
-tp = @pgf TikzPicture({ "scale" => 1.5 }, Axis(Plot(Coordinates([1, 2], [2, 4]))))
+# ╔═╡ f220b4fc-9a45-4923-b303-6358079e142b
+md"""
+### Plotting the robustness with respect to the modulation error
+"""
 
-# ╔═╡ f82dc924-be7d-4b00-995f-7a68d9b28786
-pop!(PGFPlotsX.CUSTOM_PREAMBLE)
+# ╔═╡ a96a2d64-1a2b-4aaf-a5c1-c86bd50f8f80
+@pgf TikzPicture({ "scale" => 3 }, 
+	Axis({xlabel=raw"t/\tau", ylabel=raw"S"},
+		Plot(esta_opt, Table(df.tf, df.Mn_eSTA)),
+		Plot(sta_opt, Table(df.tf, df.Mn_STA)),
+)
+)
+
+# ╔═╡ a172948e-f0b5-4285-8a75-0dc1f58cbab2
+md"""
+### Plotting the time noise error
+"""
+
+# ╔═╡ 9b947584-438d-4b3c-9b48-e7f50bb0fad3
+@pgf TikzPicture({ "scale" => 3 }, 
+	Axis({xlabel=raw"t/\tau", ylabel=raw"S"},
+		Plot(esta_opt, Table(df.tf, df.Tn_eSTA)),
+		Plot(sta_opt, Table(df.tf, df.Tn_STA)),
+)
+)
+
+# ╔═╡ 180d9fc7-4bf4-450b-8d1b-d7b8e391e50c
+md"""
+### Plotting the error with respect to the white noise
+"""
+
+# ╔═╡ d21513f6-bd3b-41aa-a93c-744139c628ea
+@pgf TikzPicture({ "scale" => 3 }, 
+	Axis({xlabel=raw"t/\tau", ylabel=raw"S"},
+		Plot(esta_opt, Table(df.tf, df.Wn_eSTA)),
+		Plot(sta_opt, Table(df.tf, df.Wn_STA)),
+)
+)
+
+# ╔═╡ bc97859e-f474-46b5-86ec-1567829b351d
+md"""
+### Plotting the squeezing 
+"""
+
+# ╔═╡ d642e1c5-04bb-4b73-bb3d-62967e948828
+@pgf TikzPicture({ "scale" => 3 }, 
+	Axis({xlabel=raw"t/\tau", ylabel=raw"S"},
+		Plot(esta_opt, Table(df.tf, df.Sq_eSTA)),
+		Plot(sta_opt, Table(df.tf, df.Sq_STA)),
+)
+)
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -474,7 +521,13 @@ version = "5.1.1+0"
 # ╠═7520d9ee-2cf4-41a6-b5db-65dc27581512
 # ╠═282ca36f-3fa7-4a30-896b-ceedafcfe035
 # ╠═81cc7b20-11c1-4281-af19-428a987017d3
-# ╠═8526e2d1-a017-4a18-8321-67efbde0aa38
-# ╠═f82dc924-be7d-4b00-995f-7a68d9b28786
+# ╠═f220b4fc-9a45-4923-b303-6358079e142b
+# ╠═a96a2d64-1a2b-4aaf-a5c1-c86bd50f8f80
+# ╠═a172948e-f0b5-4285-8a75-0dc1f58cbab2
+# ╠═9b947584-438d-4b3c-9b48-e7f50bb0fad3
+# ╠═180d9fc7-4bf4-450b-8d1b-d7b8e391e50c
+# ╠═d21513f6-bd3b-41aa-a93c-744139c628ea
+# ╠═bc97859e-f474-46b5-86ec-1567829b351d
+# ╠═d642e1c5-04bb-4b73-bb3d-62967e948828
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

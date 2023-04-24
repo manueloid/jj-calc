@@ -2,7 +2,7 @@
 
 julia_version = "1.8.5"
 manifest_format = "2.0"
-project_hash = "0f8a2a4513ad8b97fd95b5cdc8d3aa1cdb90f3e7"
+project_hash = "a829f6dce6c40450d2a5d9359f25a1408e04fac9"
 
 [[deps.ATK_jll]]
 deps = ["Artifacts", "Glib_jll", "JLLWrappers", "Libdl", "Pkg"]
@@ -725,7 +725,7 @@ version = "0.21.4"
 
 [[deps.JosephsonSTA]]
 deps = ["HCubature", "LinearAlgebra", "QuadGK", "SpecialPolynomials"]
-git-tree-sha1 = "cc22b9baac70df8faded34efbca6c9cd7be2bb48"
+git-tree-sha1 = "51e9034090003ea887435669cafd3d21c2e7afb9"
 repo-rev = "main"
 repo-url = "../JosephsonSTA"
 uuid = "0f57ff0d-e87d-46e3-b1bb-275a51971cfa"
