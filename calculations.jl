@@ -1,28 +1,5 @@
 include("./src/ConstantQuantities.jl")
 using DataFrames, CSV
-
-filename(np::Int64) = "./Documents/Notes/Chapters/Results/gfx/data/fidelity_np$np.dat"
-data(np::Int64) = CSV.read(filename(np), DataFrame; header=true)
-time_filter(time_input::Vector{Float64}, target::Vector{Float64}) = time_input[time_input.∉[target]]
-time_filter(data::DataFrame, time_input::Vector{Float64}) = time_filter(time_input, data.tf)
-
-function fidelity_all(np::Int64, tspan::Vector{Float64}, Λf::Float64=50.0; nlambda::Int64=5, ω0::Float64=2.0)
-    f = ControlParameterFull(ω0, 2.0√(Λf + 1.0), 0.2, np)
-    i = ControlParameterInt(ω0, 2.0√(Λf + 1.0), 0.2, np)
-    df = DataFrame(
-        tf=tspan,
-        full=fidelity_time(f, tspan; nlambda=nlambda), # Fidelity of eSTA with the full Hamiltonian and hessian
-        full_orig=fidelity_time(f, tspan; nlambda=nlambda, hessian=false), # Fidelity of eSTA with the full Hamilhonian and NO hessian
-        interm=fidelity_time(i, tspan; nlambda=nlambda), # Fidelity of eSTA with the intermediate Hamiltonian and hessian
-        interm_orig=fidelity_time(i, tspan; nlambda=nlambda, hessian=false), # Fidelity of eSTA with the intermediate Hamilhonian and NO hessian
-        sta=fidelity_time(f, tspan; esta=false) # STA fidelity ( as esta is set to false)
-    )
-    return df
-end
-function time_check(np::Int64, time_input::Vector{Float64})
-    reduced_time = time_filter(data(np), time_input)
-    isempty(reduced_time) ? println("nothing to do") : return fidelity_all(np, reduced_time)
-end
 #===================================================================================================
  I'm not going to split between eSTA and STA. Everything will be stored in the same DataFrame.
  Let's set up the names of the columns
@@ -46,7 +23,24 @@ end
  ===================================================================================================#
 data_name = "./data/whole_data.dat"
 # Let's create the empty DataFrame
-empty() = DataFrame(tf=Float64[], N=Int64[], λ=Int64[], F_eSTA=Float64[], F_STA=Float64[], F_ad=Float64[], Wn_eSTA=Float64[], Wn_STA=Float64[], Tn_eSTA=Float64[], Tn_STA=Float64[], Mn_eSTA=Float64[], Mn_STA=Float64[], Sq_eSTA=Float64[], Sq_STA=Float64[], Λf=Float64[], Λ0=Float64[])
+empty() = DataFrame(
+	tf=Float64[],
+	N=Int64[],
+	λ=Int64[],
+	F_eSTA=Float64[],
+	F_STA=Float64[],
+	F_ad=Float64[],
+	Wn_eSTA=Float64[],
+	Wn_STA=Float64[],
+	Tn_eSTA=Float64[],
+	Tn_STA=Float64[],
+	Mn_eSTA=Float64[],
+	Mn_STA=Float64[],
+	Sq_eSTA=Float64[],
+	Sq_STA=Float64[],
+	Λf=Float64[],
+	Λ0=Float64[]
+)
 Λfromω(ω) = 0.25 * ω^2 - 1.0
 ωfromΛ(Λ) = 2.0√(Λ + 1.0)
 # Here I will define a function to calculate all the features, and will use the same name of the name of the respective column in the dataframe 
@@ -95,8 +89,8 @@ function calculate_all(cp::ControlParameter, final_times::AbstractVector; nlambd
 end
 
 final_times = range(0.05, 1.0, length=100) |> collect
-cp = ControlParameterFull(0.1, 50)
-df = calculate_all(cp, final_times; nlambda=1)
+cp = ControlParameterFull(0.1, 30)
+df = calculate_all(cp, final_times; nlambda=5)
 
 # CSV.write(data_name, df)
 CSV.write(data_name, df, append=true)
@@ -147,5 +141,6 @@ function calculate_all(cp::ControlParameter, final_time::Float64; nlambda::Int64
     return df
 end
 
+cp = ControlParameterFull(0.4, 10)
 evo_name = "./data/evo_data.dat"
-CSV.write(evo_name, calculate_all(cp, 0.5; nlambda=1, steps=100))
+CSV.write(evo_name, calculate_all(cp, cp.final_time; nlambda=1, steps=100))

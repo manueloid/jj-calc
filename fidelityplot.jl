@@ -1,147 +1,54 @@
-include("./src/ConstantQuantities.jl")
-include("./src/PlotObj.jl")
-"""
-plot_fidelity(n::Int64, final_times) -> Axis
-Calculate the fidelity of the eSTA and STA for a given number of particles.
-It returns an Axis object that can be saved with the pgfsave function.
-"""
-function plot_fidelity(n::Int64, final_times)
-    # Calculate the fidelity
-    cp = ControlParameterFull(0.1, n)
-    esta_fid, sta_fid = fidelities(cp, final_times)
-    esta_fid1 = fidelities(cp, final_times; nlambda=1)[1]
-    # Plotting with PGFPlotsX
-    esta_opt = @pgf {color = colors.red, line_width = 1.5, style = styles[1]}
-    esta_opt1 = @pgf {color = colors.blue, line_width = 1.5, style = styles.[3]}
-    sta_opt = @pgf {color = colors.black, line_width = 1.5, style = styles[2]}
-    legend = @pgf [LegendEntry("eSTA"), LegendEntry("STA")]
-    ax = @pgf Axis(
-        # Setting the plot axis
-        {xlabel = raw"$t_f/\tau$", ylabel = "F", legend_pos = "south east"},
-        # Plotting the fidelity
-        Plot(esta_opt, Coordinates(final_times, esta_fid)),
-        Plot(sta_opt, Coordinates(final_times, sta_fid)),
-        Plot(esta_opt1, Coordinates(final_times, esta_fid1)),
-        # legend
-    )
-    return ax
-end
-save_fidelity(n, final_times) = pgfsave(plot_folder * "fidelity_$(n).pdf", plot_fidelity(n, final_times))
-# Plotting the sensitivity with respect to the modulation noise
-"""
-plot_sensitivity_mn(n::Int64, final_times) -> Axis
-Calculate the sensitivity of the eSTA and STA for a given number of particles with respect to the modulation noise.
-It returns an Axis object that can be saved with the pgfsave function.
-"""
-function plot_sensitivity_mn(n::Int64, final_times)
-    # Calculate the fidelity
-    cp = ControlParameterFull(0.1, n)
-    esta_mn, sta_mn = robustnesses_mn(cp, final_times)
-    # Plotting with PGFPlotsX
-    esta_opt = @pgf {color = colors.red, line_width = 1.5, style = styles[1]}
-    sta_opt = @pgf {color = colors.black, line_width = 1.5, style = styles[2]}
-    legend = @pgf [LegendEntry("eSTA"), LegendEntry("STA")]
-    ax = @pgf Axis(
-        # Setting the plot axis
-        {xlabel = raw"$t_f/\tau$", ylabel = "S", legend_pos = "north east"},
-        # Plotting the fidelity
-        Plot(esta_opt, Coordinates(final_times, esta_mn)),
-        Plot(sta_opt, Coordinates(final_times, sta_mn)),
-        # legend
-    )
-    return ax
-end
-save_sensitivity_mn(n, final_times) = pgfsave(plot_folder * "sensitivity_mn_$(n).pdf", plot_sensitivity_mn(n, final_times))
-# Plotting the sensitivity with respect to the timing noise
-"""
-plot_sensitivity_tn(n::Int64, final_times) -> Axis
-Calculate the sensitivity of the eSTA and STA for a given number of particles with respect to the timing noise.
-It returns an Axis object that can be saved with the pgfsave function.
-"""
-function plot_sensitivity_tn(n::Int64, final_times, eps::Float64)
-    # Calculate the fidelity
-    cp = ControlParameterFull(0.1, n)
-    esta_tn, sta_tn = robustnesses_tn(cp, final_times, eps)
-    # Plotting with PGFPlotsX
-    esta_opt = @pgf {color = colors.red, line_width = 1.5, style = styles[1]}
-    sta_opt = @pgf {color = colors.black, line_width = 1.5, style = styles[2]}
-    legend = @pgf [LegendEntry("eSTA"), LegendEntry("STA")]
-    ax = @pgf Axis(
-        # Setting the plot axis
-        {xlabel = raw"$t_f/\tau$", ylabel = "S", legend_pos = "north east"},
-        # Plotting the fidelity
-        Plot(esta_opt, Coordinates(final_times, esta_tn)),
-        Plot(sta_opt, Coordinates(final_times, sta_tn)),
-        # legend
-    )
-    return ax
-end
-# Plotting the squeezing
-"""
-plot_squeezing(n::Int64, final_times) -> Axis
-Calculate the squeezing of the eSTA and STA for a given number of particles.
-It returns an Axis object that can be saved with the pgfsave function.
-"""
-save_sensitivity_tn(n, final_times, eps) = pgfsave(plot_folder * "sensitivity_tn_$(n).pdf", plot_sensitivity_tn(n, final_times, eps))
-function plot_squeezing(n::Int64, final_times)
-    # Calculate the squeezing of the eSTA and STA at final time
-    cp = ControlParameterFull(0.1, n)
-    esta_sq, sta_sq, id_sq = squeezings(cp, final_times)
-    # Plotting with PGFPlotsX
-    esta_opt = @pgf {color = colors.red, line_width = 1.5, style = styles[1]}
-    sta_opt = @pgf {color = colors.black, line_width = 1.5, style = styles[2]}
-    id_opt = @pgf {color = colors.green, line_width = 1.5, style = styles[2]}
-    legend = @pgf [LegendEntry("eSTA"), LegendEntry("STA"), LegendEntry("Ideal")]
-    ax = @pgf Axis(
-        # Setting the plot axis
-        {xlabel = raw"$t_f/\tau$", ylabel = "\$\\xi_s^2\$", legend_pos = "north east"},
-        # Plotting the fidelity
-        Plot(esta_opt, Coordinates(final_times, esta_sq)),
-        Plot(sta_opt, Coordinates(final_times, sta_sq)),
-        Plot(id_opt, Coordinates(final_times, id_sq)),
-        # legend
-    )
-    return ax
-end
-save_squeezing(n, final_times) = pgfsave(plot_folder * "squeezing_$(n).pdf", plot_squeezing(n, final_times))
-# Plotting the sensitivity with respect to the white noise
-"""
-plot_sensitivity_wn(n::Int64, final_times) -> Axis
-Calculate the sensitivity of the eSTA and STA for a given number of particles with respect to the white noise.
-It returns an Axis object that can be saved with the pgfsave function.
-"""
-function plot_sensitivity_wn(n::Int64, final_times)
-    # Calculate the fidelity
-    esta_wn, sta_wn = sensitivities(n, final_times)
-    # Plotting with PGFPlotsX
-    esta_opt = @pgf {color = colors.red, line_width = 1.5, style = styles[1]}
-    sta_opt = @pgf {color = colors.black, line_width = 1.5, style = styles[2]}
-    legend = @pgf [LegendEntry("eSTA"), LegendEntry("STA")]
-    ax = @pgf Axis(
-        # Setting the plot axis
-        {xlabel = raw"$t_f/\tau$", ylabel = "S", legend_pos = "north east"},
-        # Plotting the fidelity
-        Plot(esta_opt, Coordinates(final_times, esta_wn)),
-        Plot(sta_opt, Coordinates(final_times, sta_wn)),
-        # legend
-    )
-    return ax
-end
-# Here I will sum up all the functions that I have defined above and save the plots in the folder `gfx`
-save_sensitivity_wn(n, final_times) = pgfsave(plot_folder * "sensitivity_wn_$(n).pdf", plot_sensitivity_wn(n, final_times))
+using CSV, DataFrames, PGFPlotsX, Colors
+filter_val(df::DataFrame, col_name::Symbol, value) = filter(row -> row[col_name] == value, df) # filter by value
+filter_val(df::DataFrame, col_name::Symbol, min, max) = filter(row -> row[col_name] > min && row[col_name] < max, df) # filter by range
+filter_val(df::DataFrame, N::Int64, λ::Int64) = filter(row -> row.N == N && row.λ == λ, df)
+df = CSV.read("./data/whole_data.dat", DataFrame)
 
-# Here I will save the plots
-final_times = range(0.15, 0.8, length=100) |> collect
-# Plotting with PGFPlotsX
-using PGFPlotsX
-# Shared options for all plots
-plot_folder = "./gfx/"
-cp = ControlParameterFull(0.1, 10)
+colors = (
+    black=colorant"#000000", # STA	
+    red=colorant"#FF0000", # eSTA Full Hamiltonian with Hessian 
+    blue=colorant"#0000FF", # eSTA Intermediate Hamiltonian with Hessian
+    yellow=colorant"#FFa000", # eSTA Full Hamiltonian with original version
+    green=colorant"#008000"# eSTA Intermediate Hamiltonian original version
+)
+styles = (
+    solid="solid",                         # eSTA Intermediate Hamiltonian with Hessian
+    dot_dash="dash pattern={on 4pt off 1pt on 1pt off 1pt}",#STA
+    ldash="dash pattern={on 2pt off 2pt}",# eSTA Full Hamiltonian with Hessian 
+    dash=" dashed",                        # eSTA Full Hamiltonian with original version
+    dot="dash pattern={on 1pt off 1pt}",  # eSTA Intermediate Hamiltonian original version
+)
 
-include("./src/ConstantQuantities.jl")
+common_style = @pgf {group_size = "1 by 2", vertical_sep = "0pt", xticklabels_at = "edge bottom", xlabels_at = "edge bottom"}
+esta_opt = @pgf {color = colors.red, line_width = 1, style = styles.solid}
+sta_opt = @pgf{color = colors.black, line_width = 1, style = styles.dash}
+ad_opt = @pgf {color = colors.green, line_width = 1, style = styles.dot_dash}
+extra_opt = @pgf {color = colors.yellow, line_width = 1, style = styles.ldash}
+feat(column::String, df::DataFrame) = Table(df.tf, df[!, column])
 
-save_fidelity(10, final_times)
-save_sensitivity_mn(10, final_times)
-save_sensitivity_tn(10, final_times, 0.0001)
-save_squeezing(10, final_times)
-save_sensitivity_wn(10, final_times)
+PGFPlotsX.enable_interactive(false)
+@pgf gp_fid = GroupPlot(
+    {
+        xmin = 0.1, xmax = 0.6,
+        ymin = 0.00, ymax = 0.2,
+        group_style = common_style,
+        xlabel = raw"$t_f$",
+        ylabel = raw"$\mathcal{S}$"
+    },
+    {},
+    Plot(esta_opt, feat("Mn_eSTA", df_10)),
+    Plot(sta_opt, feat("Mn_STA", df_10)),
+    Plot(ad_opt, feat("Tn_eSTA", df_10)),
+    Plot(extra_opt, feat("Tn_STA", df_10)),
+    {},
+    Plot(esta_opt, feat("Mn_eSTA", df_30)),
+    Plot(sta_opt, feat("Mn_STA", df_30)),
+    Plot(ad_opt, feat("Tn_eSTA", df_30)),
+    Plot(extra_opt, feat("Tn_STA", df_30)),
+)
+display("./data/fidelity.pdf", gp_fid)
+
+
+
+effectiveness(fidelity::Float64, sensitivity::Float64) = sqrt((1 - fidelity)^2 + sensitivity^2)
+broadcast(effectiveness, df_10.F_eSTA, df_10.Tn_eSTA)

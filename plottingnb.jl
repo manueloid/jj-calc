@@ -26,7 +26,7 @@ main {
 
 # ╔═╡ 7068afff-532d-4e1f-9185-fdb00444abb8
 md"""
-### Select the number of particles $(@bind np Select([10, 50]))
+### Select the number of particles $(@bind np Select([10, 30, 50]))
 """
 
 # ╔═╡ ea1a63dc-3c5c-41dc-847e-8ab412b2e163
@@ -40,21 +40,10 @@ Now I need to find a way to filter the data based on the number of particles
 """
 
 # ╔═╡ ce978666-f44d-4603-beae-059f991ac520
-filter_val(df::DataFrame, col_name::Symbol, value) = filter(row -> row[col_name]==value, df)
-
-# ╔═╡ 7a6adb36-4a60-4a8f-9fe3-be95ee237d7b
-filter_val(df::DataFrame, col_name::Symbol, min, max) = filter(row -> row[col_name] > min && row[col_name] < max, df)
-
-# ╔═╡ 67cdf521-c5f6-4cc4-9f12-1c04a6a5992d
-function filter_val(df::DataFrame, N::Int64, λ::Int64; Λ0::Float64=0.0, Λf::Float64=50.0)
-	filter(row -> row.N == N && row.λ == λ , df)
-end
-
-# ╔═╡ 77bd3260-d0dc-43b0-aedc-1bdd1196b4bd
 begin 
-	df = CSV.read("./data/whole_data.dat", DataFrame)	
-	df1 = filter_val(df, np, 1)
-	df = filter_val(df, np, 5)
+	filter_val(df::DataFrame, col_name::Symbol, value) = filter(row -> row[col_name]==value, df)
+	filter_val(df::DataFrame, col_name::Symbol, min, max) = filter(row -> row[col_name] > min && row[col_name] < max, df)
+	filter_val(df::DataFrame, N::Int64, λ::Int64)=filter(row -> row.N == N && row.λ == λ , df)
 end
 
 # ╔═╡ 2ae5ca0c-e2b6-4930-9626-0754b032a011
@@ -69,7 +58,7 @@ colors = (
     red=colorant"#FF0000", # eSTA Full Hamiltonian with Hessian 
     blue=colorant"#0000FF", # eSTA Intermediate Hamiltonian with Hessian
     yellow=colorant"#FFa000", # eSTA Full Hamiltonian with original version
-    green=colorant"#00FF00"# eSTA Intermediate Hamiltonian original version
+    green=colorant"#008000"# eSTA Intermediate Hamiltonian original version
 )
 
 # ╔═╡ f02d195c-ea8e-4633-b0b6-cd1a1fde7d53
@@ -93,133 +82,204 @@ md"""
 
 # ╔═╡ 9e64b389-3b31-45ae-baa8-ac72ae0d0885
 begin
+	common_style = @pgf {group_size = "1 by 2", vertical_sep = "0pt", xticklabels_at = "edge bottom", xlabels_at = "edge bottom"}
 	esta_opt = @pgf {color=colors.red, line_width=1, style=styles.solid}
 	sta_opt = @pgf{color=colors.black, line_width=1, style=styles.dash}
 	ad_opt = @pgf {color=colors.green, line_width=1, style=styles.dot_dash}
 	extra_opt = @pgf {color=colors.yellow, line_width=1, style=styles.ldash}
 end
 
-# ╔═╡ 7520d9ee-2cf4-41a6-b5db-65dc27581512
-md"""
-### Here I will plot the fidelity
-"""
-
-# ╔═╡ 930454f1-c558-42db-9a6c-51c60359ae21
-md"""
-Min tf $(@bind Fmin NumberField(0.0:0.01:1.0, default=0.0))
-
-Min tf $(@bind Fmax NumberField(0.0:0.01:1.0, default=1.0))
-"""
-
-# ╔═╡ 81cc7b20-11c1-4281-af19-428a987017d3
+# ╔═╡ 9174c0b3-9322-4699-b854-f2d81ca73077
 begin
-	f_df = filter_val(df, :tf, Fmin, Fmax)
-	f_df1 = filter_val(df1, :tf, Fmin, Fmax)
-	@pgf TikzPicture({ "scale" => 3 }, 
-	Axis({xlabel = raw"t/\tau", ylabel = "F"},
-		Plot(esta_opt, Table(f_df.tf, f_df.F_eSTA)),
-		Plot(sta_opt, Table(f_df.tf, f_df.F_STA)),
-		Plot(ad_opt, Table(f_df.tf, f_df.F_ad)),
-		Plot(extra_opt, Table(f_df1.tf, f_df1.F_eSTA))
-)
-	)
+	df = CSV.read("./data/whole_data.dat", DataFrame)
+	df_10 = filter_val(df, 10, 5)
+	df_30 = filter_val(df, 30, 5)
+	df_101 = filter_val(df, 10, 1)
+	df_301 = filter_val(df, 30, 1)
 end
 
-# ╔═╡ f220b4fc-9a45-4923-b303-6358079e142b
+# ╔═╡ 8f613cbb-4ae6-4617-90bf-ae50a6aa6c6d
+feat(column::String, df::DataFrame) = Table(df.tf, df[!,column])
+
+# ╔═╡ 3d5333ce-d276-4030-9d21-d2bbd10ab5ff
 md"""
-### Plotting the robustness with respect to the modulation error
+## Plotting the fidelity for different number of particles
+x axis $(@bind xmin_fid NumberField(0.00:0.01:1.00, default = 0.00)), $(@bind xmax_fid NumberField(0.00:0.01:1.00, default = 1.00))
+
+y axis $(@bind ymin_fid NumberField(0.00:0.01:1.00, default = 0.00)), $(@bind ymax_fid NumberField(0.00:0.01:1.1, default = 1.00))
+
 """
 
-# ╔═╡ d75af0c8-5c53-4e91-b5a5-938df476ea80
-md"""
-Min $t_f$ $(@bind mnmin NumberField(0.0:0.01:1.0, default = 0.0))
-
-Max $t_f$ $(@bind mnmax NumberField(0.0:0.01:1.0, default = 1.0))
-"""
-
-# ╔═╡ a96a2d64-1a2b-4aaf-a5c1-c86bd50f8f80
-begin
-	mn_df = filter_val(df, :tf, mnmin, mnmax)
-	@pgf TikzPicture({ "scale" => 3 }, 
-	Axis({xlabel=raw"t/\tau", ylabel=raw"S"},
-		Plot(esta_opt, Table(mn_df.tf, mn_df.Mn_eSTA)),
-		Plot(sta_opt, Table(mn_df.tf, mn_df.Mn_STA)),
+# ╔═╡ 263d9d9f-b36d-4508-943a-88cb92ed7513
+@pgf TikzPicture({scale = 3}, 
+	GroupPlot(
+	{
+		xmin = xmin_fid, xmax = xmax_fid,
+		ymin = ymin_fid, ymax = ymax_fid,
+		group_style = common_style,
+		xlabel = raw"$t_f$",
+		ylabel = raw"$\mathcal{F}$"
+},
+	{},
+		Plot(esta_opt, feat("F_eSTA", df_10)),
+		Plot(sta_opt, feat("F_STA", df_10)),
+		Plot(ad_opt, feat("F_ad", df_10)),
+		Plot(extra_opt, feat("F_eSTA", df_101)),
+	{},
+		Plot(esta_opt, feat("F_eSTA", df_30)),
+		Plot(sta_opt, feat("F_STA", df_30)),
+		Plot(ad_opt, feat("F_ad", df_30)),
+		Plot(extra_opt, feat("F_eSTA", df_301)),
+	) 
 )
-)
-end
 
-# ╔═╡ a172948e-f0b5-4285-8a75-0dc1f58cbab2
+# ╔═╡ 25d1698c-1fcc-442e-96ed-3f4657dcfc13
 md"""
-### Plotting the time noise error
+## Plotting the sensitivity with respect to the time noise 
+### $\Lambda_\epsilon(t) = \Lambda(t + \epsilon)$
+
+x axis $(@bind xmin_tn NumberField(0.00:0.01:1.00, default = 0.00)), $(@bind xmax_tn NumberField(0.00:0.01:1.00, default = 1.00))
+
+y axis $(@bind ymin_tn NumberField(0.00:0.01:1.00, default = 0.00)), $(@bind ymax_tn NumberField(0.00:0.01:1.1, default = 1.00))
+
 """
 
-# ╔═╡ 31a094cf-fe38-4691-8ea2-2f0feda83e37
-md"""
-Min tf $(@bind tnmin NumberField(0.0:0.01:1.0, default=0.0))
+# ╔═╡ a3317603-3b1e-4a78-b193-e14581272847
+@pgf TikzPicture({scale = 3}, 
+	GroupPlot(
+	{
+		xmin = xmin_tn, xmax = xmax_tn,
+		ymin = ymin_tn, ymax = ymax_tn,
+		group_style = common_style,
+		xlabel = raw"$t_f$",
+		ylabel = raw"$\mathcal{S}_t$"
+},
+	{},
+		Plot(esta_opt, feat("Tn_eSTA", df_10)),
+		Plot(sta_opt, feat("Tn_STA", df_10)),
+	{},
+		Plot(esta_opt, feat("Tn_eSTA", df_30)),
+		Plot(sta_opt, feat("Tn_STA", df_30)),
+	) 
+)
 
-Min tf $(@bind tnmax NumberField(0.0:0.01:1.0, default=1.0))
+# ╔═╡ 049b4984-ce69-4eff-8be0-a2b1f6d39930
+md"""
+## Plotting the sensitivity with respect to the time noise 
+### $\Lambda_\epsilon(t) = (1 + \epsilon)\Lambda(t)$
+
+x axis $(@bind xmin_mn NumberField(0.00:0.01:1.00, default = 0.00)), $(@bind xmax_mn NumberField(0.00:0.01:1.00, default = 1.00))
+
+y axis $(@bind ymin_mn NumberField(0.00:0.01:1.00, default = 0.00)), $(@bind ymax_mn NumberField(0.00:0.01:1.1, default = 1.00))
+
 """
 
-# ╔═╡ 9b947584-438d-4b3c-9b48-e7f50bb0fad3
-begin
-	tn_df = filter_val(df, :tf, tnmin, tnmax)
-	@pgf TikzPicture({ "scale" => 3 }, 
-	Axis({xlabel=raw"t/\tau", ylabel=raw"S"},
-		Plot(esta_opt, Table(tn_df.tf, tn_df.Tn_eSTA)),
-		Plot(sta_opt, Table(tn_df.tf, tn_df.Tn_STA)),
+# ╔═╡ 70425d22-3663-4eb1-8786-ca470222e857
+@pgf TikzPicture({scale = 3}, 
+	GroupPlot(
+	{
+		xmin = xmin_mn, xmax = xmax_mn,
+		ymin = ymin_mn, ymax = ymax_mn,
+		group_style = common_style,
+		xlabel = raw"$t_f$",
+		ylabel = raw"$\mathcal{S}_m$"
+},
+	{},
+		Plot(esta_opt, feat("Mn_eSTA", df_10)),
+		Plot(sta_opt, feat("Mn_STA", df_10)),
+	{},
+		Plot(esta_opt, feat("Mn_eSTA", df_30)),
+		Plot(sta_opt, feat("Mn_STA", df_30)),
+	) 
 )
-)
-end
 
-# ╔═╡ 180d9fc7-4bf4-450b-8d1b-d7b8e391e50c
+# ╔═╡ 41c2663e-9c5f-42b3-839f-54f8114b48de
 md"""
-### Plotting the error with respect to the white noise
+## Plotting the squeezing 
+
+x axis $(@bind xmin_sq NumberField(0.00:0.01:1.00, default = 0.00)), $(@bind xmax_sq NumberField(0.00:0.01:1.00, default = 1.00))
+
+y axis $(@bind ymin_sq NumberField(0.00:0.01:1.00, default = 0.00)), $(@bind ymax_sq NumberField(0.00:0.01:1.1, default = 1.00))
+
 """
 
-# ╔═╡ 6b76b553-0a5a-472a-8e69-a7e92faf11b3
+# ╔═╡ c9057127-050c-4a6a-a252-7d8ae06ab545
 md"""
-Min $t_f$ $(@bind wnmin NumberField(0.0:0.01:1.0, default = 0.0))
+### Evaluating the effectiveness
+x axis $(@bind xmin_ef NumberField(0.00:0.01:1.00, default = 0.00)), $(@bind xmax_ef NumberField(0.00:0.01:1.00, default = 1.00))
 
-Max $t_f$ $(@bind wnmax NumberField(0.0:0.01:1.0, default = 1.0))
+y axis $(@bind ymin_ef NumberField(0.00:0.01:1.00, default = 0.00)), $(@bind ymax_ef NumberField(0.00:0.01:1.1, default = 1.00))
 """
 
-# ╔═╡ d21513f6-bd3b-41aa-a93c-744139c628ea
-begin
-	wn_df = filter_val(df, :tf, wnmin, wnmax)
-	@pgf TikzPicture({ "scale" => 3 }, 
-	Axis({xlabel=raw"t/\tau", ylabel=raw"S"},
-		Plot(esta_opt, Table(wn_df.tf, wn_df.Wn_eSTA)),
-		Plot(sta_opt, Table(wn_df.tf, wn_df.Wn_STA)),
-)
-)
-end
+# ╔═╡ 3f24c777-02df-4e30-8dd7-709fdca5d08a
+effectiveness(fidelity::Float64, sensitivity::Float64) = sqrt((1-fidelity)^2 + sensitivity^2)
 
-# ╔═╡ bc97859e-f474-46b5-86ec-1567829b351d
-md"""
-### Plotting the squeezing 
-"""
+# ╔═╡ df6e79a3-da1e-4e25-a868-f69ccd44e0dc
+@pgf TikzPicture({scale = 3},
+	GroupPlot(
+		{
+			xmin = xmin_ef, xmax = xmax_ef,
+			ymin = ymin_ef, ymax = ymax_ef,
+			group_style = common_style,
+			xlabel = raw"$t_f$",
+			ylabel = raw"$\eta$",
+		},
+		{},
+		Plot(esta_opt, Table(df_10.tf, broadcast(effectiveness, df_10.F_eSTA, df_10.Tn_eSTA))),
+		Plot(sta_opt, Table(df_10.tf, broadcast(effectiveness, df_10.F_STA, df_10.Tn_STA))),
+		Plot(esta_opt, Table(df_10.tf, broadcast(effectiveness, df_10.F_eSTA, df_10.Mn_eSTA))),
+		Plot(sta_opt, Table(df_10.tf, broadcast(effectiveness, df_10.F_STA, df_10.Mn_STA))),
+		{},
+		Plot(esta_opt, Table(df_10.tf, broadcast(effectiveness, df_30.F_eSTA, df_30.Tn_eSTA))),
+		Plot(sta_opt, Table(df_10.tf, broadcast(effectiveness, df_30.F_STA, df_30.Tn_STA))),
+		Plot(esta_opt, Table(df_10.tf, broadcast(effectiveness, df_30.F_eSTA, df_30.Mn_eSTA))),
+		Plot(sta_opt, Table(df_10.tf, broadcast(effectiveness, df_30.F_STA, df_30.Mn_STA))),
+	))
+
+# ╔═╡ 9fb133ae-4375-4cfe-acd6-e7ca7045db11
+@pgf TikzPicture({scale = 3},
+	GroupPlot(
+		{
+			xmin = xmin_ef, xmax = xmax_ef,
+			ymin = ymin_ef, ymax = ymax_ef,
+			group_style = common_style,
+			xlabel = raw"$t_f$",
+			ylabel = raw"$\eta$",
+		},
+		{},
+		Plot(esta_opt, Table(df_10.tf, broadcast(effectiveness, df_10.F_eSTA, df_10.Tn_eSTA .+ df_10.Mn_eSTA))),
+		Plot(sta_opt, Table(df_10.tf, broadcast(effectiveness, df_10.F_STA, df_10.Tn_STA.+ df_10.Mn_STA))),
+		{},
+		Plot(esta_opt, Table(df_30.tf, broadcast(effectiveness, df_30.F_eSTA, df_30.Tn_eSTA .+ df_30.Mn_eSTA))),
+		Plot(sta_opt, Table(df_30.tf, broadcast(effectiveness, df_30.F_STA, df_30.Tn_STA.+ df_30.Mn_STA))),
+	))
 
 # ╔═╡ b2b8e791-c825-41c3-827d-c8b10b66f1d2
-ξ_id = CSV.read("./data/squeezing_id.dat", DataFrame)[np,2]	 
-
-# ╔═╡ 6e9fd844-ec54-4b54-ac96-db234241665c
-md"""
-Min $t_f$ $(@bind sqmin NumberField(0.0:0.01:1.0, default = 0.0))
-
-Max $t_f$ $(@bind sqmax NumberField(0.0:0.01:1.0, default = 1.0))
-"""
-
-# ╔═╡ d642e1c5-04bb-4b73-bb3d-62967e948828
 begin
-sq_df = filter_val(df, :tf, sqmin, sqmax)
-@pgf TikzPicture({ "scale" => 3 }, 
-	Axis({xlabel=raw"t/\tau", ylabel=raw"S"},
-		Plot(esta_opt, Table(sq_df.tf, sq_df.Sq_eSTA)),
-		Plot(sta_opt, Table(sq_df.tf, sq_df.Sq_STA)),
-		Plot(ad_opt, Table(sq_df.tf, ξ_id*ones(length(sq_df.tf))))
-)
-)
+	ξ_id10 = CSV.read("./data/squeezing_id.dat", DataFrame)[10,2]	 
+	ξ_id30 = CSV.read("./data/squeezing_id.dat", DataFrame)[30,2]	 
 end
+
+# ╔═╡ c3a89f2b-e587-48f3-93a4-35279c456a26
+@pgf TikzPicture({scale = 3}, 
+	GroupPlot(
+	{
+		xmin = xmin_sq, xmax = xmax_sq,
+		ymin = ymin_sq, ymax = ymax_sq,
+		group_style = common_style,
+		xlabel = raw"$t_f$",
+		ylabel = raw"$\mathcal{\xi^2_N}$"
+},
+	{},
+		Plot(esta_opt, feat("Sq_eSTA", df_10)),
+		Plot(sta_opt, feat("Sq_STA", df_10)),
+		HLine(ad_opt, ξ_id10),
+	{},
+		Plot(esta_opt, feat("Sq_eSTA", df_30)),
+		Plot(sta_opt, feat("Sq_STA", df_30)),
+		HLine(ad_opt, ξ_id30),
+	) 
+)
 
 # ╔═╡ 156fb0c9-bea9-474c-bc03-31d60d4d6b06
 md"""
@@ -236,10 +296,10 @@ md"""
 
 # ╔═╡ e939e438-7d4e-4a0b-8354-2d94451da076
 @pgf TikzPicture({scale = "3"}, 
-	Axis({xlabel = raw"$t$", ylabel = raw"$\Lambda$"},
+	Axis({xlabel = raw"$t/\tau$", ylabel = raw"$\Lambda$"},
 			Plot(esta_opt, Table(evo_df.t, evo_df.Λ_eSTA)),
 			Plot(sta_opt, Table(evo_df.t, evo_df.Λ_STA)),
-			Plot(extra_opt, Table(evo_df.t, evo_df.Λ_ad))
+			Plot(ad_opt, Table(evo_df.t, evo_df.Λ_ad))
 	)
 )
 
@@ -279,7 +339,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.8.5"
 manifest_format = "2.0"
-project_hash = "d923c0a495166b9155c552df7a6b86c2c9b3c8c1"
+project_hash = "4df14170d32413e404ede0fb4748baedc4ea402d"
 
 [[deps.AbstractPlutoDingetjes]]
 deps = ["Pkg"]
@@ -737,37 +797,33 @@ version = "17.4.0+0"
 # ╠═a50603dc-e11c-11ed-0121-2f6b8cb66545
 # ╟─7068afff-532d-4e1f-9185-fdb00444abb8
 # ╟─ea1a63dc-3c5c-41dc-847e-8ab412b2e163
-# ╠═77bd3260-d0dc-43b0-aedc-1bdd1196b4bd
 # ╟─7cb08aba-7ee3-42bc-97cc-01a92a483c88
 # ╠═ce978666-f44d-4603-beae-059f991ac520
-# ╠═7a6adb36-4a60-4a8f-9fe3-be95ee237d7b
-# ╠═67cdf521-c5f6-4cc4-9f12-1c04a6a5992d
 # ╟─2ae5ca0c-e2b6-4930-9626-0754b032a011
-# ╟─586f1eac-1671-4da6-a03a-86b020f51378
+# ╠═586f1eac-1671-4da6-a03a-86b020f51378
 # ╟─f02d195c-ea8e-4633-b0b6-cd1a1fde7d53
 # ╟─b43b91bf-81a8-49cb-b676-cc985ed456db
 # ╟─bfa45357-f1bc-4f47-804d-f07ff9a62eea
-# ╟─9e64b389-3b31-45ae-baa8-ac72ae0d0885
-# ╟─7520d9ee-2cf4-41a6-b5db-65dc27581512
-# ╠═81cc7b20-11c1-4281-af19-428a987017d3
-# ╟─930454f1-c558-42db-9a6c-51c60359ae21
-# ╟─f220b4fc-9a45-4923-b303-6358079e142b
-# ╟─a96a2d64-1a2b-4aaf-a5c1-c86bd50f8f80
-# ╟─d75af0c8-5c53-4e91-b5a5-938df476ea80
-# ╟─a172948e-f0b5-4285-8a75-0dc1f58cbab2
-# ╟─9b947584-438d-4b3c-9b48-e7f50bb0fad3
-# ╟─31a094cf-fe38-4691-8ea2-2f0feda83e37
-# ╟─180d9fc7-4bf4-450b-8d1b-d7b8e391e50c
-# ╟─d21513f6-bd3b-41aa-a93c-744139c628ea
-# ╟─6b76b553-0a5a-472a-8e69-a7e92faf11b3
-# ╟─bc97859e-f474-46b5-86ec-1567829b351d
-# ╟─b2b8e791-c825-41c3-827d-c8b10b66f1d2
-# ╟─d642e1c5-04bb-4b73-bb3d-62967e948828
-# ╟─6e9fd844-ec54-4b54-ac96-db234241665c
+# ╠═9e64b389-3b31-45ae-baa8-ac72ae0d0885
+# ╠═9174c0b3-9322-4699-b854-f2d81ca73077
+# ╠═8f613cbb-4ae6-4617-90bf-ae50a6aa6c6d
+# ╠═3d5333ce-d276-4030-9d21-d2bbd10ab5ff
+# ╠═263d9d9f-b36d-4508-943a-88cb92ed7513
+# ╠═25d1698c-1fcc-442e-96ed-3f4657dcfc13
+# ╠═a3317603-3b1e-4a78-b193-e14581272847
+# ╟─049b4984-ce69-4eff-8be0-a2b1f6d39930
+# ╠═70425d22-3663-4eb1-8786-ca470222e857
+# ╠═41c2663e-9c5f-42b3-839f-54f8114b48de
+# ╠═c3a89f2b-e587-48f3-93a4-35279c456a26
+# ╠═c9057127-050c-4a6a-a252-7d8ae06ab545
+# ╠═3f24c777-02df-4e30-8dd7-709fdca5d08a
+# ╠═df6e79a3-da1e-4e25-a868-f69ccd44e0dc
+# ╠═9fb133ae-4375-4cfe-acd6-e7ca7045db11
+# ╠═b2b8e791-c825-41c3-827d-c8b10b66f1d2
 # ╟─156fb0c9-bea9-474c-bc03-31d60d4d6b06
 # ╠═7d76c66a-3929-46f4-b822-90ca6dab181c
 # ╟─1bd450ee-8f62-42f8-b7e7-96a53a014d65
-# ╟─e939e438-7d4e-4a0b-8354-2d94451da076
+# ╠═e939e438-7d4e-4a0b-8354-2d94451da076
 # ╟─991b344d-9d3b-44fc-878c-caf6bff8cce2
 # ╟─476d287a-a968-4400-b167-99bebf93f811
 # ╟─00000000-0000-0000-0000-000000000001
