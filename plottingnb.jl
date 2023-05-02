@@ -104,21 +104,21 @@ feat(column::String, df::DataFrame) = Table(df.tf, df[!,column])
 # ╔═╡ 3d5333ce-d276-4030-9d21-d2bbd10ab5ff
 md"""
 ## Plotting the fidelity for different number of particles
-x axis $(@bind xmin_fid NumberField(0.00:0.01:1.00, default = 0.00)), $(@bind xmax_fid NumberField(0.00:0.01:1.00, default = 1.00))
+x axis $(@bind xmin_fid NumberField(0.00:0.01:1.00, default = 0.05)), $(@bind xmax_fid NumberField(0.00:0.01:1.00, default = 1.00))
 
-y axis $(@bind ymin_fid NumberField(0.00:0.01:1.00, default = 0.00)), $(@bind ymax_fid NumberField(0.00:0.01:1.1, default = 1.00))
+y axis $(@bind ymin_fid NumberField(0.00:0.01:1.00, default = 0.42)), $(@bind ymax_fid NumberField(0.00:0.01:1.1, default = 1.00))
 
 """
 
 # ╔═╡ 263d9d9f-b36d-4508-943a-88cb92ed7513
-@pgf TikzPicture({scale = 3}, 
+fid_plot = @pgf TikzPicture({scale = 3}, 
 	GroupPlot(
 	{
 		xmin = xmin_fid, xmax = xmax_fid,
 		ymin = ymin_fid, ymax = ymax_fid,
 		group_style = common_style,
 		xlabel = raw"$t_f$",
-		ylabel = raw"$\mathcal{F}$"
+		ylabel = raw"F"
 },
 	{},
 		Plot(esta_opt, feat("F_eSTA", df_10)),
@@ -133,26 +133,30 @@ y axis $(@bind ymin_fid NumberField(0.00:0.01:1.00, default = 0.00)), $(@bind ym
 	) 
 )
 
+# ╔═╡ 3bf5d5ad-d521-4ba0-9d90-db27e6b4d3bc
+pgfsave("fid_plot.pdf", fid_plot)
+
 # ╔═╡ 25d1698c-1fcc-442e-96ed-3f4657dcfc13
 md"""
 ## Plotting the sensitivity with respect to the time noise 
 ### $\Lambda_\epsilon(t) = \Lambda(t + \epsilon)$
 
-x axis $(@bind xmin_tn NumberField(0.00:0.01:1.00, default = 0.00)), $(@bind xmax_tn NumberField(0.00:0.01:1.00, default = 1.00))
+x axis $(@bind xmin_tn NumberField(0.00:0.01:1.00, default = 0.05)), $(@bind xmax_tn NumberField(0.00:0.01:1.00, default = 1.00))
 
-y axis $(@bind ymin_tn NumberField(0.00:0.01:1.00, default = 0.00)), $(@bind ymax_tn NumberField(0.00:0.01:1.1, default = 1.00))
+y axis $(@bind ymin_tn NumberField(0.00:0.01:1.00, default = 0.00)), $(@bind ymax_tn NumberField(0.00:0.01:1.1, default = 0.35))
 
 """
 
 # ╔═╡ a3317603-3b1e-4a78-b193-e14581272847
-@pgf TikzPicture({scale = 3}, 
+time_noise = @pgf TikzPicture({scale = 3}, 
 	GroupPlot(
 	{
 		xmin = xmin_tn, xmax = xmax_tn,
 		ymin = ymin_tn, ymax = ymax_tn,
 		group_style = common_style,
 		xlabel = raw"$t_f$",
-		ylabel = raw"$\mathcal{S}_t$"
+		ylabel = raw"$\mathcal{S}_t$",
+		yticklabel_style = "/pgf/number format/fixed"
 },
 	{},
 		Plot(esta_opt, feat("Tn_eSTA", df_10)),
@@ -163,33 +167,63 @@ y axis $(@bind ymin_tn NumberField(0.00:0.01:1.00, default = 0.00)), $(@bind yma
 	) 
 )
 
+# ╔═╡ 903ea4eb-2037-4234-a4ee-f712cc1b4219
+pgfsave("tn_plot.pdf", time_noise)
+
 # ╔═╡ 049b4984-ce69-4eff-8be0-a2b1f6d39930
 md"""
 ## Plotting the sensitivity with respect to the time noise 
 ### $\Lambda_\epsilon(t) = (1 + \epsilon)\Lambda(t)$
 
-x axis $(@bind xmin_mn NumberField(0.00:0.01:1.00, default = 0.00)), $(@bind xmax_mn NumberField(0.00:0.01:1.00, default = 1.00))
+x axis $(@bind xmin_mn NumberField(0.00:0.01:1.00, default = 0.05)), $(@bind xmax_mn NumberField(0.00:0.01:1.00, default = 1.00))
 
-y axis $(@bind ymin_mn NumberField(0.00:0.01:1.00, default = 0.00)), $(@bind ymax_mn NumberField(0.00:0.01:1.1, default = 1.00))
+y axis $(@bind ymin_mn NumberField(0.00:0.01:1.00, default = 0.00)), $(@bind ymax_mn NumberField(0.00:0.01:1.1, default = 0.35))
 
 """
 
 # ╔═╡ 70425d22-3663-4eb1-8786-ca470222e857
-@pgf TikzPicture({scale = 3}, 
+modulation_noise = @pgf TikzPicture({scale = 3}, 
 	GroupPlot(
 	{
 		xmin = xmin_mn, xmax = xmax_mn,
 		ymin = ymin_mn, ymax = ymax_mn,
 		group_style = common_style,
 		xlabel = raw"$t_f$",
-		ylabel = raw"$\mathcal{S}_m$"
+		ylabel = raw"$\mathcal{S}_m$",
+		yticklabel_style = {
+			"/pgf/number format/fixed",
+			"/pgf/number format/precision=5"
+		}
 },
-	{},
+	{
+	},
 		Plot(esta_opt, feat("Mn_eSTA", df_10)),
 		Plot(sta_opt, feat("Mn_STA", df_10)),
 	{},
 		Plot(esta_opt, feat("Mn_eSTA", df_30)),
 		Plot(sta_opt, feat("Mn_STA", df_30)),
+	) 
+)
+
+# ╔═╡ dea92f46-1ebb-44e4-b238-979fa34f302e
+pgfsave("mn_plot.pdf", modulation_noise)
+
+# ╔═╡ a98535b5-aca7-497c-86a4-41828de03ebb
+@pgf TikzPicture({scale = 3}, 
+	GroupPlot(
+	{
+		#xmin = xmin_mn, xmax = xmax_mn,
+		#ymin = ymin_mn, ymax = ymax_mn,
+		group_style = common_style,
+		xlabel = raw"$t_f$",
+		ylabel = raw"$\mathcal{S}_m$"
+},
+	{},
+		Plot(esta_opt, feat("Wn_eSTA", df_10)),
+		Plot(sta_opt, feat("Wn_STA", df_10)),
+	{},
+		Plot(esta_opt, feat("Wn_eSTA", df_30)),
+		Plot(sta_opt, feat("Wn_STA", df_30)),
 	) 
 )
 
@@ -206,9 +240,9 @@ y axis $(@bind ymin_sq NumberField(0.00:0.01:1.00, default = 0.00)), $(@bind yma
 # ╔═╡ c9057127-050c-4a6a-a252-7d8ae06ab545
 md"""
 ### Evaluating the effectiveness
-x axis $(@bind xmin_ef NumberField(0.00:0.01:1.00, default = 0.00)), $(@bind xmax_ef NumberField(0.00:0.01:1.00, default = 1.00))
+x axis $(@bind xmin_ef NumberField(0.00:0.01:1.00, default = 0.05)), $(@bind xmax_ef NumberField(0.00:0.01:1.00, default = 1.00))
 
-y axis $(@bind ymin_ef NumberField(0.00:0.01:1.00, default = 0.00)), $(@bind ymax_ef NumberField(0.00:0.01:1.1, default = 1.00))
+y axis $(@bind ymin_ef NumberField(0.00:0.01:1.00, default = 0.00)), $(@bind ymax_ef NumberField(0.00:0.01:1.1, default = 0.65))
 """
 
 # ╔═╡ 3f24c777-02df-4e30-8dd7-709fdca5d08a
@@ -237,7 +271,7 @@ effectiveness(fidelity::Float64, sensitivity::Float64) = sqrt((1-fidelity)^2 + s
 	))
 
 # ╔═╡ 9fb133ae-4375-4cfe-acd6-e7ca7045db11
-@pgf TikzPicture({scale = 3},
+effectiveness_plot = @pgf TikzPicture({scale = 3},
 	GroupPlot(
 		{
 			xmin = xmin_ef, xmax = xmax_ef,
@@ -254,6 +288,9 @@ effectiveness(fidelity::Float64, sensitivity::Float64) = sqrt((1-fidelity)^2 + s
 		Plot(sta_opt, Table(df_30.tf, broadcast(effectiveness, df_30.F_STA, df_30.Tn_STA.+ df_30.Mn_STA))),
 	))
 
+# ╔═╡ dd21c630-d0a1-49a5-be4a-a455a1f287eb
+pgfsave("eff_plot.pdf", effectiveness_plot)
+
 # ╔═╡ b2b8e791-c825-41c3-827d-c8b10b66f1d2
 begin
 	ξ_id10 = CSV.read("./data/squeezing_id.dat", DataFrame)[10,2]	 
@@ -261,16 +298,16 @@ begin
 end
 
 # ╔═╡ c3a89f2b-e587-48f3-93a4-35279c456a26
-@pgf TikzPicture({scale = 3}, 
+sq_plot = @pgf TikzPicture({scale = 3}, 
 	GroupPlot(
 	{
 		xmin = xmin_sq, xmax = xmax_sq,
-		ymin = ymin_sq, ymax = ymax_sq,
+		#ymin = ymin_sq, ymax = ymax_sq,
 		group_style = common_style,
 		xlabel = raw"$t_f$",
-		ylabel = raw"$\mathcal{\xi^2_N}$"
+		ylabel = raw"$\mathcal{\xi}^2_N$"
 },
-	{},
+	{	ymin = ymin_sq, ymax = ymax_sq,},
 		Plot(esta_opt, feat("Sq_eSTA", df_10)),
 		Plot(sta_opt, feat("Sq_STA", df_10)),
 		HLine(ad_opt, ξ_id10),
@@ -280,6 +317,9 @@ end
 		HLine(ad_opt, ξ_id30),
 	) 
 )
+
+# ╔═╡ c8309b2b-dec0-4125-a340-07bf7fbf12a4
+pgfsave("sq_plot.pdf", sq_plot)
 
 # ╔═╡ 156fb0c9-bea9-474c-bc03-31d60d4d6b06
 md"""
@@ -295,13 +335,16 @@ md"""
 """
 
 # ╔═╡ e939e438-7d4e-4a0b-8354-2d94451da076
-@pgf TikzPicture({scale = "3"}, 
+ctrl_plot = @pgf TikzPicture({scale = "3"}, 
 	Axis({xlabel = raw"$t/\tau$", ylabel = raw"$\Lambda$"},
 			Plot(esta_opt, Table(evo_df.t, evo_df.Λ_eSTA)),
 			Plot(sta_opt, Table(evo_df.t, evo_df.Λ_STA)),
 			Plot(ad_opt, Table(evo_df.t, evo_df.Λ_ad))
 	)
 )
+
+# ╔═╡ 9e1990d3-3741-4e46-bf2c-70d63562901f
+pgfsave("ctrl_plot.pdf", ctrl_plot)
 
 # ╔═╡ 991b344d-9d3b-44fc-878c-caf6bff8cce2
 md"""
@@ -809,21 +852,28 @@ version = "17.4.0+0"
 # ╠═8f613cbb-4ae6-4617-90bf-ae50a6aa6c6d
 # ╠═3d5333ce-d276-4030-9d21-d2bbd10ab5ff
 # ╠═263d9d9f-b36d-4508-943a-88cb92ed7513
+# ╠═3bf5d5ad-d521-4ba0-9d90-db27e6b4d3bc
 # ╠═25d1698c-1fcc-442e-96ed-3f4657dcfc13
 # ╠═a3317603-3b1e-4a78-b193-e14581272847
-# ╟─049b4984-ce69-4eff-8be0-a2b1f6d39930
+# ╠═903ea4eb-2037-4234-a4ee-f712cc1b4219
+# ╠═049b4984-ce69-4eff-8be0-a2b1f6d39930
 # ╠═70425d22-3663-4eb1-8786-ca470222e857
+# ╠═dea92f46-1ebb-44e4-b238-979fa34f302e
+# ╠═a98535b5-aca7-497c-86a4-41828de03ebb
 # ╠═41c2663e-9c5f-42b3-839f-54f8114b48de
 # ╠═c3a89f2b-e587-48f3-93a4-35279c456a26
+# ╠═c8309b2b-dec0-4125-a340-07bf7fbf12a4
 # ╠═c9057127-050c-4a6a-a252-7d8ae06ab545
 # ╠═3f24c777-02df-4e30-8dd7-709fdca5d08a
 # ╠═df6e79a3-da1e-4e25-a868-f69ccd44e0dc
 # ╠═9fb133ae-4375-4cfe-acd6-e7ca7045db11
+# ╠═dd21c630-d0a1-49a5-be4a-a455a1f287eb
 # ╠═b2b8e791-c825-41c3-827d-c8b10b66f1d2
 # ╟─156fb0c9-bea9-474c-bc03-31d60d4d6b06
 # ╠═7d76c66a-3929-46f4-b822-90ca6dab181c
 # ╟─1bd450ee-8f62-42f8-b7e7-96a53a014d65
 # ╠═e939e438-7d4e-4a0b-8354-2d94451da076
+# ╠═9e1990d3-3741-4e46-bf2c-70d63562901f
 # ╟─991b344d-9d3b-44fc-878c-caf6bff8cce2
 # ╟─476d287a-a968-4400-b167-99bebf93f811
 # ╟─00000000-0000-0000-0000-000000000001
