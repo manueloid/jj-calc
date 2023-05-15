@@ -1,6 +1,7 @@
 using QuantumOptics
 using JosephsonSTA
 using ProgressMeter
+using Colors
 
 struct ConstantQuantities
     Jz::Operator
