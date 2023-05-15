@@ -24,6 +24,21 @@ function fidelity(cp::ControlParameter, qts::ConstantQuantities, Λ::Function)
     return timeevolution.schroedinger_dynamic([0.0, tf], qts.ψ0, H_eSTA; fout=fidelity)[2][end]  # Time evolution where the output is not the resulting state but the fidelity. It helps improving the speed of the calculation
 end
 """
+fidelity(cp::ControlParameter, qts::ConstantQuantities, Λ::Function, npoints=100)
+return the time evolution of the fidelity of the state with the target state, given the control parameter, the constant quantities, the control function and the number of points to evaluate the fidelity.
+The initial time is 0 and the final time is the final time of the control parameter.
+"""
+function fidelity(cp::ControlParameter, qts::ConstantQuantities, Λ::Function, npoints=100)
+    h = 2.0 / cp.NParticles
+    tf = cp.final_time
+    tspan = range(0.0, tf, length=npoints)
+    function H_eSTA(t, psi) # Function to return the time dependent Hamiltonian	
+        return (h * Λ(t) * qts.Jz^2 - 2.0 * qts.Jx)
+    end
+    f(t, psi) =  dagger(qts.ψf) *  psi |> abs2
+    return timeevolution.schroedinger_dynamic(tspan, qts.ψ0, H_eSTA; fout=f)[2]
+end
+"""
 fidelities(cp::ControlParameter, final_times)
 Return the fidelity of a process with desired boundary conditions and constant quantities for a range of final times, for both the eSTA and STA protocol.
 The output is a tuple with the fidelities for the eSTA protocol in the first position and the fidelities for the STA protocol in the second position.
@@ -44,4 +59,3 @@ function fidelities(cp::ControlParameter, final_times; nlambda=5)
     end
     return fidelities_esta, fidelities_sta # Return the fidelities for both protocols as a tuple
 end
-

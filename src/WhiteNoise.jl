@@ -76,6 +76,7 @@ function bf_evolution(cp::ControlParameter, ω::Function; t=tspan(cp, 1000))
     ψT = qts.ψf # Initial state for the backward evolution
     tout, ψ0 = evolution(ψ0, H_fwd, t) # Time span and wavefunction with respect of time for the forward evolution
     tout, ψT = evolution(ψT, H_rev, t) # Time span and wavefunction with respect of time for the backward evolution
+	reverse!(ψT) # I reverse the wavefunction of the backward evolution
     H1_fwd(t) = h * H1(t, qts, ω) # Forward Hamiltonian with respect to time, that I will use to compute the sensitivity
     return ψ0, ψT, H1_fwd.(t) # I return the wavefunctions and the time dependent Hamiltonian
 end
@@ -114,7 +115,6 @@ function sensitivity(cp::ControlParameter, ω::Function; t=tspan(cp, 1000))
 end
 # I need to integrate the integrand array over the time.
 # I will use the trapezoidal rule
-
 """
 sensitivities(n::Int64, final_times) -> sensitivities
 This function computes the sensitivities for a given number of particles n and a given array of final times.

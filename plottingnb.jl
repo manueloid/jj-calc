@@ -212,7 +212,7 @@ pgfsave("mn_plot.pdf", modulation_noise)
 @pgf TikzPicture({scale = 3}, 
 	GroupPlot(
 	{
-		#xmin = xmin_mn, xmax = xmax_mn,
+		xmin = .2, xmax = .8,
 		#ymin = ymin_mn, ymax = ymax_mn,
 		group_style = common_style,
 		xlabel = raw"$t_f$",
