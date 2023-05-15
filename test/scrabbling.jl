@@ -1,6 +1,6 @@
 include("../src/ConstantQuantities.jl")
 using Plots
-cp = ControlParameterFull(2.0, 10)
+cp = ControlParameterFull(0.9, 10)
 ts(cp::ControlParameterFull, nsteps=1000) = range(0.0, stop=cp.final_time, length=nsteps)
 qts = ConstantQuantities(cp)
 corrs = corrections(cp)
@@ -38,4 +38,20 @@ plot(t, fid_esta)
 plot!(t, fid_sta)
 plot!(t, fid_ad)
 
+# Now I need to plot for different final times
+final_times = range(0.5, 4.0, length=100)
+ξs_esta = zeros(length(final_times))
+ξs_sta = zeros(length(final_times))
+Threads.@threads for i in 1:length(final_times)
+	cparam = cp_time(cp, final_times[i])
+	corrs = corrections(cparam)
+	esta(t) = Λ_esta(t, cparam, corrs)
+	sta(t) = Λ_sta(t, cparam)
+	α_esta = alpha(cparam, qts, esta, nsteps)[end]
+	α_sta = alpha(cparam, qts, sta, nsteps)[end]
+	ξs_esta[i] = squeezing(cparam, qts, esta, nsteps)[end] ^ 2 / α_esta ^ 2
+	ξs_sta[i] = squeezing(cparam, qts, sta, nsteps)[end] ^ 2 / α_sta ^ 2
+end
 
+plot(final_times, todecibel.(ξs_esta), label="esta")
+plot!(final_times, todecibel.(ξs_sta), label="sta")

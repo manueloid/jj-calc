@@ -125,11 +125,13 @@ fid_plot = @pgf TikzPicture({scale = 3},
 		Plot(sta_opt, feat("F_STA", df_10)),
 		Plot(ad_opt, feat("F_ad", df_10)),
 		Plot(extra_opt, feat("F_eSTA", df_101)),
+		["\\node at", Coordinate(.8,.6), "{N = 10};" ],
 	{},
 		Plot(esta_opt, feat("F_eSTA", df_30)),
 		Plot(sta_opt, feat("F_STA", df_30)),
 		Plot(ad_opt, feat("F_ad", df_30)),
 		Plot(extra_opt, feat("F_eSTA", df_301)),
+		["\\node at", Coordinate(.8,.6), "{N = 30};" ],
 	) 
 )
 
@@ -161,9 +163,11 @@ time_noise = @pgf TikzPicture({scale = 3},
 	{},
 		Plot(esta_opt, feat("Tn_eSTA", df_10)),
 		Plot(sta_opt, feat("Tn_STA", df_10)),
+		["\\node at", Coordinate(.8,.2), "{N = 10};" ],
 	{},
 		Plot(esta_opt, feat("Tn_eSTA", df_30)),
 		Plot(sta_opt, feat("Tn_STA", df_30)),
+		["\\node at", Coordinate(.8,.2), "{N = 30};" ],
 	) 
 )
 
@@ -199,9 +203,11 @@ modulation_noise = @pgf TikzPicture({scale = 3},
 	},
 		Plot(esta_opt, feat("Mn_eSTA", df_10)),
 		Plot(sta_opt, feat("Mn_STA", df_10)),
+		["\\node at", Coordinate(.8,.2), "{N = 10};" ],
 	{},
 		Plot(esta_opt, feat("Mn_eSTA", df_30)),
 		Plot(sta_opt, feat("Mn_STA", df_30)),
+		["\\node at", Coordinate(.8,.2), "{N = 30};" ],
 	) 
 )
 
