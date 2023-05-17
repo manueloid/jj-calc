@@ -24,11 +24,11 @@ function fidelity(cp::ControlParameter, qts::ConstantQuantities, Λ::Function)
     return timeevolution.schroedinger_dynamic([0.0, tf], qts.ψ0, H_eSTA; fout=fidelity)[2][end]  # Time evolution where the output is not the resulting state but the fidelity. It helps improving the speed of the calculation
 end
 """
-fidelity(cp::ControlParameter, qts::ConstantQuantities, Λ::Function, npoints=100)
+fidelity_evo(cp::ControlParameter, qts::ConstantQuantities, Λ::Function, npoints=100)
 return the time evolution of the fidelity of the state with the target state, given the control parameter, the constant quantities, the control function and the number of points to evaluate the fidelity.
 The initial time is 0 and the final time is the final time of the control parameter.
 """
-function fidelity(cp::ControlParameter, qts::ConstantQuantities, Λ::Function, npoints=100)
+function fidelity_evo(cp::ControlParameter, qts::ConstantQuantities, Λ::Function, npoints=100)
     h = 2.0 / cp.NParticles
     tf = cp.final_time
     tspan = range(0.0, tf, length=npoints)
@@ -37,25 +37,4 @@ function fidelity(cp::ControlParameter, qts::ConstantQuantities, Λ::Function, n
     end
     f(t, psi) =  dagger(qts.ψf) *  psi |> abs2
     return timeevolution.schroedinger_dynamic(tspan, qts.ψ0, H_eSTA; fout=f)[2]
-end
-"""
-fidelities(cp::ControlParameter, final_times)
-Return the fidelity of a process with desired boundary conditions and constant quantities for a range of final times, for both the eSTA and STA protocol.
-The output is a tuple with the fidelities for the eSTA protocol in the first position and the fidelities for the STA protocol in the second position.
-"""
-function fidelities(cp::ControlParameter, final_times; nlambda=5)
-    qts = ConstantQuantities(cp) # Constant quantities not depending on the final time
-    fidelities_esta = zeros(length(final_times)) # Array to store the fidelities for the eSTA protocol
-    fidelities_sta = zeros(length(final_times)) # Array to store the fidelities for the STA protocol
-    p = Progress(length(final_times))
-    Threads.@threads for index in 1:length(final_times) # Iterate over the final times
-        cparam = cp_time(cp, final_times[index]) # Control parameter with the new final time
-        corrs = corrections(cparam; nlambda=nlambda) # Corrections for the eSTA protocol for the new final time
-        esta(t) = Λ_esta(t, cparam, corrs) # eSTA control function for the new final time and corrections
-        sta(t) = Λ_sta(t, cparam) # STA control function for the new final time 
-        fidelities_esta[index] = fidelity(cparam, qts, esta) # Fidelity for the eSTA protocol
-        fidelities_sta[index] = fidelity(cparam, qts, sta) # Fidelity for the STA protocol
-        next!(p)
-    end
-    return fidelities_esta, fidelities_sta # Return the fidelities for both protocols as a tuple
 end
