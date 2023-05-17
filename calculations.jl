@@ -1,5 +1,4 @@
 include("./src/ConstantQuantities.jl")
-using ProgressMeter
 # function to calculate the fidelity for different final times
 # first I will calculate the fidelity for the esta protocol with the discrete Hamiltonian and 5 λ.
 
@@ -43,3 +42,9 @@ end
 fidelities(10, final_times)
 
 fidelities(30, final_times)
+
+cp = ControlParameterFull(10, 0.2pi)
+qts = ConstantQuantities(cp)
+corrs = corrections(cp)
+esta(t) = Λ_esta(t, cp, corrs)
+fidelity(cp, qts, esta, 100)

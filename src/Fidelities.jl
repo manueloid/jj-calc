@@ -28,7 +28,7 @@ fidelity_evo(cp::ControlParameter, qts::ConstantQuantities, Λ::Function, npoint
 return the time evolution of the fidelity of the state with the target state, given the control parameter, the constant quantities, the control function and the number of points to evaluate the fidelity.
 The initial time is 0 and the final time is the final time of the control parameter.
 """
-function fidelity_evo(cp::ControlParameter, qts::ConstantQuantities, Λ::Function, npoints=100)
+function fidelity(cp::ControlParameter, qts::ConstantQuantities, Λ::Function, npoints)
     h = 2.0 / cp.NParticles
     tf = cp.final_time
     tspan = range(0.0, tf, length=npoints)
