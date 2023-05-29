@@ -60,11 +60,11 @@ function fidelities(np::Int64, final_times::AbstractVector)
         mn_esta_cont[index] = robustness_mn(cparam_cont, qts, esta_cont, 1e-7)
         mn_sta[index] = robustness_mn(cparam, qts, sta, 1e-7)
     end
-    return fid_esta, fid_esta1, fid_esta_cont, fid_sta, fid_ad, tn_esta, tn_sta, tn_esta1, tn_esta_cont, mn_esta, mn_sta, mn_esta1, mn_esta_cont, final_times
+    return fid_esta, fid_esta1, fid_esta_cont, fid_sta, fid_ad, tn_esta, tn_sta, tn_esta1, tn_esta_cont, mn_esta, mn_sta, mn_esta1, mn_esta_cont, final_times ./ pi
 end
-final_times = range(0.01pi, 0.2pi, length=100)
+final_times = range(0.01pi, 0.2pi, length=150)
 ft_10 = fidelities(10, final_times)
-ft_30 = fidelities(30, final_times)
+ft_100 = fidelities(100, final_times)
 
 using PGFPlotsX
 PGFPlotsX.enable_interactive(false)
@@ -95,39 +95,39 @@ fidelities_plot = @pgf GroupPlot(
         group_style = common_style,
         enlarge_x_limits = "false",
         ymin = 0.7, ymax = 1.02,
-        ylabel = "F", xlabel = "\$\\mathrm{t_f/t_R}\$",
+        ylabel = "\$F\$", xlabel = "\$t_f/t_R\$",
         ticklabel_style = "/pgf/number format/fixed",
     },
     {}, # Plot for 10 particles
-    Plot(esta_opt, Table(ft_10[10], ft_10[1])),
-    Plot(esta1_opt, Table(ft_10[10], ft_10[2])),
-    Plot(esta_cont_opt, Table(ft_10[10], ft_10[3])),
-    Plot(sta_opt, Table(ft_10[10], ft_10[4])),
-    Plot(ad_opt, Table(ft_10[10], ft_10[5])),
+    Plot(esta_opt, Table(ft_10[end], ft_10[1])),
+    Plot(esta1_opt, Table(ft_10[end], ft_10[2])),
+    Plot(esta_cont_opt, Table(ft_10[end], ft_10[3])),
+    Plot(sta_opt, Table(ft_10[end], ft_10[4])),
+    Plot(ad_opt, Table(ft_10[end], ft_10[5])),
     ["\\node[anchor=north west] at (rel axis cs:0.7,0.2) {N = 10};"],
-    {}, # Plot for 30 particles
-    Plot(esta_opt, Table(ft_30[10], ft_30[1])),
-    Plot(esta1_opt, Table(ft_30[10], ft_30[2])),
-    Plot(esta_cont_opt, Table(ft_30[10], ft_30[3])),
-    Plot(sta_opt, Table(ft_30[10], ft_30[4])),
-    Plot(ad_opt, Table(ft_30[10], ft_30[5])),
-    ["\\node[anchor=north west] at (rel axis cs:0.7,0.2) {N = 30};"],
+    {}, # Plot for 100 particles
+    Plot(esta_opt, Table(ft_100[end], ft_100[1])),
+    Plot(esta1_opt, Table(ft_100[end], ft_100[2])),
+    Plot(esta_cont_opt, Table(ft_100[end], ft_100[3])),
+    Plot(sta_opt, Table(ft_100[end], ft_100[4])),
+    Plot(ad_opt, Table(ft_100[end], ft_100[5])),
+    ["\\node[anchor=north west] at (rel axis cs:0.7,0.2) {N = 100};"],
 )
-display("gfx/fid_plot.pdf", fidelities_plot)
-
-
+tp = @pgf TikzPicture({font = "\\fontsize{11}{11}\\selectfont"})
+push!(tp, fidelities_plot)
+# display("gfx/fid_plot.pdf", fidelities_plot)
+display("/home/manuel/pCloudDrive/PhD/QuantumThermo/JJeSTA/Paper/fig_fid.pdf", tp)
 # And now for the effectiveness, η evaluted as ( (1-F^2) + (S_t^2 + S_m^2) )^(1/2)
 # First for 10 particles
 η_esta10 = sqrt.((1 .- ft_10[1] .^ 2) .+ (ft_10[6] .^ 2 .+ ft_10[10] .^ 2))
 η_sta10 = sqrt.((1 .- ft_10[4] .^ 2) .+ (ft_10[7] .^ 2 .+ ft_10[11] .^ 2))
 η_esta1_10 = sqrt.((1 .- ft_10[2] .^ 2) .+ (ft_10[8] .^ 2 .+ ft_10[12] .^ 2))
 η_esta_cont10 = sqrt.((1 .- ft_10[3] .^ 2) .+ (ft_10[9] .^ 2 .+ ft_10[13] .^ 2))
-# And now for 30 particles
-η_esta30 = sqrt.((1 .- ft_30[1] .^ 2) .+ (ft_30[6] .^ 2 .+ ft_30[10] .^ 2))
-η_sta30 = sqrt.((1 .- ft_30[4] .^ 2) .+ (ft_30[7] .^ 2 .+ ft_30[11] .^ 2))
-η_esta1_30 = sqrt.((1 .- ft_30[2] .^ 2) .+ (ft_30[8] .^ 2 .+ ft_30[12] .^ 2))
-η_esta_cont30 = sqrt.((1 .- ft_30[3] .^ 2) .+ (ft_30[9] .^ 2 .+ ft_30[13] .^ 2))
-
+# And now for 100 particles
+η_esta100 = sqrt.((1 .- ft_100[1] .^ 2) .+ (ft_100[6] .^ 2 .+ ft_100[10] .^ 2))
+η_sta100 = sqrt.((1 .- ft_100[4] .^ 2) .+ (ft_100[7] .^ 2 .+ ft_100[11] .^ 2))
+η_esta1_100 = sqrt.((1 .- ft_100[2] .^ 2) .+ (ft_100[8] .^ 2 .+ ft_100[12] .^ 2))
+η_esta_cont100 = sqrt.((1 .- ft_100[3] .^ 2) .+ (ft_100[9] .^ 2 .+ ft_100[13] .^ 2))
 # Plot where all the robustness parameters are plotted together. The layout will be 3 x 2.
 robustness_plot = @pgf GroupPlot(
     {
@@ -140,29 +140,29 @@ robustness_plot = @pgf GroupPlot(
         },
         enlarge_x_limits = "false",
         enlarge_y_limits = "0.02",
-        xmin = ft_10[end][9], xmax = ft_10[end][end],
+        xmin = ft_10[end][9], xmax = ft_10[end][75],
         width = "0.5\\textwidth",
         ticklabel_style = "/pgf/number format/fixed",
-        xlabel = "\$\\mathrm{t_f/t_R}\$",
+        xlabel = "\$t_f/t_R\$",
     },
     #
     # Plots for 10 particles,
     #
     {
-        ylabel = "\$\\mathrm{S}_{t}\$",
-    }, # robustness against time noise
-    Plot(esta_opt, Table(ft_10[end], ft_10[6])),
-    Plot(sta_opt, Table(ft_10[end], ft_10[7])),
-    Plot(esta1_opt, Table(ft_10[end], ft_10[8])),
-    Plot(esta_cont_opt, Table(ft_10[end], ft_10[9])),
-    ["\\node[anchor = north east] at (rel axis cs: 0.9,0.9) {N = 10};"],
-    {
-        ylabel = "\$\\mathrm{S}_{m}\$",
+        ylabel = "\$S_{m}\$",
     }, # robustness against modulation noise
     Plot(esta_opt, Table(ft_10[end], ft_10[10])),
     Plot(sta_opt, Table(ft_10[end], ft_10[11])),
     Plot(esta1_opt, Table(ft_10[end], ft_10[12])),
     Plot(esta_cont_opt, Table(ft_10[end], ft_10[13])),
+    ["\\node[anchor = north east] at (rel axis cs: 0.9,0.9) {N = 10};"],
+    {
+        ylabel = "\$S_{t}\$",
+    }, # robustness against time noise
+    Plot(esta_opt, Table(ft_10[end], ft_10[6])),
+    Plot(sta_opt, Table(ft_10[end], ft_10[7])),
+    Plot(esta1_opt, Table(ft_10[end], ft_10[8])),
+    Plot(esta_cont_opt, Table(ft_10[end], ft_10[9])),
     ["\\node[anchor = north east] at (rel axis cs: 0.9,0.9) {N = 10};"],
     {
         ylabel = "\$\\eta\$",
@@ -173,46 +173,45 @@ robustness_plot = @pgf GroupPlot(
     Plot(esta_cont_opt, Table(ft_10[end], η_esta_cont10)),
     ["\\node[anchor = north east] at (rel axis cs: 0.9,0.9) {N = 10};"],
     #
-    # Plots for 30 particles,
-    #
-    #  robustness against time noise
-    {
-        ylabel = "\$\\mathrm{S}_{t}\$",
-        "extra_description/.code = { \\node at (rel axis cs: 0,-0.2) {(a)};}",
-    },
-    Plot(esta_opt, Table(ft_30[end], ft_30[6])),
-    Plot(sta_opt, Table(ft_30[end], ft_30[7])),
-    Plot(esta1_opt, Table(ft_30[end], ft_30[8])),
-    Plot(esta_cont_opt, Table(ft_30[end], ft_30[9])),
-    ["\\node[anchor = north east] at (rel axis cs: 0.9,0.9) {N = 30};"],
+    # Plots for 100 particles,
     # robustness against modulation noise
     {
-        ylabel = "\$\\mathrm{S}_{m}\$",
+        ylabel = "\$S_{m}\$",
         "extra_description/.code = { \\node at (rel axis cs: 0,-0.2) {(b)};}",
     },
-    Plot(esta_opt, Table(ft_30[end], ft_30[10])),
-    Plot(sta_opt, Table(ft_30[end], ft_30[11])),
-    Plot(esta1_opt, Table(ft_30[end], ft_30[12])),
-    Plot(esta_cont_opt, Table(ft_30[end], ft_30[13])),
-    ["\\node[anchor = north east] at (rel axis cs: 0.9,0.9) {N = 30};"],
+    Plot(esta_opt, Table(ft_100[end], ft_100[10])),
+    Plot(sta_opt, Table(ft_100[end], ft_100[11])),
+    Plot(esta1_opt, Table(ft_100[end], ft_100[12])),
+    Plot(esta_cont_opt, Table(ft_100[end], ft_100[13])),
+    ["\\node[anchor = north east] at (rel axis cs: 0.9,0.9) {N = 100};"],
+    #  robustness against time noise
+    {
+        ylabel = "\$S_{t}\$",
+        "extra_description/.code = { \\node at (rel axis cs: 0,-0.2) {(a)};}",
+    },
+    Plot(esta_opt, Table(ft_100[end], ft_100[6])),
+    Plot(sta_opt, Table(ft_100[end], ft_100[7])),
+    Plot(esta1_opt, Table(ft_100[end], ft_100[8])),
+    Plot(esta_cont_opt, Table(ft_100[end], ft_100[9])),
+    ["\\node[anchor = north east] at (rel axis cs: 0.9,0.9) {N = 100};"],
     # effectiveness Plots
     {
         ylabel = "\$\\eta\$",
         "extra_description/.code = { \\node at (rel axis cs: 0,-0.2) {(c)};}",
     },
-    Plot(esta_opt, Table(ft_30[end], η_esta30)),
-    Plot(sta_opt, Table(ft_30[end], η_sta30)),
-    Plot(esta1_opt, Table(ft_30[end], η_esta1_30)),
-    Plot(esta_cont_opt, Table(ft_30[end], η_esta_cont30)),
-    ["\\node[anchor = north east] at (rel axis cs: 0.9,0.9) {N = 30};"],
+    Plot(esta_opt, Table(ft_100[end], η_esta100)),
+    Plot(sta_opt, Table(ft_100[end], η_sta100)),
+    Plot(esta1_opt, Table(ft_100[end], η_esta1_100)),
+    Plot(esta_cont_opt, Table(ft_100[end], η_esta_cont100)),
+    ["\\node[anchor = north east] at (rel axis cs: 0.9,0.9) {N = 100};"],
 )
-tp = @pgf TikzPicture({font = "\\fontsize{10}{10}\\selectfont"})
+tp = @pgf TikzPicture({font = "\\fontsize{8}{8}\\selectfont"})
 push!(tp, robustness_plot)
 # display("gfx/robustness_plot.pdf", tp)
 display("/home/manuel/pCloudDrive/PhD/QuantumThermo/JJeSTA/Paper/robustness_plot.pdf", tp)
 
 # What I need to do now is to find the time for which the fidelity reaches 0.99 for both eSTA and STA.
-# I will do this for both 10 and 30 particles.
+# I will do this for both 10 and 100 particles.
 function fidelity_time(array, np::Int64)
     t_esta = array[end][findfirst(x -> x .> 0.98, array[1])]
     t_sta = array[end][findfirst(x -> x .> 0.98, array[4])]
@@ -228,8 +227,8 @@ function fidelity_time(array, np::Int64)
     tab_sta = @pgf Table(range(0, stop=t_sta, length=100), fidelity(cp_sta, qts, sta, 100))
     tab_ad = @pgf Table(range(0, stop=5.0 * t_sta, length=100), fidelity(cp_ad, qts, ad, 100))
     return @pgf Axis({
-            xlabel = "\$\\mathrm{t/t_R}\$",
-            ylabel = "F",
+            xlabel = "\$t/t_R\$",
+            ylabel = "\$F\$",
             ymin = 0.6, ymax = 1.0,
             xmin = 0.0, xmax = t_sta,
             ticklabel_style = "/pgf/number format/fixed",
@@ -307,8 +306,8 @@ evo_plot = @pgf GroupPlot({
     Plot(ad_opt, Table(t ./ pi, ξs_ad)),
     # Fidelity
     {
-        ylabel = "F",
-        xlabel = "\$\\mathrm{t/t_R}\$",
+        ylabel = "\$F\$",
+        xlabel = "\$t/t_R\$",
         ymin = 0.6, ymax = 1.0,
         "extra_description/.code = { \\node at (rel axis cs: -0.16,0.94) {(d)};}",
     },
@@ -318,20 +317,20 @@ evo_plot = @pgf GroupPlot({
 )
 tp = @pgf TikzPicture({font = "\\fontsize{8}{8}\\selectfont"})
 push!(tp, evo_plot)
-display("gfx/evo_plot.pdf", tp)
-
+# display("gfx/evo_plot.pdf", tp)
+display("/home/manuel/pCloudDrive/PhD/QuantumThermo/JJeSTA/Paper/fig_evo.pdf", tp)
 
 #==
-`fid_plot.pdf` is the plot of the fidelities for 10 and 30 particles. In particular, we have
+`fid_plot.pdf` is the plot of the fidelities for 10 and 100 particles. In particular, we have
 - red line: eSTA with 5 λ applied to the discrete Hamiltonian
 - blue line: eSTA with 1 λ applied to the discrete Hamiltonian
 - yellow line: eSTA with 5 λ applied to the continuous Hamiltonian
 - black line: STA protocol
 - green line: adiabatic protocol 
 
-`tn_plot.pdf` is the plot for the sensitivities with respect to the time noise for 10 and 30 particles.
-`mn_plot.pdf` is the plot for the sensitivities with respect to the modulation noise for 10 and 30 particles.
-`eff_plot.pdf` is the plot for the effectiveness of the protocols for 10 and 30 particles. It is evaluated as ( (1-F^2) + (S_t^2 + S_m^2) )^(1/2)
+`tn_plot.pdf` is the plot for the sensitivities with respect to the time noise for 10 and 100 particles.
+`mn_plot.pdf` is the plot for the sensitivities with respect to the modulation noise for 10 and 100 particles.
+`eff_plot.pdf` is the plot for the effectiveness of the protocols for 10 and 100 particles. It is evaluated as ( (1-F^2) + (S_t^2 + S_m^2) )^(1/2)
 `fidelity_time.pdf` is the plot of the fidelity that shows how lont it takes to reach a given fidelity for 10 particles. In this case I picked F = 0.99.
 `evo_plot.pdf` is the plot whit all the time evolution of the relevant quantities for 10 particles and for final time 0.1 t_rabi. In particular, we have
 - first row: time evolution of the control functions Λ(t)

@@ -14,6 +14,8 @@ finite_difference(f::Function, δ::Float64; x::Float64=0.0)
 Return the derivative of the function f at the point x using the finite difference method
 """
 function finite_difference(f::Function, δ::Float64; x::Float64=0.0)
+	println("plus delta =", f(x + δ) )
+	println("minus delta =", f(x -δ) )
     return (f(x + δ) - f(x - δ)) / (2 * δ)
 end
 
