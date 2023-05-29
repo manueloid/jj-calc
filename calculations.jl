@@ -89,6 +89,32 @@ esta_cont_opt = @pgf {color = colors.yellow, line_width = 1, style = styles.ldas
 sta_opt = @pgf{color = colors.black, line_width = 1, style = styles.dash}
 ad_opt = @pgf {color = colors.green, line_width = 1, style = styles.dot_dash}
 
+# Here I will plot all the fidelities
+fidelities_plot = @pgf GroupPlot(
+    {
+        group_style = common_style,
+        enlarge_x_limits = "false",
+        ymin = 0.7, ymax = 1.02,
+        ylabel = "F", xlabel = "\$\\mathrm{t_f/t_R}\$",
+        ticklabel_style = "/pgf/number format/fixed",
+    },
+    {}, # Plot for 10 particles
+    Plot(esta_opt, Table(ft_10[10], ft_10[1])),
+    Plot(esta1_opt, Table(ft_10[10], ft_10[2])),
+    Plot(esta_cont_opt, Table(ft_10[10], ft_10[3])),
+    Plot(sta_opt, Table(ft_10[10], ft_10[4])),
+    Plot(ad_opt, Table(ft_10[10], ft_10[5])),
+    ["\\node[anchor=north west] at (rel axis cs:0.7,0.2) {N = 10};"],
+    {}, # Plot for 30 particles
+    Plot(esta_opt, Table(ft_30[10], ft_30[1])),
+    Plot(esta1_opt, Table(ft_30[10], ft_30[2])),
+    Plot(esta_cont_opt, Table(ft_30[10], ft_30[3])),
+    Plot(sta_opt, Table(ft_30[10], ft_30[4])),
+    Plot(ad_opt, Table(ft_30[10], ft_30[5])),
+    ["\\node[anchor=north west] at (rel axis cs:0.7,0.2) {N = 30};"],
+)
+display("gfx/fid_plot.pdf", fidelities_plot)
+
 
 # And now for the effectiveness, η evaluted as ( (1-F^2) + (S_t^2 + S_m^2) )^(1/2)
 # First for 10 particles
