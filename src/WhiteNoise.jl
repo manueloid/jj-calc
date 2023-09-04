@@ -54,6 +54,8 @@ We need then to multiply the result of this function by h.
 """
 function H1(t::Float64, qts::ConstantQuantities, ω)
     return qts.Jz^2 * ω(t)
+    # try to do the same thing but only with Jz
+    # return qts.Jz
 end
 tspan(cp::ControlParameter, steps::Int64) = range(0.0, cp.final_time, length=steps) |> collect
 """
