@@ -53,7 +53,8 @@ It is important to point out that the scaling factor is not included here.
 We need then to multiply the result of this function by h.
 """
 function H1(t::Float64, qts::ConstantQuantities, ω)
-    return qts.Jz^2 * ω(t)
+    # return qts.Jz^2 * ω(t)
+    return qts.Jz
     # try to do the same thing but only with Jz
     # return qts.Jz
 end

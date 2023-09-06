@@ -48,7 +48,5 @@ PGFPlotsX.enable_interactive(false)
 )
 display("./data/fidelity.pdf", gp_fid)
 
-
-
 effectiveness(fidelity::Float64, sensitivity::Float64) = sqrt((1 - fidelity)^2 + sensitivity^2)
 broadcast(effectiveness, df_10.F_eSTA, df_10.Tn_eSTA)
