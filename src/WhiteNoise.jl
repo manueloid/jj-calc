@@ -127,7 +127,7 @@ function sensitivities(n::Int64, final_times; λs::Int64=5, cont::Bool=false)
     sensitivities_esta = zeros(length(final_times))
     sensitivities_sta = zeros(length(final_times))
     p = Progress(length(final_times), 1, "Computing sensitivities")
-    Threads.@threads for i in 1:length(final_times)
+    Threads.@threads for i in eachindex(final_times)
         cont ? cp = ControlParameterInt(final_times[i], n) : cp = ControlParameterFull(final_times[i], n)
         corrs = corrections(cp; nlambda=λs)
         esta(t) = Λ_esta(t, cp, corrs)
@@ -138,3 +138,40 @@ function sensitivities(n::Int64, final_times; λs::Int64=5, cont::Bool=false)
     end
     return sensitivities_esta, sensitivities_sta
 end
+
+"""
+sensitivities_all(n::Int64, final_times) -> sensitivities
+Computes all the sensitivities that I need for the paper, for different number of corrections etc etc, given a number of particle `n` and a vector of final times `final_times`.
+In particular, this is the order of the output
+1. pl_esta: particle loss of the esta protocol for 5 corrections applied to the original Hamiltonian
+2. pl_esta1: partilcle loss of the ESTA protocol with only one correction applied to the original Hamiltonian
+3. pl_esta_cont: particle loss of the ESTA protocol with 5 corrections applied to the continous approximation of the original Hamiltonian
+4. pl_sta: particle loss of the STA protocol
+"""
+function sensitivities_all(n::Int64, final_times; λs::Int64=5)
+    sensitivities_esta = zeros(length(final_times))
+    sensitivities_sta = zeros(length(final_times))
+    sensitivities_esta1 = zeros(length(final_times))
+    sensitivities_esta_cont = zeros(length(final_times))
+    p = Progress(length(final_times), 1, "Computing sensitivities")
+    cp = ControlParameterFull(final_times[1], n)
+    Threads.@threads for index in eachindex(final_times)
+        tf = final_times[index]
+        cparam = cp_time(cp, tf)
+        cparam_cont = ControlParameterInt(n, tf)
+        corrs = corrections(cparam)
+        corrs1 = corrections(cparam; nlambda=1)
+        corrs_cont = corrections(cparam_cont)
+        esta(t) = Λ_esta(t, cparam, corrs)
+        esta1(t) = Λ_esta(t, cparam, corrs1)
+        esta_cont(t) = Λ_esta(t, cparam_cont, corrs_cont)
+        sta(t) = Λ_sta(t, cparam)
+        sensitivities_esta[index] = sensitivity(cparam, esta; t=tspan(cparam, 10000))
+        sensitivities_sta[index] = sensitivity(cparam, sta, t=tspan(cparam, 10000))
+        sensitivities_esta1[index] = sensitivity(cparam, esta1; t=tspan(cparam, 10000))
+        sensitivities_esta_cont[index] = sensitivity(cparam_cont, esta_cont; t=tspan(cparam_cont, 10000))
+        next!(p)
+    end
+    return sensitivities_esta, sensitivities_sta, sensitivities_esta1, sensitivities_esta_cont
+end
+

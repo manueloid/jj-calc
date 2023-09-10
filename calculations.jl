@@ -66,6 +66,83 @@ final_times = range(0.01pi, 0.2pi, length=150)
 ft_10 = fidelities(10, final_times)
 ft_100 = fidelities(100, final_times)
 
+#=
+## 2. Particle loss sensitivity
+
+The following code will compute the sensitivity of the particle loss for both the esta and sta protocols.
+The output of the function `sensitivities_all` is an array of array, containing the following (ordered) values:
+
+1. pl_esta: particle loss of the esta protocol for 5 corrections applied to the original Hamiltonian
+2. pl_esta1: partilcle loss of the ESTA protocol with only one correction applied to the original Hamiltonian
+3. pl_esta_cont: particle loss of the ESTA protocol with 5 corrections applied to the continous approximation of the original Hamiltonian
+4. pl_sta: particle loss of the STA protocol
+
+=#
+
+pl_10 = sensitivities_all(10, final_times)
+pl_100 = sensitivities_all(100, final_times)
+
+#=
+## 3 Exporting
+
+Now I will use the `DataFrames` package to export the data in a csv file.
+It will be done for the variables `ft_10`, `ft_100`, `pl_10` and `pl_100` and the name of the columns is the one I have already used in the previous section.
+=#
+
+using DataFrames
+using CSV
+df_ft_10 = DataFrame(
+    fid_esta=ft_10[1],
+    fid_esta1=ft_10[2],
+    fid_esta_cont=ft_10[3],
+    fid_sta=ft_10[4],
+    fid_ad=ft_10[5],
+    tn_esta=ft_10[6],
+    tn_sta=ft_10[7],
+    tn_esta1=ft_10[8],
+    tn_esta_cont=ft_10[9],
+    mn_esta=ft_10[10],
+    mn_sta=ft_10[11],
+    mn_esta1=ft_10[12],
+    mn_esta_cont=ft_10[13],
+    final_times=ft_10[14],
+)
+df_ft_100 = DataFrame(
+    fid_esta=ft_100[1],
+    fid_esta1=ft_100[2],
+    fid_esta_cont=ft_100[3],
+    fid_sta=ft_100[4],
+    fid_ad=ft_100[5],
+    tn_esta=ft_100[6],
+    tn_sta=ft_100[7],
+    tn_esta1=ft_100[8],
+    tn_esta_cont=ft_100[9],
+    mn_esta=ft_100[10],
+    mn_sta=ft_100[11],
+    mn_esta1=ft_100[12],
+    mn_esta_cont=ft_100[13],
+    final_times=ft_100[14],
+)
+df_pl_10 = DataFrame(
+    pl_esta=pl_10[1],
+    pl_esta1=pl_10[2],
+    pl_esta_cont=pl_10[3],
+    pl_sta=pl_10[4],
+    final_times=final_times ./ pi,
+)
+df_pl_100 = DataFrame(
+    pl_esta=pl_100[1],
+    pl_esta1=pl_100[2],
+    pl_esta_cont=pl_100[3],
+    pl_sta=pl_100[4],
+    final_times=final_times ./ pi,
+)
+CSV.write("data/fid_10.csv", df_ft_10)
+CSV.write("data/fid_100.csv", df_ft_100)
+CSV.write("data/pl_10.csv", df_pl_10)
+CSV.write("data/pl_100.csv", df_pl_100)
+
+
 using PGFPlotsX
 PGFPlotsX.enable_interactive(false)
 colors = (
