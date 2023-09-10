@@ -42,6 +42,16 @@ pl_10 = DataFrame(CSV.File("./data/pl_10.csv"))
 pl_100 = DataFrame(CSV.File("./data/pl_100.csv"))
 fid_10 = DataFrame(CSV.File("./data/fid_10.csv"))
 fid_100 = DataFrame(CSV.File("./data/fid_100.csv"))
+whole10 = innerjoin(pl_10, fid_10, on=:final_times)
+whole100 = innerjoin(pl_100, fid_100, on=:final_times)
+
+col(feature, df) = df[!, feature]
+types = ["esta", "esta1", "esta_cont", "sta"]
+features = ["tn", "mn", "pl"]
+col(feature, type, df) = col(string(feature, "_", type), df)
+# Plot all the modulation noise sensitivities
+
+col("mn", "esta", whole10)
 
 #=
 ## 2 Plotting style
@@ -77,6 +87,9 @@ esta1_style = @pgf {color = color_style.blue, line_width = 1, style = line_style
 esta_cont_style = @pgf {color = color_style.yellow, line_width = 1, style = line_style.ldash}
 sta_style = @pgf{color = color_style.black, line_width = 1, style = line_style.dash}
 ad_style = @pgf {color = color_style.green, line_width = 1, style = line_style.dot_dash}
+styles = [esta_style, esta1_style, esta_cont_style, sta_style, ad_style]
+
+
 
 #=
 ## 3 Calculating the effectiveness
@@ -85,15 +98,8 @@ The effectiveness is defined as $( (1-F^2) + (S_t^2 + S_m^2+ S_p) )^(1/2)$, wher
 I am going to define a new array starting from the columns of the dataframe I already have.
 =#
 
-eff_esta10 = sqrt.((1 .- fid_10.fid_esta .^ 2) .+ (fid_10.tn_esta .^ 2 .+ fid_10.mn_esta .^ 2 .+ pl_10.pl_esta .^ 2))
-eff_esta1_10 = sqrt.((1 .- fid_10.fid_esta1 .^ 2) .+ (fid_10.tn_esta1 .^ 2 .+ fid_10.mn_esta1 .^ 2 .+ pl_10.pl_esta1 .^ 2))
-eff_esta_cont10 = sqrt.((1 .- fid_10.fid_esta_cont .^ 2) .+ (fid_10.tn_esta_cont .^ 2 .+ fid_10.mn_esta_cont .^ 2 .+ pl_10.pl_esta_cont .^ 2))
-eff_sta10 = sqrt.((1 .- fid_10.fid_sta .^ 2) .+ (fid_10.tn_sta .^ 2 .+ fid_10.mn_sta .^ 2 .+ pl_10.pl_sta .^ 2))
-eff_esta100 = sqrt.((1 .- fid_100.fid_esta .^ 2) .+ (fid_100.tn_esta .^ 2 .+ fid_100.mn_esta .^ 2 .+ pl_100.pl_esta .^ 2))
-eff_esta1_100 = sqrt.((1 .- fid_100.fid_esta1 .^ 2) .+ (fid_100.tn_esta1 .^ 2 .+ fid_100.mn_esta1 .^ 2 .+ pl_100.pl_esta1 .^ 2))
-eff_esta_cont100 = sqrt.((1 .- fid_100.fid_esta_cont .^ 2) .+ (fid_100.tn_esta_cont .^ 2 .+ fid_100.mn_esta_cont .^ 2 .+ pl_100.pl_esta_cont .^ 2))
-eff_sta100 = sqrt.((1 .- fid_100.fid_sta .^ 2) .+ (fid_100.tn_sta .^ 2 .+ fid_100.mn_sta .^ 2 .+ pl_100.pl_sta .^ 2))
-
+eff10_data = [sqrt.(1 .- col("fid", type, whole10) .^ 2 .+ col("tn", type, whole10) .^ 2 .+ col("mn", type, whole10) .^ 2 .+ col("pl", type, whole10) .^ 2) for type in types]
+eff100_data = [sqrt.(1 .- col("fid", type, whole100) .^ 2 .+ col("tn", type, whole100) .^ 2 .+ col("mn", type, whole100) .^ 2 .+ col("pl", type, whole100) .^ 2) for type in types]
 
 #=
 ## 3 Single plots
@@ -114,54 +120,14 @@ Then we will decide if it will make more sense to put everything together in a s
 The plots will be an array of `Plot` objects, so that we can easily combine them later.
 =#
 
-time_noise10 = @pgf [
-    Plot(esta_style, Table(fid_10.final_times, fid_10.tn_esta)),
-    Plot(esta1_style, Table(fid_10.final_times, fid_10.tn_esta1)),
-    Plot(esta_cont_style, Table(fid_10.final_times, fid_10.tn_esta_cont)),
-    Plot(sta_style, Table(fid_10.final_times, fid_10.tn_sta))
-]
-time_noise100 = @pgf [
-    Plot(esta_style, Table(fid_100.final_times, fid_100.tn_esta)),
-    Plot(esta1_style, Table(fid_100.final_times, fid_100.tn_esta1)),
-    Plot(esta_cont_style, Table(fid_100.final_times, fid_100.tn_esta_cont)),
-    Plot(sta_style, Table(fid_100.final_times, fid_100.tn_sta))
-]
-mod_noise10 = @pgf [
-    Plot(esta_style, Table(fid_10.final_times, fid_10.mn_esta)),
-    Plot(esta1_style, Table(fid_10.final_times, fid_10.mn_esta1)),
-    Plot(esta_cont_style, Table(fid_10.final_times, fid_10.mn_esta_cont)),
-    Plot(sta_style, Table(fid_10.final_times, fid_10.mn_sta))
-]
-mod_noise100 = @pgf [
-    Plot(esta_style, Table(fid_100.final_times, fid_100.mn_esta)),
-    Plot(esta1_style, Table(fid_100.final_times, fid_100.mn_esta1)),
-    Plot(esta_cont_style, Table(fid_100.final_times, fid_100.mn_esta_cont)),
-    Plot(sta_style, Table(fid_100.final_times, fid_100.mn_sta))
-]
-part_loss10 = @pgf [
-    Plot(esta_style, Table(fid_10.final_times, pl_10.pl_esta)),
-    Plot(esta1_style, Table(fid_10.final_times, pl_10.pl_esta1)),
-    Plot(esta_cont_style, Table(fid_10.final_times, pl_10.pl_esta_cont)),
-    Plot(sta_style, Table(fid_10.final_times, pl_10.pl_sta))
-]
-part_loss100 = @pgf [
-    Plot(esta_style, Table(fid_100.final_times, pl_100.pl_esta)),
-    Plot(esta1_style, Table(fid_100.final_times, pl_100.pl_esta1)),
-    Plot(esta_cont_style, Table(fid_100.final_times, pl_100.pl_esta_cont)),
-    Plot(sta_style, Table(fid_100.final_times, pl_100.pl_sta))
-]
-eff10 = @pgf [
-    Plot(esta_style, Table(fid_10.final_times, eff_esta10)),
-    Plot(esta1_style, Table(fid_10.final_times, eff_esta1_10)),
-    Plot(esta_cont_style, Table(fid_10.final_times, eff_esta_cont10)),
-    Plot(sta_style, Table(fid_10.final_times, eff_sta10))
-]
-eff100 = @pgf [
-    Plot(esta_style, Table(fid_100.final_times, eff_esta100)),
-    Plot(esta1_style, Table(fid_100.final_times, eff_esta1_100)),
-    Plot(esta_cont_style, Table(fid_100.final_times, eff_esta_cont100)),
-    Plot(sta_style, Table(fid_100.final_times, eff_sta100))
-]
+mn10 = @pgf [Plot(style, Table(whole10.final_times, col("mn", type, whole10))) for (style, type) in zip(styles, types)]
+mn100 = @pgf [Plot(style, Table(whole100.final_times, col("mn", type, whole100))) for (style, type) in zip(styles, types)]
+tn10 = @pgf [Plot(style, Table(whole10.final_times, col("tn", type, whole10))) for (style, type) in zip(styles, types)]
+tn100 = @pgf [Plot(style, Table(whole100.final_times, col("tn", type, whole100))) for (style, type) in zip(styles, types)]
+pl10 = @pgf [Plot(style, Table(whole10.final_times, col("pl", type, whole10))) for (style, type) in zip(styles, types)]
+pl100 = @pgf [Plot(style, Table(whole100.final_times, col("pl", type, whole100))) for (style, type) in zip(styles, types)]
+eff10 = @pgf [Plot(style, Table(whole10.final_times, eff)) for (style, eff) in zip(styles, eff10_data)]
+eff100 = @pgf [Plot(style, Table(whole100.final_times, eff)) for (style, eff) in zip(styles, eff100_data)]
 
 #=
 ## 4 Group plots
@@ -180,86 +146,18 @@ gp = @pgf GroupPlot({
         },
         enlarge_x_limits = "false",
         enlarge_y_limits = "0.02",
-        xmin = fid_10.final_times[9], xmax = fid_10.final_times[75],
+        xmin = whole10.final_times[9], xmax = whole10.final_times[75],
         width = "0.5\\textwidth",
         ticklabel_style = "/pgf/number format/fixed",
-        xlabel = "\$t_f/t_R\$"
+        xlabel = "\$t_f/t_R\$",
     },
-    ## Plots relative to the 10 particles
-    # Plot of the robustness against modulation noise
-    {
-        ylabel = "\$S_m\$",
-    },
-    Plot(esta_style, Table(fid_10.final_times, fid_10.mn_esta)),
-    Plot(esta1_style, Table(fid_10.final_times, fid_10.mn_esta1)),
-    Plot(esta_cont_style, Table(fid_10.final_times, fid_10.mn_esta_cont)),
-    Plot(sta_style, Table(fid_10.final_times, fid_10.mn_sta)),
-    ["\\node[anchor = north east] at (rel axis cs: 0.5,0.9) {N = 10};"],
-    # Plot of the robustness against time error
-    {
-        ylabel = "\$S_t\$"
-    },
-    Plot(est1_style, Table(fid_10.final_times, fid_10.tn_esta)),
-    Plot(esta1_style, Table(fid_10.final_times, fid_10.tn_esta1)),
-    Plot(esta_cont_style, Table(fid_10.final_times, fid_10.tn_esta_cont)),
-    Plot(sta_style, Table(fid_10.final_times, fid_10.tn_sta)),
-    ["\\node[anchor = north east] at (rel axis cs: 0.5,0.9) {N = 10};"],
-    # Plot of the particle loss
-    {
-        ylabel = "\$S_p\$"
-    },
-    Plot(esta_style, Table(fid_10.final_times, pl_10.pl_esta)),
-    Plot(esta1_style, Table(fid_10.final_times, pl_10.pl_esta1)),
-    Plot(esta_cont_style, Table(fid_10.final_times, pl_10.pl_esta_cont)),
-    Plot(sta_style, Table(fid_10.final_times, pl_10.pl_sta)),
-    ["\\node[anchor = north east] at (rel axis cs: 0.5,0.9) {N = 10};"],
-    # Plot of the effectiveness
-    {
-        ylabel = "\$\\eta\$",
-    },
-    Plot(esta_style, Table(fid_10.final_times, eff_esta10)),
-    Plot(esta1_style, Table(fid_10.final_times, eff_esta1_10)),
-    Plot(esta_cont_style, Table(fid_10.final_times, eff_esta_cont10)),
-    Plot(sta_style, Table(fid_10.final_times, eff_sta10)),
-    ["\\node[anchor = north east] at (rel axis cs: 0.5,0.9) {N = 10};"],
-    ## Plots relative to the 100 particles
-    # Plot of the robustness against modulation noise
-    {
-        ylabel = "\$S_m\$",
-        "extra_description/.code = { \\node at (rel axis cs: 0,-0.2) {(a)};}",
-    },
-    ["\\node[anchor = north east] at (rel axis cs: 0.5,0.9) {N = 100};"],
-    # Plot of the robustness against time error
-    {
-        ylabel = "\$S_t\$",
-        "extra_description/.code = { \\node at (rel axis cs: 0,-0.2) {(b)};}",
-    },
-    Plot({}, Table(fid_100.final_times, fid_100.tn_esta)),
-    Plot({}, Table(fid_100.final_times, fid_100.tn_esta1)),
-    Plot({}, Table(fid_100.final_times, fid_100.tn_esta_cont)),
-    Plot({}, Table(fid_100.final_times, fid_100.tn_sta)),
-    ["\\node[anchor = north east] at (rel axis cs: 0.5,0.9) {N = 100};"],
-    # Plot of the robustness against particle loss
-    {
-        ylabel = "\$S_p\$",
-        "extra_description/.code = { \\node at (rel axis cs: 0,-0.2) {(c)};}",
-    },
-    Plot(esta_style, Table(fid_100.final_times, pl_100.pl_esta)),
-    Plot(esta1_style, Table(fid_100.final_times, pl_100.pl_esta1)),
-    Plot(esta_cont_style, Table(fid_100.final_times, pl_100.pl_esta_cont)),
-    Plot(sta_style, Table(fid_100.final_times, pl_100.pl_sta)),
-    ["\\node[anchor = north east] at (rel axis cs: 0.5,0.9) {N = 100};"],
-    # Plot of the effectiveness
-    {
-        ylabel = "\$\\eta\$",
-        "extra_description/.code = { \\node at (rel axis cs: 0,-0.2) {(d)};}",
-    },
-    Plot(esta_style, Table(fid_100.final_times, eff_esta100)),
-    Plot(esta1_style, Table(fid_100.final_times, eff_esta1_100)),
-    Plot(esta_cont_style, Table(fid_100.final_times, eff_esta_cont100)),
-    Plot(sta_style, Table(fid_100.final_times, eff_sta100)),
-    ["\\node[anchor = north east] at (rel axis cs: 0.5,0.9) {N = 100};"],
+    Axis({}, mn10),
+    Axis({}, tn10),
+    Axis({}, pl10),
+    Axis({}, eff10),
+    Axis({}, mn100),
+    Axis({}, tn100),
+    Axis({}, pl100),
+    Axis({}, eff100),
 )
-tp = @pgf TikzPicture({font = "\\fontsize{8}{8}\\selectfont"})
-push!(tp, gp)
-display("./gfx/group_plot1.pdf", gp)
+display("gfx/test.pdf", gp)
