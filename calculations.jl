@@ -16,12 +16,7 @@ The returned values are a list of vectors, as it follows:
 11. mn_sta: sensitivity of the STA protocol
 12. mn_esta1: sensitivity of the ESTA protocol with only one correction
 13. mn_esta_cont: sensitivity of the ESTA protocol with continuous corrections
-14. pl_esta: particle loss of the ESTA protocol
-15. pl_esta: particle loss of the ESTA protocol
-16. pl_sta: particle loss of the STA protocol
-17. pl_esta1: particle loss of the ESTA protocol with only one correction
-18. tfs: final times 
-
+14. final_times: the same vector passed as argument
 """
 function fidelities(np::Int64, final_times::AbstractVector)
     cparam = ControlParameterFull(np, final_times[1])
@@ -39,11 +34,6 @@ function fidelities(np::Int64, final_times::AbstractVector)
     mn_sta = zeros(length(final_times))
     mn_esta1 = zeros(length(final_times))
     mn_esta_cont = zeros(length(final_times))
-    pl_esta = zeros(length(final_times))
-    pl_sta = zeros(length(final_times))
-    pl_esta1 = zeros(length(final_times))
-    pl_esta_cont = zeros(length(final_times))
-    tfs = zeros(length(final_times))
     Threads.@threads for index in 1:length(final_times)
         tf = final_times[index]
         cparam = cp_time(cparam, tf)
@@ -69,12 +59,8 @@ function fidelities(np::Int64, final_times::AbstractVector)
         mn_esta1[index] = robustness_mn(cparam, qts, esta1, 1e-7)
         mn_esta_cont[index] = robustness_mn(cparam_cont, qts, esta_cont, 1e-7)
         mn_sta[index] = robustness_mn(cparam, qts, sta, 1e-7)
-        pl_esta[index] = sensitivity(cparam, esta)
-        pl_esta1[index] = sensitivity(cparam, esta1)
-        pl_esta_cont[index] = sensitivity(cparam, esta_cont)
-        pl_sta[index] = sensitivity(cparam, sta)
     end
-    return fid_esta, fid_esta1, fid_esta_cont, fid_sta, fid_ad, tn_esta, tn_sta, tn_esta1, tn_esta_cont, mn_esta, mn_sta, mn_esta1, mn_esta_cont, pl_esta, pl_esta1, pl_esta_cont, pl_sta, final_times ./ pi
+    return fid_esta, fid_esta1, fid_esta_cont, fid_sta, fid_ad, tn_esta, tn_sta, tn_esta1, tn_esta_cont, mn_esta, mn_sta, mn_esta1, mn_esta_cont, final_times ./ pi
 end
 final_times = range(0.01pi, 0.2pi, length=150)
 ft_10 = fidelities(10, final_times)
