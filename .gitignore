@@ -1,4 +1,6 @@
 # Files I don't want to track
-/Documents/Notes/latex_build/*
 /indent.log
 /data/*
+**/latex_build/*
+Manifest.toml
+Project.toml

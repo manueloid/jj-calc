@@ -79,7 +79,7 @@ function bf_evolution(cp::ControlParameter, ω::Function; t=tspan(cp, 1000))
     ψT = qts.ψf # Initial state for the backward evolution
     tout, ψ0 = evolution(ψ0, H_fwd, t) # Time span and wavefunction with respect of time for the forward evolution
     tout, ψT = evolution(ψT, H_rev, t) # Time span and wavefunction with respect of time for the backward evolution
-	reverse!(ψT) # I reverse the wavefunction of the backward evolution
+    reverse!(ψT) # I reverse the wavefunction of the backward evolution
     H1_fwd(t) = h * H1(t, qts, ω) # Forward Hamiltonian with respect to time, that I will use to compute the sensitivity
     return ψ0, ψT, H1_fwd.(t) # I return the wavefunctions and the time dependent Hamiltonian
 end
@@ -113,8 +113,8 @@ function sensitivity(cp::ControlParameter, ω::Function; t=tspan(cp, 1000))
     ψ0dH1ψf = ψ0d .* H1_in .* ψf # <ψ0|H1|ψf> term that will be subtracted from the previous term
     second = abs2.(ψ0dH1ψf) # |<ψ0|H1|ψf>|^2 term
     h = 2.0 / cp.NParticles # Scaling factor
-    integrand =first .- second ./ h^2 # I compute the integrand
-	return abs(simpson_rule(integrand, t)) # I integrate the integrand using the Simpson rule
+    integrand = first .- second ./ h^2 # I compute the integrand
+    return abs(simpson_rule(integrand, t)) # I integrate the integrand using the Simpson rule
 end
 # I need to integrate the integrand array over the time.
 # I will use the trapezoidal rule
@@ -123,13 +123,13 @@ sensitivities(n::Int64, final_times) -> sensitivities
 This function computes the sensitivities for a given number of particles n and a given array of final times.
 It returns an array containing the sensitivities for each final time for both the esta and sta methods.
 """
-function sensitivities(n::Int64, final_times)
+function sensitivities(n::Int64, final_times; λs::Int64=5, cont::Bool=false)
     sensitivities_esta = zeros(length(final_times))
     sensitivities_sta = zeros(length(final_times))
-	p = Progress(length(final_times), 1, "Computing sensitivities")
+    p = Progress(length(final_times), 1, "Computing sensitivities")
     Threads.@threads for i in 1:length(final_times)
-        cp = ControlParameterFull(final_times[i], n)
-        corrs = corrections(cp)
+        cont ? cp = ControlParameterInt(final_times[i], n) : cp = ControlParameterFull(final_times[i], n)
+        corrs = corrections(cp; nlambda=λs)
         esta(t) = Λ_esta(t, cp, corrs)
         sta(t) = Λ_sta(t, cp)
         sensitivities_esta[i] = sensitivity(cp, esta; t=tspan(cp, 10000))
