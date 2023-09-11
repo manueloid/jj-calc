@@ -127,6 +127,26 @@ eff10 = @pgf [Plot(style, Table(whole10.final_times, eff)) for (style, eff) in z
 eff100 = @pgf [Plot(style, Table(whole100.final_times, eff)) for (style, eff) in zip(styles, eff100_data)]
 
 #=
+Inset plot testing
+
+Here I am going to test the inset plot.
+I still do not know how to do it, but I will try to figure it out.
+
+The plan in this case is to use an axis that is shifted and scaled with respect to the original one.
+=#
+
+tp = @pgf TikzPicture({},
+    Axis({
+        yshift = "0.3\\textwidth",
+        xshift = "0.1\\textwidth",
+        width = "0.3\\textwidth",
+    },
+    pl10),
+    Axis({}, pl100)
+    )
+display("gfx/test.pdf", tp)
+
+#=
 ## 4 Group plots
 
 Now it is time to plot all together in a single group plot.
@@ -135,7 +155,7 @@ I will try a 2x4 grid where all the quantities have their own plots, as well as 
 
 gp = @pgf GroupPlot({
         group_style = {
-            group_size = "4 by 2",
+            group_size = "3 by 2",
             vertical_sep = "0.0cm",
             horizontal_sep = "1.4cm",
             xlabels_at = "edge bottom",
@@ -160,14 +180,7 @@ gp = @pgf GroupPlot({
     },
     tn10,
     ["\\node[anchor = north east] at (rel axis cs: 0.5,0.95) {N = 10};"],
-    {
-        ylabel = raw"$S_p$",
-        "every y tick scale label/.style={at={(yticklabel cs:0.75,0.0)},  anchor=south}",
-        scaled_y_ticks = "base 10:3",
-    },
-    pl10,
-    ["\\node[anchor = north east] at (rel axis cs: 0.5,0.95) {N = 10};"],
-    {
+   {
         ylabel = raw"$\eta$",
     },
     eff10,
@@ -185,18 +198,43 @@ gp = @pgf GroupPlot({
     tn100,
     ["\\node[anchor = north east] at (rel axis cs: 0.5,0.95) {N = 100};"],
     ["\\node[anchor = north east] at (xticklabel cs: -0.1,0.0) {(b)};"],
-    {
-        ylabel = raw"$S_p$",
-        "every y tick scale label/.style={at={(yticklabel cs:0.85, 0.1)},  anchor=south}",
-    },
-    pl100,
-    ["\\node[anchor = north east] at (rel axis cs: 0.5,0.95) {N = 100};"],
-    ["\\node[anchor = north east] at (xticklabel cs: -0.1,0.0) {(c)};"],
-    {
+        {
         ylabel = raw"$\eta$",
     },
     eff100,
     ["\\node[anchor = north east] at (rel axis cs: 0.5,0.95) {N = 100};"],
-    ["\\node[anchor = north east] at (xticklabel cs: -0.1,0.0) {(d)};"],
+    ["\\node[anchor = north east] at (xticklabel cs: -0.1,0.0) {(c)};"],
 )
 display("gfx/test.pdf", gp)
+
+ax = @pgf Axis({
+        ylabel = raw"$S_p$",
+        xlabel = raw"$t_f/t_R$",
+        ylabel_shift = "-0.2cm",
+        xlabel = raw"$t_f/t_R$",
+        xlabel_shift = "-0.2cm",
+        footnotesize,
+        scaled_y_ticks = "base 10:3",
+        # at = "(1.20\\textwidth, 0.19\\textwidth)",
+        at = "(0.7\\textwidth, 0.19\\textwidth)",
+        width = "0.25\\textwidth",
+    },
+    pl10,
+)
+ax2 = @pgf Axis({
+        footnotesize,
+        ylabel = raw"$S_p$",
+        ylabel_shift = "-0.2cm",
+        xlabel = raw"$t_f/t_R$",
+        xlabel_shift = "-0.2cm",
+        # at = "(1.20\\textwidth, -.12\\textwidth)",
+        at = "(0.7\\textwidth, -.12\\textwidth)", 
+        width = "0.25\\textwidth",
+    },
+    pl100,
+)
+tp = @pgf TikzPicture({},)
+push!(tp, gp)
+push!(tp, ax)
+push!(tp, ax2)
+display("gfx/insetgp2.pdf", tp)
