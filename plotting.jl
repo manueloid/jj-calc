@@ -49,9 +49,6 @@ col(feature, df) = df[!, feature]
 types = ["esta", "esta1", "esta_cont", "sta"]
 features = ["tn", "mn", "pl"]
 col(feature, type, df) = col(string(feature, "_", type), df)
-# Plot all the modulation noise sensitivities
-
-col("mn", "esta", whole10)
 
 #=
 ## 2 Plotting style
@@ -150,14 +147,56 @@ gp = @pgf GroupPlot({
         width = "0.5\\textwidth",
         ticklabel_style = "/pgf/number format/fixed",
         xlabel = "\$t_f/t_R\$",
+        clip_mode = "individual",
     },
-    Axis({}, mn10),
-    Axis({}, tn10),
-    Axis({}, pl10),
-    Axis({}, eff10),
-    Axis({}, mn100),
-    Axis({}, tn100),
-    Axis({}, pl100),
-    Axis({}, eff100),
+    # First row
+    {
+        ylabel = raw"$S_m$",
+    },
+    mn10,
+    ["\\node[anchor = north east] at (rel axis cs: 0.5,0.95) {N = 10};"],
+    {
+        ylabel = raw"$S_t$",
+    },
+    tn10,
+    ["\\node[anchor = north east] at (rel axis cs: 0.5,0.95) {N = 10};"],
+    {
+        ylabel = raw"$S_p$",
+        "every y tick scale label/.style={at={(yticklabel cs:0.75,0.0)},  anchor=south}",
+        scaled_y_ticks = "base 10:3",
+    },
+    pl10,
+    ["\\node[anchor = north east] at (rel axis cs: 0.5,0.95) {N = 10};"],
+    {
+        ylabel = raw"$\eta$",
+    },
+    eff10,
+    ["\\node[anchor = north east] at (rel axis cs: 0.5,0.95) {N = 10};"],
+    # Second row
+    {
+        ylabel = raw"$S_m$",
+    },
+    mn100,
+    ["\\node[anchor = north east] at (rel axis cs: 0.5,0.95) {N = 100};"],
+    ["\\node[anchor = north east] at (xticklabel cs: -0.1,0.0) {(a)};"],
+    {
+        ylabel = raw"$S_t$",
+    },
+    tn100,
+    ["\\node[anchor = north east] at (rel axis cs: 0.5,0.95) {N = 100};"],
+    ["\\node[anchor = north east] at (xticklabel cs: -0.1,0.0) {(b)};"],
+    {
+        ylabel = raw"$S_p$",
+        "every y tick scale label/.style={at={(yticklabel cs:0.85, 0.1)},  anchor=south}",
+    },
+    pl100,
+    ["\\node[anchor = north east] at (rel axis cs: 0.5,0.95) {N = 100};"],
+    ["\\node[anchor = north east] at (xticklabel cs: -0.1,0.0) {(c)};"],
+    {
+        ylabel = raw"$\eta$",
+    },
+    eff100,
+    ["\\node[anchor = north east] at (rel axis cs: 0.5,0.95) {N = 100};"],
+    ["\\node[anchor = north east] at (xticklabel cs: -0.1,0.0) {(d)};"],
 )
 display("gfx/test.pdf", gp)
