@@ -62,7 +62,7 @@ function fidelities(np::Int64, final_times::AbstractVector)
     end
     return fid_esta, fid_esta1, fid_esta_cont, fid_sta, fid_ad, tn_esta, tn_sta, tn_esta1, tn_esta_cont, mn_esta, mn_sta, mn_esta1, mn_esta_cont, final_times ./ pi
 end
-final_times = range(0.01pi, 0.2pi, length=150)
+final_times = range(0.01pi, 0.1pi, length=75)
 ft_10 = fidelities(10, final_times)
 ft_100 = fidelities(100, final_times)
 

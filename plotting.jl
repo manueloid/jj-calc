@@ -44,7 +44,6 @@ fid_10 = DataFrame(CSV.File("./data/fid_10.csv"))
 fid_100 = DataFrame(CSV.File("./data/fid_100.csv"))
 whole10 = innerjoin(pl_10, fid_10, on=:final_times)
 whole100 = innerjoin(pl_100, fid_100, on=:final_times)
-
 col(feature, df) = df[!, feature]
 types = ["esta", "esta1", "esta_cont", "sta"]
 features = ["tn", "mn", "pl"]
@@ -137,13 +136,13 @@ The plan in this case is to use an axis that is shifted and scaled with respect 
 
 tp = @pgf TikzPicture({},
     Axis({
-        yshift = "0.3\\textwidth",
-        xshift = "0.1\\textwidth",
-        width = "0.3\\textwidth",
-    },
-    pl10),
+            yshift = "0.3\\textwidth",
+            xshift = "0.1\\textwidth",
+            width = "0.3\\textwidth",
+        },
+        pl10),
     Axis({}, pl100)
-    )
+)
 display("gfx/test.pdf", tp)
 
 #=
@@ -180,7 +179,7 @@ gp = @pgf GroupPlot({
     },
     tn10,
     ["\\node[anchor = north east] at (rel axis cs: 0.5,0.95) {N = 10};"],
-   {
+    {
         ylabel = raw"$\eta$",
     },
     eff10,
@@ -198,7 +197,7 @@ gp = @pgf GroupPlot({
     tn100,
     ["\\node[anchor = north east] at (rel axis cs: 0.5,0.95) {N = 100};"],
     ["\\node[anchor = north east] at (xticklabel cs: -0.1,0.0) {(b)};"],
-        {
+    {
         ylabel = raw"$\eta$",
     },
     eff100,
@@ -212,11 +211,11 @@ ax = @pgf Axis({
         xlabel = raw"$t_f/t_R$",
         ylabel_shift = "-0.2cm",
         xlabel = raw"$t_f/t_R$",
-        xlabel_shift = "-0.2cm",
+        ticklabel_style = "/pgf/number format/fixed",
         footnotesize,
-        scaled_y_ticks = "base 10:3",
-        # at = "(1.20\\textwidth, 0.19\\textwidth)",
-        at = "(0.7\\textwidth, 0.19\\textwidth)",
+        try_min_ticks = 3,
+        at = "(1.20\\textwidth, 0.19\\textwidth)",
+        # at = "(0.7\\textwidth, 0.19\\textwidth)",
         width = "0.25\\textwidth",
     },
     pl10,
@@ -227,8 +226,9 @@ ax2 = @pgf Axis({
         ylabel_shift = "-0.2cm",
         xlabel = raw"$t_f/t_R$",
         xlabel_shift = "-0.2cm",
-        # at = "(1.20\\textwidth, -.12\\textwidth)",
-        at = "(0.7\\textwidth, -.12\\textwidth)", 
+        ticklabel_style = "/pgf/number format/fixed",
+        at = "(1.20\\textwidth, -.12\\textwidth)",
+        # at = "(0.7\\textwidth, -.12\\textwidth)", 
         width = "0.25\\textwidth",
     },
     pl100,
@@ -237,4 +237,4 @@ tp = @pgf TikzPicture({},)
 push!(tp, gp)
 push!(tp, ax)
 push!(tp, ax2)
-display("gfx/insetgp2.pdf", tp)
+display("gfx/insetgp1.pdf", tp)
